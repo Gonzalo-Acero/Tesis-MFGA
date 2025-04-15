@@ -1,34 +1,31 @@
-import mysql from 'mysql2';
+import { Sequelize } from 'sequelize'; // Importa Sequelize desde sequelize
 
-function ConnectDatabase() {
+// Lee la configuración de las variables de entorno (recomendado para producción)
 process.loadEnvFile();
 
-// Configuración de la conexión
-const connection = mysql.createConnection({
-  host: process.env.HOST,     // O la dirección IP de tu servidor MySQL
-  user: process.env.USER,    // Tu nombre de usuario de MySQL
-  password: process.env.PASSWORD, // Tu contraseña de MySQL
-  database: process.env.DATABASE // El nombre de la base de datos a la que quieres conectar
-});
-
-// Intentar conectar a la base de datos
-connection.connect((err) => {
-  if (err) {
-    console.error('Error al conectar a la base de datos:', err);
-    return;
-  }
-  console.log('Conexión a la base de datos MySQL establecida correctamente.');
-
-  // Aquí puedes realizar operaciones con la base de datos
-
-  // Es importante cerrar la conexión cuando ya no la necesites
-  connection.end((err) => {
-    if (err) {
-      console.error('Error al cerrar la conexión:', err);
-    } else {
-      console.log('Conexión a la base de datos cerrada.');
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST || 'localhost',
+    dialect: 'mysql', // O 'postgres', 'sqlite', 'mariadb', etc.
+    port: process.env.DB_PORT || 3306, // Puerto predeterminado de MySQL
+    dialectOptions: {
+      // Opciones específicas del dialecto (por ejemplo, para MySQL)
+      dateStrings: true,
+      typeCast: true
+    },
+    timezone: '-03:00', // Configura tu zona horaria (Buenos Aires)
+    logging: console.log, // Muestra las consultas SQL en la consola (útil para desarrollo)
+    // logging: false, // Desactiva el logging de SQL en producción
+    pool: {
+      max: 5, // Número máximo de conexiones en el pool
+      min: 0, // Número mínimo de conexiones en el pool
+      acquire: 30000, // Tiempo máximo en milisegundos para intentar obtener una conexión
+      idle: 10000 // Tiempo máximo en milisegundos que una conexión puede estar inactiva antes de ser liberada
     }
-  });
-});
-}
-export { ConnectDatabase};
+  }
+);
+
+export { sequelize };
