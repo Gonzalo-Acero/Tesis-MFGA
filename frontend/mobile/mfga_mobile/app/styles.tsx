@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212', //  Fondo oscuro
+    backgroundColor: '#121212',
     padding: 16,
   },
   header: {
@@ -15,25 +15,21 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF', //  Color del texto
-  },
-  menuIcon: {
-    // Estilos para el icono de menú (ajusta según necesites)
-    padding: 8,
-  },
-  userIcon: {
-    // Estilos para el icono de usuario (ajusta según necesites)
-    padding: 8,
+    color: '#FFFFFF',
   },
   searchTabs: {
     flexDirection: 'row',
+    justifyContent: 'center', // 🔁 Centra horizontalmente los botones
+    alignItems: 'center',
     marginBottom: 24,
+    gap: 12, // Opcional para espacio entre botones si usás RN 0.71+
   },
   activeTab: {
-    backgroundColor: '#292929', //  Tab activo
+    backgroundColor: '#292929',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
+    marginHorizontal: 6, // Alternativa si no tenés gap
   },
   activeTabText: {
     color: '#FFFFFF',
@@ -43,12 +39,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     paddingVertical: 8,
     paddingHorizontal: 16,
+    marginHorizontal: 6,
   },
   tabText: {
     color: '#888888',
   },
   searchOptionsList: {
-    // Estilos para la lista de opciones (si los necesitas)
+    alignItems: 'center', // 🔁 Centra todos los items hijos horizontalmente
   },
   searchOptionItem: {
     flexDirection: 'row',
@@ -56,21 +53,33 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#333333',
+    width: '100%', // Asegura que se alinee al centro pero mantenga proporción
+    maxWidth: 320, // Opcional: límite para mejor presentación
   },
   optionImagePlaceholder: {
     width: 40,
     height: 40,
     backgroundColor: '#555555',
     marginRight: 12,
+    borderRadius: 6,
   },
   optionText: {
     color: '#FFFFFF',
     flex: 1,
+    fontSize: 16,
   },
   arrow: {
     color: '#888888',
     fontSize: 18,
   },
+  menuIcon: {
+    padding: 8,
+  },
+  
+  userIcon: {
+    padding: 8,
+  },
+  
 });
 
 export default styles;
