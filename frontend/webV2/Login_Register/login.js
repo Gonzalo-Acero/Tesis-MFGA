@@ -1,65 +1,83 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Tab switching functionality
-    const loginTab = document.getElementById('login-tab');
-    const registerTab = document.getElementById('register-tab');
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
-    const switchToLogin = document.getElementById('switch-to-login');
-    
-    // Set login as default active tab
-    loginTab.classList.add('active-tab');
-    
-    // Switch to register tab
-    registerTab.addEventListener('click', function() {
-        loginTab.classList.remove('active-tab');
-        registerTab.classList.add('active-tab');
-        loginForm.classList.add('hidden');
-        registerForm.classList.remove('hidden');
+document.addEventListener("DOMContentLoaded", () => {
+  const loginTab = document.getElementById("login-tab");
+  const registerTab = document.getElementById("register-tab");
+  const loginPanel = document.getElementById("login-panel");
+  const registerPanel = document.getElementById("register-panel");
+  const switchToLogin = document.getElementById("switch-to-login");
+
+  const setActiveTab = (tab) => {
+    if (!loginTab || !registerTab || !loginPanel || !registerPanel) {
+      return;
+    }
+
+    const isLogin = tab === "login";
+    loginTab.classList.toggle("border-primary", isLogin);
+    loginTab.classList.toggle("border-transparent", !isLogin);
+    registerTab.classList.toggle("border-primary", !isLogin);
+    registerTab.classList.toggle("border-transparent", isLogin);
+
+    loginPanel.classList.toggle("hidden", !isLogin);
+    registerPanel.classList.toggle("hidden", isLogin);
+  };
+
+  if (loginTab && registerTab) {
+    loginTab.addEventListener("click", () => setActiveTab("login"));
+    registerTab.addEventListener("click", () => setActiveTab("register"));
+  }
+
+  if (switchToLogin) {
+    switchToLogin.addEventListener("click", (event) => {
+      event.preventDefault();
+      setActiveTab("login");
     });
-    
-    // Switch to login tab
-    loginTab.addEventListener('click', function() {
-        registerTab.classList.remove('active-tab');
-        loginTab.classList.add('active-tab');
-        registerForm.classList.add('hidden');
-        loginForm.classList.remove('hidden');
+  }
+
+  setActiveTab("login");
+
+  document.addEventListener("mfga:user-registered", () => {
+    setActiveTab("login");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  const loginForm = document.querySelector("[data-login-form]");
+  const loginEmail = document.getElementById("login-email");
+  const loginPassword = document.getElementById("login-password");
+  const loginEmailError = document.getElementById("login-email-error");
+  const loginPasswordError = document.getElementById("login-password-error");
+
+  if (loginEmail && loginEmailError) {
+    loginEmail.addEventListener("blur", () => {
+      const isValid = /\S+@\S+\.\S+/.test(loginEmail.value.trim());
+      loginEmailError.classList.toggle("hidden", isValid);
     });
-    
-    // Switch from register form to login
-    switchToLogin.addEventListener('click', function(e) {
-        e.preventDefault();
-        registerTab.classList.remove('active-tab');
-        loginTab.classList.add('active-tab');
-        registerForm.classList.add('hidden');
-        loginForm.classList.remove('hidden');
+  }
+
+  if (loginPassword && loginPasswordError) {
+    loginPassword.addEventListener("blur", () => {
+      const isValid = loginPassword.value.trim().length >= 6;
+      loginPasswordError.classList.toggle("hidden", isValid);
     });
-    
-    // Basic form validation examples
-    const loginEmail = document.getElementById('login-email');
-    const loginPassword = document.getElementById('login-password');
-    const loginEmailError = document.getElementById('login-email-error');
-    const loginPasswordError = document.getElementById('login-password-error');
-    
-    loginEmail.addEventListener('blur', function() {
-        if (!loginEmail.value.includes('@') || !loginEmail.value.includes('.')) {
-            loginEmailError.classList.remove('hidden');
-        } else {
-            loginEmailError.classList.add('hidden');
-        }
+  }
+
+  if (loginForm) {
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const emailValid = loginEmail ? /\S+@\S+\.\S+/.test(loginEmail.value.trim()) : true;
+      const passwordValid = loginPassword ? loginPassword.value.trim().length >= 6 : true;
+
+      if (!emailValid && loginEmailError) {
+        loginEmailError.classList.remove("hidden");
+      }
+      if (!passwordValid && loginPasswordError) {
+        loginPasswordError.classList.remove("hidden");
+      }
+
+      if (emailValid && passwordValid) {
+        // Placeholder: integrate login API when available.
+        console.info("Login form submitted", {
+          email: loginEmail?.value.trim(),
+        });
+      }
     });
-    
-    loginPassword.addEventListener('blur', function() {
-        if (loginPassword.value.length < 6) {
-            loginPasswordError.classList.remove('hidden');
-        } else {
-            loginPasswordError.classList.add('hidden');
-        }
-    });
-    
-    // Register form validation would go here similarly
-    
-    // Feather icons replacement (in case dynamic content is added)
-    document.addEventListener('feather.replace', function() {
-        feather.replace();
-    });
+  }
 });
