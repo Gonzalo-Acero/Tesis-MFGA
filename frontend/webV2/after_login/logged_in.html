@@ -23,8 +23,7 @@
 </head>
 <body class="bg-gray-50 font-sans">
     <!-- Navigation Component -->
-    <script src="components/navigation.js"></script>
-    <custom-navigation></custom-navigation>
+    <custom-navbar></custom-navbar>
 
     <main class="pb-20">
         <!-- Hero Section -->
@@ -128,15 +127,30 @@
         </section>
     </main>
 
-    <!-- Footer Component -->
-    <script src="components/footer.js"></script>
     <custom-footer></custom-footer>
 
+    <!-- Scripts -->
+    <script src="../components/navbar.js"></script>
+    <script src="../components/footer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
     <script src="script.js"></script>
     <script>
         feather.replace();
+        // Initialize Vanta.js effect
+        VANTA.GLOBE({
+            el: ".vanta-background",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x75aadb,
+            backgroundColor: 0xf6d54a,
+            size: 1.00
+        });
     </script>
-<script src="https://huggingface.co/deepsite/deepsite-badge.js"></script>
 </body>
 </html>
 
