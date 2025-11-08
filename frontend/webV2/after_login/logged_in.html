@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFGA Dashboard | My Fellow Guide Argentina</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'argentina-blue': '#75AADB',
+              'argentina-yellow': '#F6D54A',
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Navigation Component -->
+    <script src="components/navigation.js"></script>
+    <custom-navigation></custom-navigation>
+
+    <main class="pb-20">
+        <!-- Hero Section -->
+        <section class="relative h-96 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-argentina-blue/80 to-argentina-yellow/80 z-10"></div>
+            <img src="http://static.photos/travel/1200x630/argentina" alt="Argentina landscape" class="w-full h-full object-cover blur-sm animate-pulse-slow">
+            <div class="relative z-20 h-full flex flex-col justify-center items-center text-center px-4">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 animate-fade-in">Welcome back, Traveler <span class="animate-bounce inline-block">👋</span></h1>
+                <p class="text-xl md:text-2xl text-white mb-8">Ready to explore Argentina today?</p>
+                <button class="bg-argentina-yellow text-argentina-blue font-bold py-3 px-8 rounded-full hover:scale-105 transition-transform duration-300 shadow-lg">
+                    Start Exploring
+                </button>
+            </div>
+        </section>
+
+        <!-- Stats Bar -->
+        <div class="container mx-auto px-4 -mt-8 z-30 relative">
+            <div class="bg-white rounded-xl shadow-lg p-4 flex flex-wrap justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i data-feather="compass" class="text-argentina-blue"></i>
+                    <span class="text-gray-700">You've explored <span class="font-bold text-argentina-blue">12</span> landmarks</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i data-feather="map" class="text-argentina-yellow"></i>
+                    <span class="text-gray-700"><span class="font-bold text-argentina-yellow">3</span> new routes available today!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Cards -->
+        <section class="container mx-auto px-4 py-16">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Where will you explore today?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Card 1 -->
+                <div class="feature-card bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <div class="h-40 bg-argentina-blue flex items-center justify-center">
+                        <i data-feather="map" class="text-white w-16 h-16"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">🗺️ Discover Places</h3>
+                        <p class="text-gray-600 mb-4">Explore destinations across Argentina</p>
+                        <a href="#" class="text-argentina-blue font-semibold hover:underline flex items-center">
+                            Learn More <i data-feather="chevron-right" class="ml-1 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="feature-card bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <div class="h-40 bg-argentina-yellow flex items-center justify-center">
+                        <i data-feather="headphones" class="text-white w-16 h-16"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">🎧 Audio Guides</h3>
+                        <p class="text-gray-600 mb-4">Listen to local stories and culture</p>
+                        <a href="#" class="text-argentina-blue font-semibold hover:underline flex items-center">
+                            Learn More <i data-feather="chevron-right" class="ml-1 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="feature-card bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <div class="h-40 bg-argentina-blue flex items-center justify-center">
+                        <i data-feather="navigation" class="text-white w-16 h-16"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">📍 Nearby Attractions</h3>
+                        <p class="text-gray-600 mb-4">Find places close to you</p>
+                        <a href="#" class="text-argentina-blue font-semibold hover:underline flex items-center">
+                            Learn More <i data-feather="chevron-right" class="ml-1 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="feature-card bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <div class="h-40 bg-argentina-yellow flex items-center justify-center">
+                        <i data-feather="users" class="text-white w-16 h-16"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">💬 Travel Community</h3>
+                        <p class="text-gray-600 mb-4">Connect with fellow explorers</p>
+                        <a href="#" class="text-argentina-blue font-semibold hover:underline flex items-center">
+                            Learn More <i data-feather="chevron-right" class="ml-1 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Banner -->
+        <section class="bg-gradient-to-r from-argentina-blue to-argentina-yellow py-16">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold text-white mb-6">Experience Argentina like a local</h2>
+                <p class="text-xl text-white mb-8">Start your journey now and discover the magic of Argentina</p>
+                <button class="bg-white text-argentina-blue font-bold py-4 px-12 rounded-full hover:scale-105 transition-transform duration-300 shadow-lg text-lg">
+                    Start Exploring
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Component -->
+    <script src="components/footer.js"></script>
+    <custom-footer></custom-footer>
+
+    <script src="script.js"></script>
+    <script>
+        feather.replace();
+    </script>
+<script src="https://huggingface.co/deepsite/deepsite-badge.js"></script>
+</body>
+</html>
+
+
