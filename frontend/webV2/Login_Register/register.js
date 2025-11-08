@@ -2,7 +2,7 @@ const resolveApiBaseUrl = () => {
   const candidate =
     window.__API_BASE_URL__ ||
     document.body.getAttribute("data-api-base-url") ||
-    "http://localhost:3000";
+    "http://localhost:4000";
   return candidate.replace(/\/+$/, "");
 };
 

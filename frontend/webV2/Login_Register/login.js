@@ -1,3 +1,23 @@
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co'; // <- reemplaza
+const SUPABASE_ANON_KEY = 'TU_ANON_KEY'; // <- reemplaza
+
+// === NEW: resolver base URL para API propia ===
+const resolveApiBaseUrl = () => {
+  const candidate =
+    window._API_BASE_URL_ ||
+    window.__API_BASE_URL__ ||
+    document.body.getAttribute("data-api-base-url") ||
+    "http://localhost:4000";
+  return candidate.replace(/\/+$/, "");
+};
+const API_BASE_URL = resolveApiBaseUrl();
+const useCustomApi = !!(document.body.getAttribute("data-api-base-url") || window._API_BASE_URL_ || window.__API_BASE_URL__);
+// === end new ===
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 document.addEventListener("DOMContentLoaded", () => {
   const loginTab = document.getElementById("login-tab");
   const registerTab = document.getElementById("register-tab");
@@ -44,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginPassword = document.getElementById("login-password");
   const loginEmailError = document.getElementById("login-email-error");
   const loginPasswordError = document.getElementById("login-password-error");
+  const loginGeneralError = document.getElementById("login-general-error");
 
   if (loginEmail && loginEmailError) {
     loginEmail.addEventListener("blur", () => {
@@ -60,24 +81,64 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (loginForm) {
-    loginForm.addEventListener("submit", (event) => {
+    loginForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const emailValid = loginEmail ? /\S+@\S+\.\S+/.test(loginEmail.value.trim()) : true;
-      const passwordValid = loginPassword ? loginPassword.value.trim().length >= 6 : true;
+      if (loginGeneralError) loginGeneralError.textContent = '';
+      const email = loginEmail ? loginEmail.value.trim() : '';
+      const password = loginPassword ? loginPassword.value.trim() : '';
 
-      if (!emailValid && loginEmailError) {
-        loginEmailError.classList.remove("hidden");
-      }
-      if (!passwordValid && loginPasswordError) {
-        loginPasswordError.classList.remove("hidden");
-      }
+      const emailValid = /\S+@\S+\.\S+/.test(email);
+      const passwordValid = password.length >= 6;
 
-      if (emailValid && passwordValid) {
-        // Placeholder: integrate login API when available.
-        console.info("Login form submitted", {
-          email: loginEmail?.value.trim(),
-        });
-      }
+      if (!emailValid && loginEmailError) loginEmailError.classList.remove("hidden");
+      if (!passwordValid && loginPasswordError) loginPasswordError.classList.remove("hidden");
+      if (!emailValid || !passwordValid) return;
+
+      // Deshabilitar botón si existe
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        if (useCustomApi) {
+          // Validación contra tu backend (POST /auth/login) — ajusta la ruta según tu API
+          const res = await fetch(`${API_BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+          });
+          const payload = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            const message = payload?.message || 'Credenciales inválidas';
+            if (loginGeneralError) loginGeneralError.textContent = message;
+            if (submitBtn) submitBtn.disabled = false;
+            return;
+          }
+          // login OK según tu backend
+          // opcional: guardar token/session via payload
+          // sessionStorage.setItem('mfga_token', payload.token);
+          window.location.href = '../after_login/logged_in.html';
+        } else {
+          // Fallback: usar Supabase Auth (si lo prefieres)
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) {
+            console.error('Login error', error);
+            if (loginGeneralError) loginGeneralError.textContent = error.message || 'Error al iniciar sesión';
+            if (submitBtn) submitBtn.disabled = false;
+            return;
+          }
+          if (data?.user) {
+            // sessionStorage.setItem('mfga_user', JSON.stringify(data.user));
+            window.location.href = '../after_login/logged_in.html';
+          } else {
+            if (loginGeneralError) loginGeneralError.textContent = 'No se pudo iniciar sesión con estas credenciales.';
+            if (submitBtn) submitBtn.disabled = false;
+          }
+        }
+       } catch (err) {
+         console.error(err);
+         if (loginGeneralError) loginGeneralError.textContent = 'Error inesperado al iniciar sesión.';
+         if (submitBtn) submitBtn.disabled = false;
+       }
     });
   }
 });
