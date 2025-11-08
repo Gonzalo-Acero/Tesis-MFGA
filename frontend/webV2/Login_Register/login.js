@@ -80,10 +80,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const setGeneralError = (message) => {
+    if (!loginGeneralError) {
+      return;
+    }
+    loginGeneralError.textContent = message ?? "";
+    loginGeneralError.classList.toggle("hidden", !message);
+  };
+
   if (loginForm) {
     loginForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-      if (loginGeneralError) loginGeneralError.textContent = '';
+      setGeneralError("");
       const email = loginEmail ? loginEmail.value.trim() : '';
       const password = loginPassword ? loginPassword.value.trim() : '';
 
@@ -109,36 +117,35 @@ document.addEventListener("DOMContentLoaded", () => {
           const payload = await res.json().catch(() => ({}));
           if (!res.ok) {
             const message = payload?.message || 'Credenciales inválidas';
-            if (loginGeneralError) loginGeneralError.textContent = message;
+            setGeneralError(message);
             if (submitBtn) submitBtn.disabled = false;
             return;
           }
           // login OK según tu backend
-          // opcional: guardar token/session via payload
-          // sessionStorage.setItem('mfga_token', payload.token);
+          setGeneralError("");
           window.location.href = '../after_login/logged_in.html';
         } else {
           // Fallback: usar Supabase Auth (si lo prefieres)
           const { data, error } = await supabase.auth.signInWithPassword({ email, password });
           if (error) {
             console.error('Login error', error);
-            if (loginGeneralError) loginGeneralError.textContent = error.message || 'Error al iniciar sesión';
+            setGeneralError(error.message || 'Error al iniciar sesión');
             if (submitBtn) submitBtn.disabled = false;
             return;
           }
           if (data?.user) {
-            // sessionStorage.setItem('mfga_user', JSON.stringify(data.user));
+            setGeneralError("");
             window.location.href = '../after_login/logged_in.html';
           } else {
-            if (loginGeneralError) loginGeneralError.textContent = 'No se pudo iniciar sesión con estas credenciales.';
+            setGeneralError('No se pudo iniciar sesión con estas credenciales.');
             if (submitBtn) submitBtn.disabled = false;
           }
         }
        } catch (err) {
          console.error(err);
-         if (loginGeneralError) loginGeneralError.textContent = 'Error inesperado al iniciar sesión.';
+         setGeneralError('Error inesperado al iniciar sesión.');
          if (submitBtn) submitBtn.disabled = false;
-       }
+        }
     });
   }
 });

@@ -57,18 +57,29 @@ const insertUser = async (payload) => {
 };
 
 const updateUserById = async (id, updates) => {
-  const allowedKeys = new Set(['Name', 'Email', 'Password', 'PhoneNumber', 'CreationDate', 'LastLogin', 'IsActive']);
-  const entries = Object.entries(updates).filter(([key, value]) => allowedKeys.has(key) && value !== undefined);
+  const allowedKeys = new Set([
+    'Name',
+    'Email',
+    'Password',
+    'PhoneNumber',
+    'CreationDate',
+    'LastLogin',
+    'IsActive',
+  ]);
+  const entries = Object.entries(updates ?? {}).filter(
+    ([key, value]) => allowedKeys.has(key) && value !== undefined,
+  );
 
   if (!entries.length) {
     return findUserById(id);
   }
 
-  const assignments = entries.map(([key, value]) => sql`${sql(key)} = ${value}`);
+  const columns = entries.map(([key]) => key);
+  const payload = Object.fromEntries(entries);
 
   const [row] = await sql`
     UPDATE public."user"
-    SET ${sql(assignments)}
+    SET ${sql(payload, columns)}
     WHERE "UserId" = ${id}
     RETURNING ${selectableColumns}
   `;
