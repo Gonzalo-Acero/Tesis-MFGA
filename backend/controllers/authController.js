@@ -1,6 +1,7 @@
-import bcrypt from "bcryptjs";
+﻿import bcrypt from "bcryptjs";
 import {
   findUserByEmailWithPassword,
+  findUserByIdWithPassword,
   updateUserById,
 } from "../models/userModel.js";
 
@@ -48,4 +49,47 @@ const login = async (req, res) => {
   }
 };
 
-export { login };
+const changePassword = async (req, res) => {
+  const { userId, currentPassword, newPassword } = req.body ?? {};
+
+  if (!userId || !currentPassword || !newPassword) {
+    return res
+      .status(400)
+      .json({ message: "Faltan datos para actualizar la contrasena" });
+  }
+
+  if (String(newPassword).length < 6) {
+    return res
+      .status(400)
+      .json({ message: "La nueva contrasena debe tener al menos 6 caracteres" });
+  }
+
+  try {
+    const user = await findUserByIdWithPassword(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const currentMatches = await bcrypt.compare(
+      currentPassword,
+      user.Password ?? ""
+    );
+    if (!currentMatches) {
+      return res
+        .status(401)
+        .json({ message: "La contrasena actual no es correcta" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await updateUserById(user.UserId, { Password: hashedPassword });
+
+    return res.json({ message: "Contrasena actualizada correctamente" });
+  } catch (error) {
+    console.error("Error al cambiar contrasena:", error);
+    return res
+      .status(500)
+      .json({ message: "Error interno del servidor al cambiar contrasena" });
+  }
+};
+
+export { login, changePassword };

@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MFGA Dashboard | My Fellow Guide Argentina</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="header.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -21,26 +22,106 @@
       }
     </script>
 </head>
-<body class="bg-gray-50 font-sans">
-    <!-- Navigation Component -->
-    <custom-navbar></custom-navbar>
+<body class="bg-gray-50 font-sans" data-api-base-url="http://localhost:4000/api" data-requires-auth="true">
+    <nav class="bg-white shadow-sm relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <span class="text-xl font-bold text-argentina-blue">MFGA</span>
+                    <button id="mobileNavToggle" class="md:hidden text-gray-600 hover:text-argentina-blue focus:outline-none" aria-label="Abrir menu">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <div
+                  id="navLinks"
+                  class="hidden flex flex-col gap-4 absolute top-full left-0 right-0 bg-white shadow-lg border-b border-gray-100 px-4 py-4 z-40 md:flex md:flex-row md:items-center md:gap-6 md:static md:shadow-none md:border-none md:bg-transparent md:px-0 md:py-0"
+                >
+                    <a href="#inicio" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Inicio</a>
+                    <a href="#conocenos" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Con&oacute;cenos</a>
+                    <a href="#app-mfga" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">App MFGA</a>
+                    <a href="#experiencias" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Experiencias</a>
+                    <a href="#contacto" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Contacto</a>
+                </div>
+                <div class="flex items-center">
+                    <div class="relative ml-3">
+                        <button id="profileButton" class="flex items-center focus:outline-none">
+                            <img data-user-avatar class="h-8 w-8 rounded-full" src="http://static.photos/people/200x200/42" alt="Profile">
+                        </button>
+                        <div
+                          id="profileDropdown"
+                          data-logout-url="../Login_Register/Login.html"
+                          class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none transform transition-all duration-200 ease-out scale-95 opacity-0 z-50"
+                        >
+                            <div class="py-3 px-4 border-b border-gray-200">
+                                <div class="flex items-center space-x-3">
+                                    <img data-user-avatar class="h-10 w-10 rounded-full" src="http://static.photos/people/200x200/42" alt="Profile">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900" data-user-name>Explorador MFGA</p>
+                                        <p class="text-xs text-gray-500" data-user-email>usuario@example.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-1">
+                                <a href="#" data-profile-action="edit-profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-argentina-blue hover:text-white transition-colors duration-200">
+                                    <i data-feather="user" class="inline mr-2 w-4 h-4"></i> Edit Profile
+                                </a>
+                                <a href="#" data-profile-action="change-email" class="block px-4 py-2 text-sm text-gray-700 hover:bg-argentina-blue hover:text-white transition-colors duration-200">
+                                    <i data-feather="mail" class="inline mr-2 w-4 h-4"></i> Change Email
+                                </a>
+                                <a href="#" data-profile-action="change-password" class="block px-4 py-2 text-sm text-gray-700 hover:bg-argentina-blue hover:text-white transition-colors duration-200">
+                                    <i data-feather="lock" class="inline mr-2 w-4 h-4"></i> Change Password
+                                </a>
+                                <div class="border-t border-gray-200"></div>
+                                <a href="#" data-profile-action="logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
+                                    <i data-feather="log-out" class="inline mr-2 w-4 h-4"></i> Log out
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
 
     <main class="pb-20">
         <!-- Hero Section -->
-        <section class="relative h-96 overflow-hidden">
+        <section id="inicio" class="relative h-96 overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-r from-argentina-blue/80 to-argentina-yellow/80 z-10"></div>
             <img src="http://static.photos/travel/1200x630/argentina" alt="Argentina landscape" class="w-full h-full object-cover blur-sm animate-pulse-slow">
             <div class="relative z-20 h-full flex flex-col justify-center items-center text-center px-4">
-                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 animate-fade-in">Welcome back, Traveler <span class="animate-bounce inline-block">👋</span></h1>
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 animate-fade-in">Welcome back, <span data-hero-name class="font-semibold">Traveler</span> <span class="animate-bounce inline-block">&#128075;</span></h1>
                 <p class="text-xl md:text-2xl text-white mb-8">Ready to explore Argentina today?</p>
-                <button class="bg-argentina-yellow text-argentina-blue font-bold py-3 px-8 rounded-full hover:scale-105 transition-transform duration-300 shadow-lg">
+                <button class="bg-argentina-yellow text-argentina-blue font-bold py-3 px-8 rounded-full hover:scale-105 transition-transform duration-300 shadow-lg explore-btn">
                     Start Exploring
                 </button>
             </div>
         </section>
 
+        <section id="conocenos" class="container mx-auto px-4 py-12">
+            <div class="bg-white rounded-2xl shadow-lg p-8 grid gap-8 md:grid-cols-2 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Con&oacute;cenos</h2>
+                    <p class="text-gray-600 mb-4">
+                        MFGA evoluciona contigo. Desde este panel personalizado puedes acceder a nuevas rutas, tus experiencias favoritas y recomendaciones creadas por tu historial de viaje.
+                    </p>
+                    <p class="text-gray-600 mb-6">
+                        Nuestro equipo actualiza diariamente contenido para que sigas descubriendo rincones aut&eacute;nticos de Argentina
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <span class="px-4 py-2 bg-argentina-blue/10 text-argentina-blue rounded-full text-sm font-semibold">Equipo local</span>
+                        <span class="px-4 py-2 bg-argentina-yellow/10 text-argentina-yellow rounded-full text-sm font-semibold">Rutas curadas</span>
+                        <span class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold">Contenido diario</span>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-gradient-to-r from-argentina-blue/20 to-argentina-yellow/20 blur-xl rounded-2xl"></div>
+                    <img src="http://static.photos/people/640x360/32" alt="Team MFGA" class="relative rounded-2xl shadow-lg">
+                </div>
+            </div>
+        </section>
+
         <!-- Stats Bar -->
-        <div class="container mx-auto px-4 -mt-8 z-30 relative">
+        <section id="app-mfga" class="container mx-auto px-4 -mt-8 z-30 relative">
             <div class="bg-white rounded-xl shadow-lg p-4 flex flex-wrap justify-between items-center">
                 <div class="flex items-center space-x-2">
                     <i data-feather="compass" class="text-argentina-blue"></i>
@@ -51,10 +132,10 @@
                     <span class="text-gray-700"><span class="font-bold text-argentina-yellow">3</span> new routes available today!</span>
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- Feature Cards -->
-        <section class="container mx-auto px-4 py-16">
+        <section id="experiencias" class="container mx-auto px-4 py-16">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Where will you explore today?</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Card 1 -->
@@ -63,7 +144,7 @@
                         <i data-feather="map" class="text-white w-16 h-16"></i>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">🗺️ Discover Places</h3>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">¸ Discover Places</h3>
                         <p class="text-gray-600 mb-4">Explore destinations across Argentina</p>
                         <a href="#" class="text-argentina-blue font-semibold hover:underline flex items-center">
                             Learn More <i data-feather="chevron-right" class="ml-1 w-4 h-4"></i>
@@ -77,7 +158,7 @@
                         <i data-feather="headphones" class="text-white w-16 h-16"></i>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">🎧 Audio Guides</h3>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Audio Guides</h3>
                         <p class="text-gray-600 mb-4">Listen to local stories and culture</p>
                         <a href="#" class="text-argentina-blue font-semibold hover:underline flex items-center">
                             Learn More <i data-feather="chevron-right" class="ml-1 w-4 h-4"></i>
@@ -91,7 +172,7 @@
                         <i data-feather="navigation" class="text-white w-16 h-16"></i>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">📍 Nearby Attractions</h3>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2"> Nearby Attractions</h3>
                         <p class="text-gray-600 mb-4">Find places close to you</p>
                         <a href="#" class="text-argentina-blue font-semibold hover:underline flex items-center">
                             Learn More <i data-feather="chevron-right" class="ml-1 w-4 h-4"></i>
@@ -105,7 +186,7 @@
                         <i data-feather="users" class="text-white w-16 h-16"></i>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">💬 Travel Community</h3>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2"> Travel Community</h3>
                         <p class="text-gray-600 mb-4">Connect with fellow explorers</p>
                         <a href="#" class="text-argentina-blue font-semibold hover:underline flex items-center">
                             Learn More <i data-feather="chevron-right" class="ml-1 w-4 h-4"></i>
@@ -116,24 +197,86 @@
         </section>
 
         <!-- CTA Banner -->
-        <section class="bg-gradient-to-r from-argentina-blue to-argentina-yellow py-16">
+        <section id="contacto" class="bg-gradient-to-r from-argentina-blue to-argentina-yellow py-16">
             <div class="container mx-auto px-4 text-center">
                 <h2 class="text-3xl font-bold text-white mb-6">Experience Argentina like a local</h2>
                 <p class="text-xl text-white mb-8">Start your journey now and discover the magic of Argentina</p>
-                <button class="bg-white text-argentina-blue font-bold py-4 px-12 rounded-full hover:scale-105 transition-transform duration-300 shadow-lg text-lg">
+                <button class="bg-white text-argentina-blue font-bold py-4 px-12 rounded-full hover:scale-105 transition-transform duration-300 shadow-lg text-lg explore-btn">
                     Start Exploring
                 </button>
             </div>
         </section>
     </main>
 
+    <div id="editProfileModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
+            <form data-profile-form class="flex flex-col h-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Editar perfil</h3>
+                </div>
+                <div class="px-6 py-4 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-name">Nombre completo</label>
+                        <input id="profile-name" name="profileName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Nombre y Apellido" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-email">Email</label>
+                        <input id="profile-email" name="profileEmail" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="usuario@email.com" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-phone">Telefono</label>
+                        <input id="profile-phone" name="profilePhone" type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="+54 9 11 1111-1111">
+                    </div>
+                    <p data-form-feedback class="text-sm text-red-600 hidden"></p>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 text-right">
+                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-profile-submit>Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="changePasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
+            <form data-password-form class="flex flex-col h-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Cambiar Contrasena</h3>
+                </div>
+                <div class="px-6 py-4 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="current-password">Contrasena actual</label>
+                        <input id="current-password" name="currentPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Ingrese su Contrasena" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="new-password">Nueva Contrasena</label>
+                        <input id="new-password" name="newPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Minimo 6 caracteres" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">Confirmar Contrasena</label>
+                        <input id="confirm-password" name="confirmPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Repita la nueva Contrasena" required>
+                    </div>
+                    <p data-password-feedback class="text-sm text-red-600 hidden"></p>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 text-right">
+                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-password-submit>Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <custom-footer></custom-footer>
 
     <!-- Scripts -->
-    <script src="../components/navbar.js"></script>
     <script src="../components/footer.js"></script>
+    <script src="../shared/session.js"></script>
+    <script>
+      window.__API_BASE_URL__ = document.body.getAttribute("data-api-base-url") || window.__API_BASE_URL__ || "http://localhost:4000/api";
+    </script>
+    <script src="header.js"></script>
+    <script src="logged_in.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
-    <script src="script.js"></script>
     <script>
         feather.replace();
         // Initialize Vanta.js effect
@@ -153,5 +296,4 @@
     </script>
 </body>
 </html>
-
 

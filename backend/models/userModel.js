@@ -37,6 +37,16 @@ const findUserByEmailWithPassword = async (email) => {
   return row ?? null;
 };
 
+const findUserByIdWithPassword = async (id) => {
+  const [row] = await sql`
+    SELECT *
+    FROM public."user"
+    WHERE "UserId" = ${id}
+    LIMIT 1
+  `;
+  return row ?? null;
+};
+
 const insertUser = async (payload) => {
   const {
     Name,
@@ -98,6 +108,7 @@ export {
   findAllUsers,
   findUserById,
   findUserByEmailWithPassword,
+  findUserByIdWithPassword,
   insertUser,
   updateUserById,
   deleteUserById,

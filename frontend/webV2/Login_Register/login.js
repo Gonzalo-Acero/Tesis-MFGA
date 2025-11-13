@@ -18,6 +18,59 @@ const useCustomApi = !!(document.body.getAttribute("data-api-base-url") || windo
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+const saveSession = (session) => {
+  if (!session) {
+    return;
+  }
+
+  try {
+    if (window.mfgaSession?.save) {
+      window.mfgaSession.save(session);
+    } else {
+      const serialized = JSON.stringify(session);
+      window.sessionStorage.setItem("mfga_session", serialized);
+      window.localStorage.setItem("mfga_session", serialized);
+    }
+  } catch (error) {
+    console.warn("No se pudo persistir la sesión:", error);
+  }
+};
+
+const buildSessionPayload = ({ provider, user, token = null, raw = null }) => ({
+  provider,
+  token,
+  user,
+  raw,
+  createdAt: Date.now(),
+});
+
+const normalizeUserData = (user, { email = "", name = "" } = {}) => {
+  if (user) {
+    return user;
+  }
+  const fallbackEmail = email ?? "";
+  return {
+    UserId: null,
+    Name: name || fallbackEmail.split("@")[0] || "Explorador MFGA",
+    Email: fallbackEmail,
+  };
+};
+
+const mapSupabaseUser = (user) => {
+  if (!user) {
+    return normalizeUserData(null);
+  }
+
+  return {
+    UserId: user.id ?? null,
+    Name:
+      user.user_metadata?.full_name ||
+      user.email?.split("@")[0] ||
+      "Explorador MFGA",
+    Email: user.email ?? "",
+  };
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   const loginTab = document.getElementById("login-tab");
   const registerTab = document.getElementById("register-tab");
@@ -121,7 +174,16 @@ document.addEventListener("DOMContentLoaded", () => {
             if (submitBtn) submitBtn.disabled = false;
             return;
           }
-          // login OK según tu backend
+          const sessionPayload = buildSessionPayload({
+            provider: 'custom-api',
+            user: normalizeUserData(payload?.user, {
+              email,
+              name: payload?.user?.Name ?? payload?.user?.name ?? payload?.Name,
+            }),
+            token: payload?.token ?? null,
+            raw: payload,
+          });
+          saveSession(sessionPayload);
           setGeneralError("");
           window.location.href = '../after_login/logged_in.html';
         } else {
@@ -134,6 +196,13 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
           }
           if (data?.user) {
+            const sessionPayload = buildSessionPayload({
+              provider: 'supabase',
+              user: mapSupabaseUser(data.user),
+              token: data.session?.access_token ?? null,
+              raw: data,
+            });
+            saveSession(sessionPayload);
             setGeneralError("");
             window.location.href = '../after_login/logged_in.html';
           } else {
