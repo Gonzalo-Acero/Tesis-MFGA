@@ -1,27 +1,28 @@
-//import { ConnectDatabase } from "./config/ConnectDatabase.js";
-import { sequelize } from './config/ConnectDatabase.js';
 import express from 'express';
-import { userRouter } from './routes/userRoutes.js';
 import cors from 'cors';
-
-const app = express();
+import { userRouter } from './routes/userRoutes.js';
+import { authRouter } from './routes/authRoutes.js';
+import { testConnection } from './config/ConnectDatabase.js';
 
 process.loadEnvFile();
-const PORT = process.env.API_PORT;
+const PORT = process.env.API_PORT ?? 4000;
 
+const app = express();
 app.use(express.json());
 app.use(cors());
-
 app.use('/api/users', userRouter);
+app.use('/api/auth', authRouter);
 
-app.listen(PORT, () => {
-  console.log('Server is running on http://localhost:' + PORT);
+const startServer = async () => {
+  try {
+    await testConnection();
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('La aplicacion no pudo iniciar por un fallo en la base de datos.');
+    process.exit(1);
+  }
+};
 
-    // Conexión a la base de datos
-  sequelize.sync({ force: false }).then(() => {
-    console.log('Base de datos sincronizada correctamente.');
-}).catch((error) => { 
-    console.error('Error al sincronizar la base de datos:', error);
-}
-);
-});
+startServer();

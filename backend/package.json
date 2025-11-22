@@ -1,11 +1,12 @@
 {
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "mysql2": "^3.14.0",
-    "sequelize": "^6.37.7"
+    "postgres": "^3.4.3"
   },
   "scripts": {
     "dev": "node --watch index.js"
-  }
+  },
+  "type": "module"
 }
