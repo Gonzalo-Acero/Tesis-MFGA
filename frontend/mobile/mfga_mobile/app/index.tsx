@@ -1,9 +1,9 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import styles from './styles';
-import { useRouter } from 'expo-router';
-import { SearchOptionItemProps } from './types/SearchOptionItemProps';
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { useRouter } from "expo-router";
+import styles from "./styles";
+import { SearchOptionItemProps } from "./types/SearchOptionItemProps";
 
 const HomeScreen = () => {
   return (
@@ -16,14 +16,19 @@ const HomeScreen = () => {
 };
 
 const Header = () => {
+  const router = useRouter();
+
   return (
     <View style={styles.header}>
       <TouchableOpacity style={styles.menuIcon}>
         <Icon name="bars" size={30} color="#FFFFFF" />
       </TouchableOpacity>
       <Text style={styles.headerTitle}>Buscar Lugar</Text>
-      <TouchableOpacity style={styles.userIcon}>
-        <Text>👤</Text>
+      <TouchableOpacity
+        style={styles.userIcon}
+        onPress={() => router.push("./registro")}
+      >
+        <Icon name="user-plus" size={26} color="#FFFFFF" />
       </TouchableOpacity>
     </View>
   );
@@ -33,10 +38,10 @@ const SearchTabs = () => {
   return (
     <View style={styles.searchTabs}>
       <TouchableOpacity style={styles.activeTab}>
-        <Text style={styles.activeTabText}>Búsqueda Avanzada</Text>
+        <Text style={styles.activeTabText}>Busqueda Avanzada</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.tab}>
-        <Text style={styles.tabText}>Búsqueda Rápida</Text>
+        <Text style={styles.tabText}>Busqueda Rapida</Text>
       </TouchableOpacity>
     </View>
   );
@@ -47,44 +52,52 @@ const SearchOptionsList: React.FC = () => {
 
   return (
     <View style={styles.searchOptionsList}>
-      <SearchOptionItem 
+      <SearchOptionItem
+        title="Registrar Usuario"
+        iconName="user-plus"
+        onPress={() => router.push("./registro")}
+      />
+      <SearchOptionItem
         title="Agregar Actividad"
         iconName="plus"
-        onPress={() => router.push('./agregar-actividad')}
+        onPress={() => router.push("./agregar-actividad")}
       />
-      <SearchOptionItem 
+      <SearchOptionItem
         title="Agregar Paisaje"
         iconName="tree"
-        onPress={() => router.push('./agregar-paisaje')}
+        onPress={() => router.push("./agregar-paisaje")}
       />
-      <SearchOptionItem 
+      <SearchOptionItem
         title="Agregar Provincia"
         iconName="map-marker"
-        onPress={() => router.push('./agregar-provincia')}
+        onPress={() => router.push("./agregar-provincia")}
       />
-      <SearchOptionItem 
+      <SearchOptionItem
         title="Agregar Municipio"
         iconName="building"
-        onPress={() => router.push('./agregar-municipio')}
+        onPress={() => router.push("./agregar-municipio")}
       />
-      <SearchOptionItem 
-  title="Ver Actividades"
-  iconName="list"
-  onPress={() => router.push('./ver-actividades')}
-/>
-
+      <SearchOptionItem
+        title="Ver Actividades"
+        iconName="list"
+        onPress={() => router.push("./ver-actividades")}
+      />
     </View>
   );
 };
 
-const SearchOptionItem: React.FC<SearchOptionItemProps> = ({ title, iconName, onPress }) => {
+const SearchOptionItem: React.FC<SearchOptionItemProps> = ({
+  title,
+  iconName,
+  onPress,
+}) => {
   return (
     <TouchableOpacity style={styles.searchOptionItem} onPress={onPress}>
       <View style={styles.optionImagePlaceholder}>
         <Icon name={iconName} size={20} color="#fff" />
       </View>
       <Text style={styles.optionText}>{title}</Text>
-      <Text style={styles.arrow}>→</Text>
+      <Text style={styles.arrow}>{">"}</Text>
     </TouchableOpacity>
   );
 };
