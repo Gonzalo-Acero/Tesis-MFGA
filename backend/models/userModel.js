@@ -7,7 +7,10 @@ const selectableColumns = sql`
   "PhoneNumber",
   "CreationDate",
   "LastLogin",
-  "IsActive"
+  "IsActive",
+  "is_verified",
+  "verification_token",
+  "token_expires_at"
 `;
 
 const findAllUsers = async () => {
@@ -47,6 +50,16 @@ const findUserByIdWithPassword = async (id) => {
   return row ?? null;
 };
 
+const findUserByVerificationToken = async (token) => {
+  const [row] = await sql`
+    SELECT *
+    FROM public."user"
+    WHERE "verification_token" = ${token}
+    LIMIT 1
+  `;
+  return row ?? null;
+};
+
 const insertUser = async (payload) => {
   const {
     Name,
@@ -56,11 +69,14 @@ const insertUser = async (payload) => {
     CreationDate = new Date(),
     LastLogin = null,
     IsActive = true,
+    is_verified = false,
+    verification_token = null,
+    token_expires_at = null,
   } = payload;
 
   const [row] = await sql`
-    INSERT INTO public."user" ("Name", "Email", "Password", "PhoneNumber", "CreationDate", "LastLogin", "IsActive")
-    VALUES (${Name}, ${Email}, ${Password}, ${PhoneNumber}, ${CreationDate}, ${LastLogin}, ${IsActive})
+    INSERT INTO public."user" ("Name", "Email", "Password", "PhoneNumber", "CreationDate", "LastLogin", "IsActive", "is_verified", "verification_token", "token_expires_at")
+    VALUES (${Name}, ${Email}, ${Password}, ${PhoneNumber}, ${CreationDate}, ${LastLogin}, ${IsActive}, ${is_verified}, ${verification_token}, ${token_expires_at})
     RETURNING ${selectableColumns}
   `;
   return row;
@@ -75,6 +91,9 @@ const updateUserById = async (id, updates) => {
     'CreationDate',
     'LastLogin',
     'IsActive',
+    'is_verified',
+    'verification_token',
+    'token_expires_at',
   ]);
   const entries = Object.entries(updates ?? {}).filter(
     ([key, value]) => allowedKeys.has(key) && value !== undefined,
@@ -109,6 +128,7 @@ export {
   findUserById,
   findUserByEmailWithPassword,
   findUserByIdWithPassword,
+  findUserByVerificationToken,
   insertUser,
   updateUserById,
   deleteUserById,

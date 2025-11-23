@@ -1,4 +1,6 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import { sendVerificationEmail } from "../services/mailService.js";
 import {
   findAllUsers,
   findUserById,
@@ -66,16 +68,34 @@ const addUser = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(req.body.Password, 10);
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const verificationExpires = new Date(Date.now() + 1000 * 60 * 60); // 1 hora
+
     const payload = {
       ...req.body,
       Password: hashedPassword,
       CreationDate: req.body.CreationDate ?? new Date(),
       IsActive: req.body.IsActive ?? true,
+      is_verified: false,
+      verification_token: verificationToken,
+      token_expires_at: verificationExpires,
     };
 
     const newUser = await insertUser(payload);
-    res.status(201).json(newUser);
-    console.log("Usuario creado:", newUser);
+    const safeUser = { ...newUser };
+    delete safeUser.VerificationToken;
+    delete safeUser.VerificationExpires;
+    try {
+      await sendVerificationEmail(newUser.Email, verificationToken);
+    } catch (mailError) {
+      console.error("No se pudo enviar el correo de verificacion:", mailError);
+    }
+
+    res.status(201).json({
+      message: "Usuario creado. Revisa tu correo para verificar tu cuenta.",
+      user: safeUser,
+    });
+    console.log("Usuario creado:", safeUser);
   } catch (error) {
     console.error("Error al crear usuario:", error);
     res

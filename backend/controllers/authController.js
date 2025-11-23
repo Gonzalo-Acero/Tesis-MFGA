@@ -2,15 +2,17 @@
 import {
   findUserByEmailWithPassword,
   findUserByIdWithPassword,
+  findUserByVerificationToken,
   updateUserById,
 } from "../models/userModel.js";
+import { defaultLoginUrl } from "../services/mailService.js";
 
 const buildInvalidCredentialsResponse = (res) =>
   res.status(401).json({ message: "Credenciales invalidas" });
 
 const sanitizeUser = (user) => {
   if (!user) return null;
-  const { Password, ...rest } = user;
+  const { Password, verification_token, token_expires_at, ...rest } = user;
   return rest;
 };
 
@@ -32,6 +34,12 @@ const login = async (req, res) => {
     const isValidPassword = await bcrypt.compare(password, user.Password ?? "");
     if (!isValidPassword) {
       return buildInvalidCredentialsResponse(res);
+    }
+
+    if (user.is_verified === false) {
+      return res
+        .status(403)
+        .json({ message: "Debes verificar tu correo antes de iniciar sesion" });
     }
 
     const lastLogin = new Date();
@@ -92,4 +100,36 @@ const changePassword = async (req, res) => {
   }
 };
 
-export { login, changePassword };
+const verifyEmail = async (req, res) => {
+  const { token } = req.query ?? {};
+  if (!token) {
+    return res.status(400).json({ message: "Token de verificacion faltante" });
+  }
+
+  try {
+    const user = await findUserByVerificationToken(token);
+    if (!user) {
+      return res.status(404).json({ message: "Token invalido o ya usado" });
+    }
+
+    if (user.token_expires_at && new Date(user.token_expires_at) < new Date()) {
+      return res.status(400).json({ message: "Token expirado" });
+    }
+
+    await updateUserById(user.UserId, {
+      is_verified: true,
+      verification_token: null,
+      token_expires_at: null,
+    });
+
+    const redirectUrl = defaultLoginUrl;
+    return res.redirect(302, redirectUrl);
+  } catch (error) {
+    console.error("Error al verificar correo:", error);
+    return res
+      .status(500)
+      .json({ message: "Error interno del servidor al verificar correo" });
+  }
+};
+
+export { login, changePassword, verifyEmail };
