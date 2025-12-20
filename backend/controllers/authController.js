@@ -37,9 +37,15 @@ const login = async (req, res) => {
     }
 
     if (user.is_verified === false) {
-      return res
-        .status(403)
-        .json({ message: "Debes verificar tu correo antes de iniciar sesion" });
+      // Si es una cuenta antigua sin token de verificacion, la marcamos como verificada para no bloquearla
+      if (!user.verification_token) {
+        await updateUserById(user.UserId, { is_verified: true });
+        user.is_verified = true;
+      } else {
+        return res
+          .status(403)
+          .json({ message: "Debes verificar tu correo antes de iniciar sesion" });
+      }
     }
 
     const lastLogin = new Date();
