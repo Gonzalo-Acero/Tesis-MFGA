@@ -13,7 +13,7 @@ class CustomNavbar extends HTMLElement {
         }
         
         nav {
-          background: rgba(255, 255, 255, 0.95);
+          background: rgba(255, 255, 255, 0);
           backdrop-filter: blur(10px);
           padding: 1rem 2rem;
           display: flex;
@@ -51,7 +51,7 @@ class CustomNavbar extends HTMLElement {
         }
         
         .nav-link {
-          color: #2c3e50;
+          color: #000000ff;
           text-decoration: none;
           font-weight: 500;
           position: relative;
