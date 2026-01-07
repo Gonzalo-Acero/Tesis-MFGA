@@ -1,0 +1,40 @@
+/* Animation for cards */
+.destination-card {
+    transition: all 0.3s ease;
+}
+
+
+.destination-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Active filter button style */
+.filter-btn.active {
+    background-color: #3B82F6;
+    color: white;
+}
+
+
+/* Custom scrollbar for filter buttons */
+.filter-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+
+.filter-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+
+.filter-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+
+.filter-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

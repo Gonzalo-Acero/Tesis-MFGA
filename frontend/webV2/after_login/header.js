@@ -11,11 +11,13 @@ const resolveApiBaseUrl = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   const requiresAuth = document.body?.dataset?.requiresAuth === 'true';
+  const loginUrl =
+    document.body?.getAttribute('data-login-url') || '/Login_Register/Login.html';
   const sessionStore = window.mfgaSession;
   const session = sessionStore?.load?.();
 
   if (requiresAuth && !session?.user) {
-    window.location.href = '../Login_Register/Login.html';
+    window.location.href = loginUrl;
     return;
   }
 
@@ -49,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const logoutUrl =
     profileDropdown?.getAttribute('data-logout-url') ||
-    '../Login_Register/Login.html';
+    loginUrl;
 
   window.mfgaCurrentUser = currentUser;
 

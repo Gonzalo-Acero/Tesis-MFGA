@@ -1,35 +1,34 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MFGA - My Profile</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="header.css">
+    <title>Mfga | Discover Places</title>
+    <link rel="stylesheet" href="discover.css">
+    <link rel="stylesheet" href="../header.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'argentina-blue': '#75AADB',
+              'argentina-yellow': '#F6D54A',
+            }
+          }
+        }
+      }
+    </script>
+    <script src="../../env.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
-    <script src="../env.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'argentina-blue': '#75AADB',
-                        'argentina-yellow': '#F6D54A',
-                    }
-                }
-            }
-        }
-    </script>
 </head>
-<body class="bg-gray-50 min-h-screen" data-api-base-url="/api">
-    <!-- Navbar -->
+<body class="bg-gray-50" data-api-base-url="/api" data-requires-auth="true" data-login-url="/Login_Register/Login.html">
     <nav class="bg-white shadow-sm relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-4">
-                    <span class="text-xl font-bold text-argentina-blue">MFGA</span>
+                    <a href="../logged_in.html" class="text-xl font-bold text-argentina-blue">MFGA</a>
                     <button id="mobileNavToggle" class="md:hidden text-gray-600 hover:text-argentina-blue focus:outline-none" aria-label="Abrir menu">
                         <i data-feather="menu" class="w-6 h-6"></i>
                     </button>
@@ -38,11 +37,11 @@
                   id="navLinks"
                   class="hidden flex flex-col gap-4 absolute top-full left-0 right-0 bg-white shadow-lg border-b border-gray-100 px-4 py-4 z-40 md:flex md:flex-row md:items-center md:gap-6 md:static md:shadow-none md:border-none md:bg-transparent md:px-0 md:py-0"
                 >
-                    <a href="#inicio" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Inicio</a>
-                    <a href="#conocenos" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Con&oacute;cenos</a>
-                    <a href="#app-mfga" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">App MFGA</a>
-                    <a href="#experiencias" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Experiencias</a>
-                    <a href="#contacto" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Contacto</a>
+                    <a href="../logged_in.html#inicio" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Inicio</a>
+                    <a href="../logged_in.html#conocenos" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Con&oacute;cenos</a>
+                    <a href="../logged_in.html#app-mfga" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">App MFGA</a>
+                    <a href="../logged_in.html#experiencias" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Experiencias</a>
+                    <a href="../logged_in.html#contacto" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Contacto</a>
                 </div>
                 <div class="flex items-center">
                     <div class="relative ml-3">
@@ -51,7 +50,7 @@
                         </button>
                         <div
                           id="profileDropdown"
-                          data-logout-url="../Login_Register/Login.html"
+                          data-logout-url="/Login_Register/Login.html"
                           class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none transform transition-all duration-200 ease-out scale-95 opacity-0 z-50"
                         >
                             <div class="py-3 px-4 border-b border-gray-200">
@@ -84,11 +83,41 @@
             </div>
         </div>
     </nav>
+   
+    <!-- Hero Section -->
+    <section class="relative h-96 w-full overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-40"></div>
+        <img src="http://static.photos/nature/1200x630/42" alt="Argentina Landscape" class="w-full h-full object-cover">
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Discover Places</h1>
+            <p class="text-xl md:text-2xl text-white max-w-2xl">Explore destinations across Argentina</p>
+        </div>
+    </section>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-       
-    </main>
+
+    <!-- Filters Section -->
+    <section class="container mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row gap-4 mb-8">
+            <div class="relative flex-grow">
+                <input type="text" placeholder="Search destinations..." class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <i data-feather="search" class="absolute right-3 top-3 text-gray-400"></i>
+            </div>
+            <div class="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+                <button class="filter-btn active px-4 py-2 rounded-full bg-blue-500 text-white whitespace-nowrap">All</button>
+                <button class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 whitespace-nowrap" data-category="nature">Nature</button>
+                <button class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 whitespace-nowrap" data-category="city">City</button>
+                <button class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 whitespace-nowrap" data-category="culture">Culture</button>
+                <button class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 whitespace-nowrap" data-category="adventure">Adventure</button>
+            </div>
+        </div>
+
+
+        <!-- Destinations Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="destinations-container">
+            <!-- Destination cards will be inserted here by JavaScript -->
+        </div>
+    </section>
+
 
     <div id="editProfileModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
@@ -120,23 +149,23 @@
     </div>
 
     <div id="changePasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duracion-300 scale-95 opacity-0">
+        <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
             <form data-password-form class="flex flex-col h-full">
                 <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-medium text-gray-900">Cambiar contrasena</h3>
+                    <h3 class="text-lg font-medium text-gray-900">Cambiar Contrasena</h3>
                 </div>
                 <div class="px-6 py-4 space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="current-password">Contrasena actual</label>
-                        <input id="current-password" name="currentPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Ingrese su contrasena" required>
+                        <input id="current-password" name="currentPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Ingrese su Contrasena" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="new-password">Nueva contrasena</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="new-password">Nueva Contrasena</label>
                         <input id="new-password" name="newPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Minimo 6 caracteres" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">Confirmar contrasena</label>
-                        <input id="confirm-password" name="confirmPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Repita la nueva contrasena" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">Confirmar Contrasena</label>
+                        <input id="confirm-password" name="confirmPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Repita la nueva Contrasena" required>
                     </div>
                     <p data-password-feedback class="text-sm text-red-600 hidden"></p>
                 </div>
@@ -148,20 +177,20 @@
         </div>
     </div>
 
-    <script src="../shared/session.js"></script>
+    <custom-footer></custom-footer>
+
+
+    <!-- Components -->
+    <script src="../../shared/session.js"></script>
     <script>
-        window.__API_BASE_URL__ =
-          window.__API_BASE_URL__ ||
-          document.body.getAttribute("data-api-base-url") ||
-          "http://localhost:4000/api";
+      window.__API_BASE_URL__ =
+        window.__API_BASE_URL__ ||
+        document.body.getAttribute("data-api-base-url") ||
+        "http://localhost:4000/api";
     </script>
-    <script src="header.js"></script>
-    <script>
-        feather.replace();
-    </script>
+    <script src="../header.js"></script>
+    <script src="../../components/footer.js"></script>
+    <script src="discover.js"></script>
+    <script>feather.replace();</script>
 </body>
 </html>
-
-
-
-

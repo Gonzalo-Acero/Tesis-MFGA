@@ -2,7 +2,7 @@ const resolveApiBaseUrl = () => {
   const candidate =
     window.__API_BASE_URL__ ||
     document.body.getAttribute("data-api-base-url") ||
-    "http://localhost:4000";
+    "http://localhost:4000/api";
   return candidate.replace(/\/+$/, "");
 };
 
@@ -135,7 +135,7 @@ const attachRegisterHandlers = () => {
       toggleButtonState(submitButton, true);
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/users`, {
+        const response = await fetch(`${API_BASE_URL}/users`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

@@ -18,13 +18,14 @@
         },
       };
     </script>
+    <script src="../env.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
 </head>
 <body
   class="bg-gray-100 min-h-screen flex items-center justify-center bg-cover bg-center"
   style="background-image: url('http://static.photos/travel/1200x630/42')"
-  data-api-base-url="http://localhost:4000"
+  data-api-base-url="/api"
 >
     <div class="absolute inset-0 bg-black bg-opacity-40"></div>
 
@@ -157,7 +158,10 @@
     </div>
 
     <script>
-      window.__API_BASE_URL__ = document.body.getAttribute("data-api-base-url") || window.__API_BASE_URL__ || "http://localhost:4000";
+      window.__API_BASE_URL__ =
+        window.__API_BASE_URL__ ||
+        document.body.getAttribute("data-api-base-url") ||
+        "http://localhost:4000/api";
     </script>
     <script src="register.js" type="module"></script>
     <script>feather.replace();</script>

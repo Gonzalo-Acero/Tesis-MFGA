@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="../env.js"></script>
     <script>
       tailwind.config = {
         theme: {
@@ -22,7 +23,7 @@
       }
     </script>
 </head>
-<body class="bg-gray-50 font-sans" data-api-base-url="http://localhost:4000/api" data-requires-auth="true">
+<body class="bg-gray-50 font-sans" data-api-base-url="/api" data-requires-auth="true">
     <nav class="bg-white shadow-sm relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
@@ -91,9 +92,9 @@
             <div class="relative z-20 h-full flex flex-col justify-center items-center text-center px-4">
                 <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 animate-fade-in">Welcome back, <span data-hero-name class="font-semibold">Traveler</span> <span class="animate-bounce inline-block">&#128075;</span></h1>
                 <p class="text-xl md:text-2xl text-white mb-8">Ready to explore Argentina today?</p>
-                <button class="bg-argentina-yellow text-argentina-blue font-bold py-3 px-8 rounded-full hover:scale-105 transition-transform duration-300 shadow-lg explore-btn">
+                <a href="Discover_places/discover.html" class="bg-argentina-yellow text-argentina-blue font-bold py-3 px-8 rounded-full hover:scale-105 transition-transform duration-300 shadow-lg explore-btn inline-flex items-center justify-center">
                     Start Exploring
-                </button>
+                </a>
             </div>
         </section>
 
@@ -146,7 +147,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-800 mb-2"> Discover Places</h3>
                         <p class="text-gray-600 mb-4">Explore destinations across Argentina</p>
-                        <a href="#" class="text-argentina-blue font-semibold hover:underline flex items-center">
+                        <a href="Discover_places/discover.html" class="text-argentina-blue font-semibold hover:underline flex items-center">
                             Learn More <i data-feather="chevron-right" class="ml-1 w-4 h-4"></i>
                         </a>
                     </div>
@@ -201,9 +202,9 @@
             <div class="container mx-auto px-4 text-center">
                 <h2 class="text-3xl font-bold text-white mb-6">Experience Argentina like a local</h2>
                 <p class="text-xl text-white mb-8">Start your journey now and discover the magic of Argentina</p>
-                <button class="bg-white text-argentina-blue font-bold py-4 px-12 rounded-full hover:scale-105 transition-transform duration-300 shadow-lg text-lg explore-btn">
+                <a href="Discover_places/discover.html" class="bg-white text-argentina-blue font-bold py-4 px-12 rounded-full hover:scale-105 transition-transform duration-300 shadow-lg text-lg explore-btn inline-flex items-center justify-center">
                     Start Exploring
-                </button>
+                </a>
             </div>
         </section>
     </main>
@@ -272,7 +273,10 @@
     <script src="../components/footer.js"></script>
     <script src="../shared/session.js"></script>
     <script>
-      window.__API_BASE_URL__ = document.body.getAttribute("data-api-base-url") || window.__API_BASE_URL__ || "http://localhost:4000/api";
+      window.__API_BASE_URL__ =
+        window.__API_BASE_URL__ ||
+        document.body.getAttribute("data-api-base-url") ||
+        "http://localhost:4000/api";
     </script>
     <script src="header.js"></script>
     <script src="logged_in.js"></script>
@@ -296,4 +300,3 @@
     </script>
 </body>
 </html>
-

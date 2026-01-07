@@ -1,0 +1,13 @@
+[build]
+  publish = "frontend/webV2"
+  command = "npm run generate:env"
+
+[build]
+  publish = "frontend/webV2"
+  command = "npm run generate:env"
+
+[[redirects]]
+from = "/api/*"
+to = "https://tesis-mfga.onrender.com/api/:splat"
+status = 200
+force = true
