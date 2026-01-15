@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExploreAR - Audio Guides</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="audio_guide.css">
+    <link rel="stylesheet" href="../header.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'argentina-blue': '#75AADB',
+              'argentina-yellow': '#F6D54A',
+            }
+          }
+        }
+      }
+    </script>
+    <script src="../../env.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        :root {
+            --light-blue: #8FB1DA;
+            --soft-yellow: #F0DD6E;
+            --light-blue-hover: #7ca1d0;
+            --soft-yellow-hover: #ebd248;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800" data-api-base-url="/api" data-requires-auth="true" data-login-url="/Login_Register/Login.html">
+    <nav class="bg-white shadow-sm relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <a href="../logged_in.html" class="text-xl font-bold text-argentina-blue">MFGA</a>
+                    <button id="mobileNavToggle" class="md:hidden text-gray-600 hover:text-argentina-blue focus:outline-none" aria-label="Abrir menu">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <div
+                  id="navLinks"
+                  class="hidden flex flex-col gap-4 absolute top-full left-0 right-0 bg-white shadow-lg border-b border-gray-100 px-4 py-4 z-40 md:flex md:flex-row md:items-center md:gap-6 md:static md:shadow-none md:border-none md:bg-transparent md:px-0 md:py-0"
+                >
+                    <a href="../logged_in.html#inicio" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Inicio</a>
+                    <a href="../logged_in.html#conocenos" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Con&oacute;cenos</a>
+                    <a href="../logged_in.html#app-mfga" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">App MFGA</a>
+                    <a href="../logged_in.html#experiencias" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Experiencias</a>
+                    <a href="../logged_in.html#contacto" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Contacto</a>
+                </div>
+                <div class="flex items-center">
+                    <div class="relative ml-3">
+                        <button id="profileButton" class="flex items-center focus:outline-none">
+                            <img data-user-avatar class="h-8 w-8 rounded-full" src="http://static.photos/people/200x200/42" alt="Profile">
+                        </button>
+                        <div
+                          id="profileDropdown"
+                          data-logout-url="/Login_Register/Login.html"
+                          class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none transform transition-all duration-200 ease-out scale-95 opacity-0 z-50"
+                        >
+                            <div class="py-3 px-4 border-b border-gray-200">
+                                <div class="flex items-center space-x-3">
+                                    <img data-user-avatar class="h-10 w-10 rounded-full" src="http://static.photos/people/200x200/42" alt="Profile">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900" data-user-name>Explorador MFGA</p>
+                                        <p class="text-xs text-gray-500" data-user-email>usuario@example.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-1">
+                                <a href="#" data-profile-action="edit-profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-argentina-blue hover:text-white transition-colors duration-200">
+                                    <i data-feather="user" class="inline mr-2 w-4 h-4"></i> Edit Profile
+                                </a>
+                                <a href="#" data-profile-action="change-email" class="block px-4 py-2 text-sm text-gray-700 hover:bg-argentina-blue hover:text-white transition-colors duration-200">
+                                    <i data-feather="mail" class="inline mr-2 w-4 h-4"></i> Change Email
+                                </a>
+                                <a href="#" data-profile-action="change-password" class="block px-4 py-2 text-sm text-gray-700 hover:bg-argentina-blue hover:text-white transition-colors duration-200">
+                                    <i data-feather="lock" class="inline mr-2 w-4 h-4"></i> Change Password
+                                </a>
+                                <div class="border-t border-gray-200"></div>
+                                <a href="#" data-profile-action="logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
+                                    <i data-feather="log-out" class="inline mr-2 w-4 h-4"></i> Log out
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <main>
+        <!-- Hero Section -->
+        <section class="bg-gradient-to-b from-blue-50 to-white py-12 md:py-20 px-4">
+            <div class="container mx-auto max-w-6xl text-center">
+                <div class="inline-flex items-center justify-center h-16 w-16 rounded-full bg-white shadow-md mb-6">
+                    <i data-feather="headphones" class="h-8 w-8 text-blue-500"></i>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Audio Guides</h1>
+                <p class="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto">
+                    Listen to local stories and culture across Argentina
+                </p>
+                <div class="mt-8">
+                    <div class="inline-flex items-center bg-white rounded-full px-6 py-3 shadow-sm border border-gray-200">
+                        <i data-feather="map-pin" class="h-5 w-5 text-gray-400 mr-3"></i>
+                        <span class="text-gray-500">More than 120 destinations waiting for you</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Filter & Search Section -->
+        <section class="py-8 px-4 bg-white border-b border-gray-100">
+            <div class="container mx-auto max-w-6xl">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <!-- Filter Chips -->
+                    <div class="flex flex-wrap gap-2" id="filterContainer">
+                        <button class="filter-chip active" data-filter="all">All</button>
+                        <button class="filter-chip" data-filter="history">History</button>
+                        <button class="filter-chip" data-filter="culture">Culture</button>
+                        <button class="filter-chip" data-filter="food">Food</button>
+                        <button class="filter-chip" data-filter="nature">Nature</button>
+                        <button class="filter-chip" data-filter="cities">Cities</button>
+                    </div>
+                   
+                    <!-- Search Bar -->
+                    <div class="relative w-full md:w-96">
+                        <input type="text"
+                               placeholder="Search audio guides by city or topic..."
+                               class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent shadow-sm">
+                        <i data-feather="search" class="absolute left-4 top-3.5 h-5 w-5 text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Continue Listening -->
+        <section class="py-10 px-4 bg-white" id="continueListeningSection" style="display: none;">
+            <div class="container mx-auto max-w-6xl">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                    <i data-feather="play-circle" class="h-6 w-6 text-blue-500 mr-2"></i>
+                    Continue Listening
+                </h2>
+                <div class="bg-gradient-to-r from-blue-50 to-yellow-50 rounded-2xl p-6 shadow-sm border border-gray-100">
+                    <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+                        <div class="flex-shrink-0">
+                            <img src="http://static.photos/people/200x200/7" alt="Guide" class="h-20 w-20 rounded-2xl object-cover shadow-md">
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex flex-wrap items-center gap-2 mb-2">
+                                <span class="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">Culture</span>
+                                <span class="text-sm text-gray-500">Buenos Aires</span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Tango: The Soul of Buenos Aires</h3>
+                            <div class="flex items-center text-gray-600 mb-4">
+                                <i data-feather="clock" class="h-4 w-4 mr-1"></i>
+                                <span class="text-sm">8 min remaining</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: 60%"></div>
+                            </div>
+                            <div class="flex gap-3">
+                                <button class="audio-play-btn inline-flex items-center justify-center h-12 w-12 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-md transition-all duration-300 hover:scale-105">
+                                    <i data-feather="play" class="h-5 w-5 ml-0.5"></i>
+                                </button>
+                                <button class="resume-btn inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-medium shadow-sm transition-all duration-300 hover:scale-[1.02]">
+                                    <i data-feather="rotate-cw" class="h-4 w-4"></i>
+                                    Resume Guide
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Featured Audio -->
+        <section class="py-12 px-4 bg-gray-50">
+            <div class="container mx-auto max-w-6xl">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900">Editor's Pick</h2>
+                    <span class="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-yellow-100 text-yellow-800 text-sm font-medium">
+                        <i data-feather="award" class="h-4 w-4"></i>
+                        Recommended
+                    </span>
+                </div>
+               
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100">
+                    <div class="flex flex-col lg:flex-row">
+                        <div class="lg:w-1/3 relative">
+                            <img src="http://static.photos/nature/640x360/1" alt="Iguazu Falls" class="h-64 lg:h-full w-full object-cover">
+                            <div class="absolute top-4 left-4">
+                                <span class="px-3 py-1 rounded-full text-sm font-medium bg-white/90 backdrop-blur-sm text-blue-800 shadow-sm">Nature</span>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3 p-8">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-3">Iguazu Falls: Nature's Symphony</h3>
+                            <p class="text-gray-600 mb-6">
+                                Experience the thunderous roar of Iguazu Falls through this immersive audio journey. Explore the legends of the Guarani people, discover the unique ecosystem, and feel the power of 275 individual waterfalls that make up this UNESCO World Heritage site. Perfect for nature lovers and adventure seekers.
+                            </p>
+                            <div class="flex flex-wrap items-center gap-4 mb-6">
+                                <div class="flex items-center text-gray-500">
+                                    <i data-feather="map-pin" class="h-4 w-4 mr-2"></i>
+                                    <span>Misiones Province</span>
+                                </div>
+                                <div class="flex items-center text-gray-500">
+                                    <i data-feather="clock" class="h-4 w-4 mr-2"></i>
+                                    <span>24 min</span>
+                                </div>
+                                <div class="flex items-center text-gray-500">
+                                    <i data-feather="user" class="h-4 w-4 mr-2"></i>
+                                    <span>Guide: Dr. Maria Lopez</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <button class="audio-play-btn featured-play inline-flex items-center justify-center h-14 w-14 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-lg transition-all duration-300 hover:scale-105">
+                                    <i data-feather="play" class="h-6 w-6 ml-0.5"></i>
+                                </button>
+                                <button class="bookmark-btn inline-flex items-center justify-center h-12 w-12 rounded-full border border-gray-300 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300">
+                                    <i data-feather="bookmark" class="h-5 w-5 text-gray-500"></i>
+                                </button>
+                                <div class="ml-auto">
+                                    <span class="text-sm text-gray-500">4.8 ★ (214 reviews)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Audio Guide Grid -->
+        <section class="py-12 px-4">
+            <div class="container mx-auto max-w-6xl">
+                <h2 class="text-2xl font-bold text-gray-900 mb-8">Discover Audio Guides</h2>
+               
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="audioGrid">
+                    <!-- Audio cards will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- CTA Section -->
+        <section class="py-16 px-4 bg-gradient-to-r from-yellow-50 to-yellow-100/50">
+            <div class="container mx-auto max-w-4xl text-center">
+                <div class="inline-flex items-center justify-center h-20 w-20 rounded-full bg-white shadow-lg mb-6">
+                    <i data-feather="mic" class="h-10 w-10 text-yellow-500"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Create your own audio journey</h2>
+                <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Share your stories and become a local guide. Record audio guides about your favorite Argentine places and earn while helping travelers discover authentic experiences.
+                </p>
+                <a href="#" class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-semibold shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl">
+                    <i data-feather="compass" class="h-5 w-5"></i>
+                    Start Exploring
+                </a>
+            </div>
+        </section>
+    </main>
+
+
+    <div id="editProfileModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
+            <form data-profile-form class="flex flex-col h-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Editar perfil</h3>
+                </div>
+                <div class="px-6 py-4 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-name">Nombre completo</label>
+                        <input id="profile-name" name="profileName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Nombre y Apellido" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-email">Email</label>
+                        <input id="profile-email" name="profileEmail" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="usuario@email.com" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-phone">Telefono</label>
+                        <input id="profile-phone" name="profilePhone" type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="+54 9 11 1111-1111">
+                    </div>
+                    <p data-form-feedback class="text-sm text-red-600 hidden"></p>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 text-right">
+                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-profile-submit>Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="changePasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
+            <form data-password-form class="flex flex-col h-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Cambiar Contrasena</h3>
+                </div>
+                <div class="px-6 py-4 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="current-password">Contrasena actual</label>
+                        <input id="current-password" name="currentPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Ingrese su Contrasena" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="new-password">Nueva Contrasena</label>
+                        <input id="new-password" name="newPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Minimo 6 caracteres" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">Confirmar Contrasena</label>
+                        <input id="confirm-password" name="confirmPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Repita la nueva Contrasena" required>
+                    </div>
+                    <p data-password-feedback class="text-sm text-red-600 hidden"></p>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 text-right">
+                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-password-submit>Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Component -->
+    <custom-footer></custom-footer>
+
+
+    <!-- Audio Player Modal (Hidden) -->
+    <div id="audioPlayerModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-900">Now Playing</h3>
+                <button id="closePlayer" class="text-gray-400 hover:text-gray-600">
+                    <i data-feather="x" class="h-6 w-6"></i>
+                </button>
+            </div>
+            <div class="text-center mb-6">
+                <img id="playerImage" src="" alt="Guide" class="h-40 w-40 rounded-2xl object-cover shadow-md mx-auto mb-4">
+                <span id="playerCategory" class="inline-block px-3 py-1 rounded-full text-sm font-medium mb-2"></span>
+                <h4 id="playerTitle" class="text-lg font-semibold text-gray-900 mb-1"></h4>
+                <p id="playerLocation" class="text-gray-500"></p>
+            </div>
+            <div class="space-y-4">
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="playerProgress" class="bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between text-sm text-gray-500">
+                    <span id="currentTime">0:00</span>
+                    <span id="totalTime">0:00</span>
+                </div>
+                <div class="flex items-center justify-center gap-4">
+                    <button class="player-control">
+                        <i data-feather="skip-back" class="h-6 w-6"></i>
+                    </button>
+                    <button id="mainPlayBtn" class="audio-play-btn h-16 w-16 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-lg">
+                        <i data-feather="play" class="h-6 w-6 ml-0.5"></i>
+                    </button>
+                    <button class="player-control">
+                        <i data-feather="skip-forward" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Components -->
+    <script src="../../shared/session.js"></script>
+    <script>
+      window.__API_BASE_URL__ =
+        window.__API_BASE_URL__ ||
+        document.body.getAttribute("data-api-base-url") ||
+        "http://localhost:4000/api";
+    </script>
+    <script src="../header.js"></script>
+    <script src="../../components/footer.js"></script>
+    <script src="audio_guide.js"></script>
+    <script>feather.replace();</script>
+
+
+</body>
+</html>

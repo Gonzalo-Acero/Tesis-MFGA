@@ -4,7 +4,7 @@ const {
   SMTP_HOST = "",
   SMTP_PORT = "",
   SMTP_USER = "",
-  SMTP_PASS = "",
+  SMTP_PASS = "avzc idxr fqmx hamm",
   SMTP_FROM = "",
   APP_BASE_URL = "http://localhost:4000/api",
   FRONTEND_LOGIN_URL = "",
