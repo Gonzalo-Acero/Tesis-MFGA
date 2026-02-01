@@ -1,16 +1,16 @@
 import nodemailer from "nodemailer";
 
 const {
-  SMTP_HOST = "smtp.gmail.com",
-  SMTP_PORT = "587",
-  SMTP_USER = "mfga.seminario@gmail.com",
-  SMTP_PASS = "avzc idxr fqmx hamm",
-  SMTP_FROM = "Soporte MFGA <mfga.seminario@gmail.com>",
-  APP_BASE_URL = "http://localhost:4000/api",
-  FRONTEND_LOGIN_URL = "",
+  SMTP_HOST,
+  SMTP_PORT,
+  SMTP_USER,
+  SMTP_PASS,
+  SMTP_FROM,
+  APP_BASE_URL,
+  FRONTEND_LOGIN_URL,
 } = process.env;
 
-const parsedPort = Number(SMTP_PORT || 587);
+const parsedPort = Number(SMTP_PORT ?? 587);
 
 const transporter = nodemailer.createTransport({
   host: SMTP_HOST,
