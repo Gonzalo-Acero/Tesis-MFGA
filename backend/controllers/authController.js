@@ -1,4 +1,5 @@
-﻿import bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import {
   findUserByEmailWithPassword,
   findUserByIdWithPassword,
@@ -16,6 +17,8 @@ const sanitizeUser = (user) => {
   return rest;
 };
 
+const getJwtSecret = () => process.env.JWT_SECRET;
+
 const login = async (req, res) => {
   const { email, password } = req.body ?? {};
 
@@ -26,6 +29,13 @@ const login = async (req, res) => {
   }
 
   try {
+    const jwtSecret = getJwtSecret();
+    if (!jwtSecret) {
+      return res
+        .status(500)
+        .json({ message: "JWT_SECRET no configurado en el servidor" });
+    }
+
     const user = await findUserByEmailWithPassword(email);
     if (!user) {
       return buildInvalidCredentialsResponse(res);
@@ -51,9 +61,20 @@ const login = async (req, res) => {
     const lastLogin = new Date();
     await updateUserById(user.UserId, { LastLogin: lastLogin });
 
+    const token = jwt.sign(
+      {
+        UserId: user.UserId,
+        Name: user.Name,
+        Email: user.Email,
+      },
+      jwtSecret,
+      { expiresIn: "7d" }
+    );
+
     return res.json({
       message: "Login exitoso",
       user: sanitizeUser({ ...user, LastLogin: lastLogin }),
+      token,
     });
   } catch (error) {
     console.error("Error al iniciar sesion:", error);

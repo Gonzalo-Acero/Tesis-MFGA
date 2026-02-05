@@ -308,3 +308,61 @@ input:focus-visible {
     outline: 2px solid #8FB1DA;
     outline-offset: 2px;
 }
+
+/* Guide preview tooltip */
+.guide-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.guide-link:hover,
+.guide-link:focus-visible {
+    color: #2563eb;
+}
+
+.guide-tooltip {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 0.5rem);
+    min-width: 200px;
+    max-width: 240px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.12);
+    font-size: 0.8rem;
+    color: #4b5563;
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 20;
+}
+
+.guide-link:hover .guide-tooltip,
+.guide-link:focus-visible .guide-tooltip,
+.guide-link:focus .guide-tooltip {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.guide-tooltip-title {
+    display: block;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.25rem;
+}
+
+.guide-tooltip-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 600;
+    color: #2563eb;
+}

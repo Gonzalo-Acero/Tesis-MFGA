@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 import { userRouter } from './routes/userRoutes.js';
 import { authRouter } from './routes/authRoutes.js';
+import { guideRouter } from './routes/guideRoutes.js';
 import { testConnection } from './config/ConnectDatabase.js';
 
 process.loadEnvFile();
@@ -20,6 +21,7 @@ app.use(express.static(frontendRoot));
 
 app.use('/api/users', userRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/guides', guideRouter);
 
 const startServer = async () => {
   try {

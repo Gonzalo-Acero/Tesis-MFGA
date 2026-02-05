@@ -1,3 +1,4 @@
+(() => {
 // Audio Guide Data
 const audioGuides = [
     {
@@ -119,6 +120,23 @@ const audioGuides = [
     }
 ];
 
+const resolveApiBaseUrl = () => {
+    const candidate =
+        window.__API_BASE_URL__ ||
+        document.body?.getAttribute('data-api-base-url') ||
+        "http://localhost:4000/api";
+    return candidate.replace(/\/+$/, "");
+};
+
+const API_BASE_URL = resolveApiBaseUrl();
+
+const buildApiUrl = (path) =>
+    `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
+
+const normalizeGuideName = (value) => (value || "").trim().toLowerCase();
+
+let guideDirectory = new Map();
+
 
 // Audio Player State
 let currentAudio = null;
@@ -154,6 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
    
     // Render initial audio guides
     renderAudioGuides(audioGuides);
+    hydrateGuideLinks();
    
     // Setup filter buttons
     setupFilters();
@@ -166,7 +185,75 @@ document.addEventListener('DOMContentLoaded', function() {
    
     // Setup event listeners
     setupEventListeners();
+
+    // Load guide ids in background so cards/filters never block.
+    loadGuideDirectory().then(() => {
+        renderAudioGuides(audioGuides);
+        hydrateGuideLinks();
+    });
 });
+
+async function loadGuideDirectory() {
+    try {
+        const response = await fetch(buildApiUrl('/guides'));
+        if (!response.ok) {
+            throw new Error('No se pudo cargar el directorio de guias');
+        }
+        const guides = await response.json();
+        guideDirectory = new Map();
+        guides.forEach((guide) => {
+            guideDirectory.set(normalizeGuideName(guide.Name), guide);
+        });
+        audioGuides.forEach((guide) => {
+            const match = guideDirectory.get(normalizeGuideName(guide.guide));
+            if (match) {
+                guide.guideId = match.GuideId;
+            }
+        });
+    } catch (error) {
+        console.warn('No se pudo cargar el directorio de guias:', error);
+    }
+}
+
+const buildGuideProfileUrl = (guide) => {
+    const params = new URLSearchParams();
+    if (guide?.guideId) {
+        params.set('guideId', guide.guideId);
+    } else if (guide?.guide) {
+        params.set('name', guide.guide);
+    }
+    const query = params.toString();
+    return `guide_profile.html${query ? `?${query}` : ''}`;
+};
+
+const buildGuideTooltipMarkup = (guide) => {
+    const details = [];
+    if (guide?.location) {
+        details.push(`<span class="block text-xs text-gray-500">${guide.location}</span>`);
+    }
+    if (guide?.category) {
+        details.push(
+            `<span class="block text-xs text-gray-500">Categoria: ${guide.category.charAt(0).toUpperCase() + guide.category.slice(1)}</span>`
+        );
+    }
+
+    return `
+        <span class="guide-tooltip-title">Perfil del guia</span>
+        ${details.join('')}
+        <span class="guide-tooltip-action mt-2">Ver ticket</span>
+    `;
+};
+
+const hydrateGuideLinks = () => {
+    document.querySelectorAll('[data-guide-name]').forEach((link) => {
+        const name = link.getAttribute('data-guide-name');
+        if (!name) return;
+        const match = guideDirectory.get(normalizeGuideName(name));
+        if (match) {
+            link.setAttribute('href', buildGuideProfileUrl({ guideId: match.GuideId, guide: name }));
+        }
+    });
+};
 
 
 function renderAudioGuides(guides) {
@@ -203,7 +290,15 @@ function renderAudioGuides(guides) {
                             <span class="text-yellow-500 font-semibold">${guide.rating} ★</span>
                             <span class="text-gray-400 text-sm ml-1">(${guide.reviews})</span>
                         </div>
-                        <span class="text-sm text-gray-500">By ${guide.guide}</span>
+                        <span class="text-sm text-gray-500">
+                            By
+                            <a class="guide-link" data-guide-name="${guide.guide}" href="${buildGuideProfileUrl(guide)}">
+                                ${guide.guide}
+                                <span class="guide-tooltip" aria-hidden="true">
+                                    ${buildGuideTooltipMarkup(guide)}
+                                </span>
+                            </a>
+                        </span>
                     </div>
                    
                     <div class="progress-container mb-4">
@@ -225,6 +320,7 @@ function renderAudioGuides(guides) {
    
     // Update Feather icons
     feather.replace();
+    hydrateGuideLinks();
    
     // Add event listeners to new buttons
     document.querySelectorAll('.audio-play-btn').forEach(btn => {
@@ -483,3 +579,5 @@ function setupEventListeners() {
         }
     });
 }
+
+})();
