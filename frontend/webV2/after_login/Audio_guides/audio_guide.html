@@ -158,13 +158,13 @@
                                 <span class="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">Culture</span>
                                 <span class="text-sm text-gray-500">Buenos Aires</span>
                             </div>
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Tango: The Soul of Buenos Aires</h3>
+                            <h3 id="continueTitle" class="text-xl font-semibold text-gray-900 mb-2">Tango: The Soul of Buenos Aires</h3>
                             <div class="flex items-center text-gray-600 mb-4">
                                 <i data-feather="clock" class="h-4 w-4 mr-1"></i>
-                                <span class="text-sm">8 min remaining</span>
+                                <span id="continueRemaining" class="text-sm">8 min remaining</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
-                                <div class="bg-blue-500 h-2 rounded-full" style="width: 60%"></div>
+                                <div id="continueProgressBar" class="bg-blue-500 h-2 rounded-full" style="width: 60%"></div>
                             </div>
                             <div class="flex gap-3">
                                 <button class="audio-play-btn inline-flex items-center justify-center h-12 w-12 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-md transition-all duration-300 hover:scale-105">
@@ -213,12 +213,12 @@
                                 </div>
                                 <div class="flex items-center text-gray-500">
                                     <i data-feather="clock" class="h-4 w-4 mr-2"></i>
-                                    <span>24 min</span>
+                                    <span id="featuredDuration">24 min</span>
                                 </div>
                                 <div class="flex items-center text-gray-500">
                                     <i data-feather="user" class="h-4 w-4 mr-2"></i>
                                     <span class="mr-1">Guide:</span>
-                                    <a class="guide-link" data-guide-name="Dr. Maria Lopez" href="guide_profile.html?name=Dr.%20Maria%20Lopez">
+                                    <a id="featuredGuideLink" class="guide-link" data-guide-name="Dr. Maria Lopez" href="guide_profile.html?name=Dr.%20Maria%20Lopez">
                                         Dr. Maria Lopez
                                         <span class="guide-tooltip" aria-hidden="true">
                                             <span class="guide-tooltip-title">Perfil del guia</span>
@@ -228,7 +228,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-4">
-                                <button class="audio-play-btn featured-play inline-flex items-center justify-center h-14 w-14 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-lg transition-all duration-300 hover:scale-105">
+                                <button id="featuredPlayBtn" class="audio-play-btn featured-play inline-flex items-center justify-center h-14 w-14 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-lg transition-all duration-300 hover:scale-105">
                                     <i data-feather="play" class="h-6 w-6 ml-0.5"></i>
                                 </button>
                                 <button class="bookmark-btn inline-flex items-center justify-center h-12 w-12 rounded-full border border-gray-300 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300">
