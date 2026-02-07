@@ -291,14 +291,14 @@
           if (Number.isFinite(duration) && duration > 0) {
             resolve(duration);
           } else {
-            reject(new Error("Duracion invalida"));
+            reject(new Error("Invalid duration"));
           }
         },
         { once: true }
       );
       probe.addEventListener(
         "error",
-        () => reject(new Error(`No se pudo cargar metadata: ${src}`)),
+        () => reject(new Error(`Could not load metadata: ${src}`)),
         { once: true }
       );
     });
@@ -321,7 +321,7 @@
           const seconds = await getAudioDurationSeconds(guide.audioFile);
           applyDurationToGuide(guide, seconds);
         } catch (error) {
-          console.warn(`Duracion no disponible para ${guide.title}:`, error);
+          console.warn(`Duration not available for ${guide.title}:`, error);
         }
       })
     );
@@ -335,7 +335,7 @@
     try {
       const response = await fetch(buildApiUrl("/guides"));
       if (!response.ok) {
-        throw new Error("No se pudo cargar el directorio de guias");
+        throw new Error("Could not load the guides directory");
       }
       const guides = await response.json();
       guideDirectory = new Map();
@@ -355,7 +355,7 @@
         featuredGuide.guideId = featuredMatch.GuideId;
       }
     } catch (error) {
-      console.warn("No se pudo cargar el directorio de guias:", error);
+      console.warn("Could not load the guides directory:", error);
     }
   }
 
@@ -379,16 +379,16 @@
     }
     if (guide?.category) {
       details.push(
-        `<span class="block text-xs text-gray-500">Categoria: ${
+        `<span class="block text-xs text-gray-500">Category: ${
           guide.category.charAt(0).toUpperCase() + guide.category.slice(1)
         }</span>`
       );
     }
 
     return `
-      <span class="guide-tooltip-title">Perfil del guia</span>
+      <span class="guide-tooltip-title">Guide profile</span>
       ${details.join("")}
-      <span class="guide-tooltip-action mt-2">Ver ticket</span>
+      <span class="guide-tooltip-action mt-2">View profile</span>
     `;
   };
 
@@ -480,7 +480,7 @@
           <div class="mt-auto">
             <div class="flex items-center justify-between mb-3">
               <div>
-                <span class="text-yellow-500 font-semibold">${guide.rating} ★</span>
+                <span class="text-yellow-500 font-semibold">${guide.rating} &#9733;</span>
                 <span class="text-gray-400 text-sm ml-1">(${guide.reviews})</span>
               </div>
               <span class="text-sm text-gray-500">
@@ -594,7 +594,7 @@
         '<i data-feather="pause" class="h-6 w-6"></i>';
       feather.replace();
     } catch (error) {
-      console.warn("No se pudo iniciar reproduccion:", error);
+      console.warn("Could not start playback:", error);
     }
   };
 
@@ -611,7 +611,7 @@
       guide.category.charAt(0).toUpperCase() + guide.category.slice(1);
     document.getElementById("playerCategory").className = `category-tag ${guide.category}`;
     document.getElementById("playerTitle").textContent = guide.title;
-    document.getElementById("playerLocation").textContent = `${guide.location} • ${guide.duration}`;
+    document.getElementById("playerLocation").textContent = `${guide.location}  -  ${guide.duration}`;
 
     if (currentPlayingButton && currentPlayingButton !== triggerButton) {
       setPlayingButtonState(currentPlayingButton, false);

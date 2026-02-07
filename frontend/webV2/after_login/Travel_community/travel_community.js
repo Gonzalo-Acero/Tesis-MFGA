@@ -566,7 +566,7 @@
       const user = getSessionUser();
       const newPost = {
         id: Date.now(),
-        author: user?.Name || "Explorador MFGA",
+        author: user?.Name || "MFGA Explorer",
         avatar: user?.AvatarUrl || "http://static.photos/people/200x200/42",
         location: locationValue || "Argentina",
         region: regionValue,

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MFGA | Guia</title>
+    <title>MFGA | Guide</title>
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link rel="stylesheet" href="../header.css">
     <link rel="stylesheet" href="guide_profile.css">
@@ -30,7 +30,7 @@
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-4">
                     <a href="../logged_in.html" class="text-xl font-bold text-argentina-blue">MFGA</a>
-                    <button id="mobileNavToggle" class="md:hidden text-gray-600 hover:text-argentina-blue focus:outline-none" aria-label="Abrir menu">
+                    <button id="mobileNavToggle" class="md:hidden text-gray-600 hover:text-argentina-blue focus:outline-none" aria-label="Open menu">
                         <i data-feather="menu" class="w-6 h-6"></i>
                     </button>
                 </div>
@@ -38,11 +38,11 @@
                   id="navLinks"
                   class="hidden flex flex-col gap-4 absolute top-full left-0 right-0 bg-white shadow-lg border-b border-gray-100 px-4 py-4 z-40 md:flex md:flex-row md:items-center md:gap-6 md:static md:shadow-none md:border-none md:bg-transparent md:px-0 md:py-0"
                 >
-                    <a href="../logged_in.html#inicio" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Inicio</a>
-                    <a href="../logged_in.html#conocenos" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Con&oacute;cenos</a>
-                    <a href="../logged_in.html#app-mfga" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">App MFGA</a>
-                    <a href="../logged_in.html#experiencias" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Experiencias</a>
-                    <a href="../logged_in.html#contacto" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Contacto</a>
+                    <a href="../logged_in.html#inicio" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Home</a>
+                    <a href="../logged_in.html#conocenos" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">About Us</a>
+                    <a href="../logged_in.html#app-mfga" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">MFGA App</a>
+                    <a href="../logged_in.html#experiencias" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Experiences</a>
+                    <a href="../logged_in.html#contacto" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Contact</a>
                 </div>
                 <div class="flex items-center">
                     <div class="relative ml-3">
@@ -58,8 +58,8 @@
                                 <div class="flex items-center space-x-3">
                                     <img data-user-avatar class="h-10 w-10 rounded-full" src="http://static.photos/people/200x200/42" alt="Profile">
                                     <div>
-                                        <p class="text-sm font-medium text-gray-900" data-user-name>Explorador MFGA</p>
-                                        <p class="text-xs text-gray-500" data-user-email>usuario@example.com</p>
+                                        <p class="text-sm font-medium text-gray-900" data-user-name>MFGA Explorer</p>
+                                        <p class="text-xs text-gray-500" data-user-email>user@example.com</p>
                                     </div>
                                 </div>
                             </div>
@@ -90,13 +90,13 @@
             <div class="container mx-auto max-w-6xl">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
-                        <p class="text-sm uppercase tracking-wide text-blue-500 font-semibold">Perfil del guia</p>
-                        <h1 id="guideName" class="text-3xl md:text-4xl font-bold text-gray-900">Guia MFGA</h1>
-                        <p class="text-gray-600 mt-2">Informacion del guia disponible pronto.</p>
+                        <p class="text-sm uppercase tracking-wide text-blue-500 font-semibold">Guide profile</p>
+                        <h1 id="guideName" class="text-3xl md:text-4xl font-bold text-gray-900">MFGA Guide</h1>
+                        <p class="text-gray-600 mt-2">Guide information will be available soon.</p>
                     </div>
                     <a href="audio_guide.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-sm border border-gray-200 text-gray-600 hover:text-argentina-blue hover:border-argentina-blue transition-colors">
                         <i data-feather="arrow-left" class="h-4 w-4"></i>
-                        Volver a Audio Guides
+                        Back to Audio Guides
                     </a>
                 </div>
             </div>
@@ -112,10 +112,10 @@
                     </div>
                     <button id="openMessageBtn" class="mt-6 w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-argentina-blue text-white font-semibold shadow-sm hover:bg-blue-600 transition-colors">
                         <i data-feather="message-circle" class="h-5 w-5"></i>
-                        Enviar mensaje
+                        Send message
                     </button>
                     <div class="mt-6">
-                        <p class="text-xs uppercase tracking-wide text-gray-400">Puntuacion promedio</p>
+                        <p class="text-xs uppercase tracking-wide text-gray-400">Average rating</p>
                         <div class="flex items-center gap-3 mt-2">
                             <span id="ratingAverage" class="text-2xl font-bold text-gray-900">-</span>
                             <span id="ratingCount" class="text-sm text-gray-500">(0 votos)</span>
@@ -125,31 +125,31 @@
 
                 <div class="lg:col-span-2 space-y-8">
                     <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Calificar guia</h2>
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Rate this guide</h2>
                         <div class="flex items-center gap-3">
                             <div id="ratingControl" class="flex items-center gap-2">
-                                <button class="rating-star" type="button" data-value="1" aria-label="1 estrella">★</button>
-                                <button class="rating-star" type="button" data-value="2" aria-label="2 estrellas">★</button>
-                                <button class="rating-star" type="button" data-value="3" aria-label="3 estrellas">★</button>
-                                <button class="rating-star" type="button" data-value="4" aria-label="4 estrellas">★</button>
-                                <button class="rating-star" type="button" data-value="5" aria-label="5 estrellas">★</button>
+                                <button class="rating-star" type="button" data-value="1" aria-label="1 estrella">&#9733;</button>
+                                <button class="rating-star" type="button" data-value="2" aria-label="2 estrellas">&#9733;</button>
+                                <button class="rating-star" type="button" data-value="3" aria-label="3 estrellas">&#9733;</button>
+                                <button class="rating-star" type="button" data-value="4" aria-label="4 estrellas">&#9733;</button>
+                                <button class="rating-star" type="button" data-value="5" aria-label="5 estrellas">&#9733;</button>
                             </div>
-                            <span id="ratingFeedback" class="text-sm text-gray-500">Selecciona una puntuacion.</span>
+                            <span id="ratingFeedback" class="text-sm text-gray-500">Select a rating.</span>
                         </div>
                     </section>
 
                     <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-xl font-semibold text-gray-900">Comentarios</h2>
-                            <span id="commentsCount" class="text-sm text-gray-500">0 comentarios</span>
+                            <h2 class="text-xl font-semibold text-gray-900">Comments</h2>
+                            <span id="commentsCount" class="text-sm text-gray-500">0 comments</span>
                         </div>
                         <form id="commentForm" class="space-y-3">
-                            <textarea id="commentInput" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent" placeholder="Escribe tu comentario..."></textarea>
+                            <textarea id="commentInput" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent" placeholder="Write your comment..."></textarea>
                             <div class="flex items-center justify-between">
                                 <p id="commentError" class="text-sm text-red-500 hidden"></p>
                                 <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-argentina-yellow text-argentina-blue font-semibold shadow-sm hover:bg-yellow-400 transition-colors">
                                     <i data-feather="send" class="h-4 w-4"></i>
-                                    Publicar
+                                    Post
                                 </button>
                             </div>
                         </form>
@@ -162,13 +162,13 @@
         <section id="messagePanel" class="container mx-auto max-w-4xl px-4 pb-12 hidden">
             <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-semibold text-gray-900">Enviar mensaje al guia</h2>
+                    <h2 class="text-xl font-semibold text-gray-900">Send a message to the guide</h2>
                     <button id="closeMessageBtn" class="text-gray-400 hover:text-gray-600" type="button">
                         <i data-feather="x" class="h-5 w-5"></i>
                     </button>
                 </div>
                 <form id="messageForm" class="space-y-4">
-                    <textarea id="messageInput" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent" placeholder="Escribe tu mensaje..."></textarea>
+                    <textarea id="messageInput" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent" placeholder="Write your message..."></textarea>
                     <div class="flex items-center justify-between">
                         <p id="messageError" class="text-sm text-red-500 hidden"></p>
                         <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-argentina-blue text-white font-semibold shadow-sm hover:bg-blue-600 transition-colors">
@@ -185,26 +185,26 @@
         <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
             <form data-profile-form class="flex flex-col h-full">
                 <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-medium text-gray-900">Editar perfil</h3>
+                    <h3 class="text-lg font-medium text-gray-900">Edit profile</h3>
                 </div>
                 <div class="px-6 py-4 space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-name">Nombre completo</label>
-                        <input id="profile-name" name="profileName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Nombre y Apellido" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-name">Full name</label>
+                        <input id="profile-name" name="profileName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Full name" required>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-email">Email</label>
-                        <input id="profile-email" name="profileEmail" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="usuario@email.com" required>
+                        <input id="profile-email" name="profileEmail" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="user@email.com" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-phone">Telefono</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-phone">Phone number</label>
                         <input id="profile-phone" name="profilePhone" type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="+54 9 11 1111-1111">
                     </div>
                     <p data-form-feedback class="text-sm text-red-600 hidden"></p>
                 </div>
                 <div class="px-6 py-4 bg-gray-50 text-right">
-                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-profile-submit>Guardar cambios</button>
+                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-profile-submit>Save changes</button>
                 </div>
             </form>
         </div>
@@ -214,26 +214,26 @@
         <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
             <form data-password-form class="flex flex-col h-full">
                 <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-medium text-gray-900">Cambiar Contrasena</h3>
+                    <h3 class="text-lg font-medium text-gray-900">Change Password</h3>
                 </div>
                 <div class="px-6 py-4 space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="current-password">Contrasena actual</label>
-                        <input id="current-password" name="currentPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Ingrese su Contrasena" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="current-password">Current password</label>
+                        <input id="current-password" name="currentPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Enter your password" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="new-password">Nueva Contrasena</label>
-                        <input id="new-password" name="newPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Minimo 6 caracteres" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="new-password">New password</label>
+                        <input id="new-password" name="newPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Minimum 6 characters" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">Confirmar Contrasena</label>
-                        <input id="confirm-password" name="confirmPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Repita la nueva Contrasena" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">Confirm password</label>
+                        <input id="confirm-password" name="confirmPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Re-enter the new password" required>
                     </div>
                     <p data-password-feedback class="text-sm text-red-600 hidden"></p>
                 </div>
                 <div class="px-6 py-4 bg-gray-50 text-right">
-                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-password-submit>Actualizar</button>
+                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-password-submit>Update</button>
                 </div>
             </form>
         </div>

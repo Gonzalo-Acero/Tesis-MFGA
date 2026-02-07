@@ -1,4 +1,4 @@
-﻿const selectAll = (selector) => Array.from(document.querySelectorAll(selector));
+const selectAll = (selector) => Array.from(document.querySelectorAll(selector));
 
 const resolveApiBaseUrl = () => {
   const candidate =
@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const fallbackUser = {
     UserId: null,
-    Name: 'Explorador MFGA',
-    Email: 'usuario@example.com',
+    Name: 'MFGA Explorer',
+    Email: 'user@example.com',
     PhoneNumber: '',
   };
 
@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = logoutUrl;
             break;
           default:
-            console.info(`Accion no implementada: ${action}`);
+            console.info(`Action not implemented: ${action}`);
         }
       });
     });
@@ -275,13 +275,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!profileSubmitButton) return;
     profileSubmitButton.disabled = loading;
     profileSubmitButton.classList.toggle('opacity-70', loading);
-    profileSubmitButton.textContent = loading ? 'Guardando...' : 'Guardar cambios';
+    profileSubmitButton.textContent = loading ? 'Saving...' : 'Save changes';
   };
 
   profileForm?.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!currentUser.UserId) {
-      setProfileFeedback('Debes iniciar sesion para actualizar tu perfil');
+      setProfileFeedback('You must sign in to update your profile');
       return;
     }
 
@@ -290,13 +290,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const phoneValue = phoneInput?.value.trim();
 
     if (!nameValue || !emailValue) {
-      setProfileFeedback('Nombre y email son obligatorios');
+      setProfileFeedback('Name and email are required');
       return;
     }
 
     const emailValid = /\S+@\S+\.\S+/.test(emailValue);
     if (!emailValid) {
-      setProfileFeedback('Ingresa un email valido');
+      setProfileFeedback('Enter a valid email');
       return;
     }
 
@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (!Object.keys(payload).length) {
-      setProfileFeedback('No hay cambios para guardar', 'success');
+      setProfileFeedback('There are no changes to save', 'success');
       return;
     }
 
@@ -322,18 +322,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!response.ok) {
         const errorPayload = await response.json().catch(() => ({}));
-        throw new Error(errorPayload?.error || 'No se pudo actualizar el perfil');
+        throw new Error(errorPayload?.error || 'Could not update the profile');
       }
 
       const updatedUser = await response.json();
       persistUserChanges(updatedUser);
-      setProfileFeedback('Perfil actualizado correctamente', 'success');
+      setProfileFeedback('Profile updated successfully', 'success');
       setTimeout(() => {
         closeProfileModal();
       }, 800);
     } catch (error) {
       console.error(error);
-      setProfileFeedback(error.message || 'Ocurrio un error al actualizar el perfil');
+      setProfileFeedback(error.message || 'An error occurred while updating the profile');
     } finally {
       setProfileLoading(false);
     }
@@ -351,13 +351,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!passwordSubmitButton) return;
     passwordSubmitButton.disabled = loading;
     passwordSubmitButton.classList.toggle('opacity-70', loading);
-    passwordSubmitButton.textContent = loading ? 'Actualizando...' : 'Actualizar';
+    passwordSubmitButton.textContent = loading ? 'Updating...' : 'Update';
   };
 
   passwordForm?.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!currentUser.UserId) {
-      setPasswordFeedback('Debes iniciar sesion para cambiar la contrasena');
+      setPasswordFeedback('You must sign in to change your password');
       return;
     }
 
@@ -366,17 +366,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmValue = passwordForm.confirmPassword?.value.trim();
 
     if (!currentValue || !newValue || !confirmValue) {
-      setPasswordFeedback('Completa todos los campos');
+      setPasswordFeedback('Fill in all fields');
       return;
     }
 
     if (newValue.length < 6) {
-      setPasswordFeedback('La contrasena debe tener al menos 6 caracteres');
+      setPasswordFeedback('Password must be at least 6 characters');
       return;
     }
 
     if (newValue !== confirmValue) {
-      setPasswordFeedback('Las contrasenas no coinciden');
+      setPasswordFeedback('Passwords do not match');
       return;
     }
 
@@ -394,17 +394,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!response.ok) {
         const payload = await response.json().catch(() => ({}));
-        throw new Error(payload?.message || 'No se pudo actualizar la contrasena');
+        throw new Error(payload?.message || 'Could not update the password');
       }
 
-      setPasswordFeedback('Contrasena actualizada correctamente', 'success');
+      setPasswordFeedback('Password updated successfully', 'success');
       passwordForm.reset();
       setTimeout(() => {
         closePasswordModal();
       }, 900);
     } catch (error) {
       console.error(error);
-      setPasswordFeedback(error.message || 'Error al actualizar la contrasena');
+      setPasswordFeedback(error.message || 'Error updating the password');
     } finally {
       setPasswordLoading(false);
     }

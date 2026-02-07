@@ -97,7 +97,7 @@ const updateRatingSummary = ({ ratingAverage, ratingCount }) => {
   }
   if (elements.ratingCount) {
     const count = Number(ratingCount || 0);
-    elements.ratingCount.textContent = `(${count} voto${count === 1 ? "" : "s"})`;
+    elements.ratingCount.textContent = `(${count} vote${count === 1 ? "" : "s"})`;
   }
 };
 
@@ -105,7 +105,7 @@ const formatDate = (value) => {
   if (!value) return "";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
-  return date.toLocaleDateString("es-AR", {
+  return date.toLocaleDateString("en-US", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -118,7 +118,7 @@ const renderComments = (comments) => {
 
   const count = comments?.length || 0;
   if (elements.commentsCount) {
-    elements.commentsCount.textContent = `${count} comentario${
+    elements.commentsCount.textContent = `${count} comment${
       count === 1 ? "" : "s"
     }`;
   }
@@ -126,7 +126,7 @@ const renderComments = (comments) => {
   if (!count) {
     const empty = document.createElement("div");
     empty.className = "text-sm text-gray-500";
-    empty.textContent = "Aun no hay comentarios.";
+    empty.textContent = "No comments yet.";
     elements.commentsList.appendChild(empty);
     return;
   }
@@ -134,7 +134,7 @@ const renderComments = (comments) => {
   comments.forEach((comment) => {
     const card = document.createElement("div");
     card.className = "comment-card";
-    const author = comment?.UserName || "Explorador MFGA";
+    const author = comment?.UserName || "MFGA Explorer";
     const date = formatDate(comment?.CreatedAt);
     card.innerHTML = `
       <div class="comment-meta">
@@ -166,11 +166,11 @@ const loadGuide = async () => {
   if (!state.guideId) return;
   const response = await fetch(buildApiUrl(`/guides/${state.guideId}`));
   if (!response.ok) {
-    throw new Error("No se pudo cargar el guia");
+    throw new Error("Could not load the guide");
   }
   const guide = await response.json();
   if (elements.guideName) {
-    elements.guideName.textContent = guide?.Name || state.guideName || "Guia";
+    elements.guideName.textContent = guide?.Name || state.guideName || "Guide";
   }
   updateRatingSummary({
     ratingAverage: guide?.ratingAverage ?? null,
@@ -184,7 +184,7 @@ const loadComments = async () => {
     buildApiUrl(`/guides/${state.guideId}/comments`)
   );
   if (!response.ok) {
-    throw new Error("No se pudieron cargar comentarios");
+    throw new Error("Could not load comments");
   }
   const comments = await response.json();
   renderComments(comments);
@@ -194,7 +194,7 @@ const submitRating = async (value) => {
   if (!state.guideId) return;
   const token = getAuthToken();
   if (!token) {
-    setRatingFeedback("Debes iniciar sesion para calificar.", "error");
+    setRatingFeedback("You must sign in to rate.", "error");
     return;
   }
 
@@ -213,7 +213,7 @@ const submitRating = async (value) => {
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
     setRatingFeedback(
-      payload?.message || "No se pudo guardar la puntuacion.",
+      payload?.message || "Could not save the rating.",
       "error"
     );
     return;
@@ -221,14 +221,14 @@ const submitRating = async (value) => {
 
   const summary = await response.json().catch(() => ({}));
   updateRatingSummary(summary);
-  setRatingFeedback("Puntuacion guardada.", "success");
+  setRatingFeedback("Rating saved.", "success");
 };
 
 const submitComment = async (comment) => {
   if (!state.guideId) return;
   const token = getAuthToken();
   if (!token) {
-    setCommentError("Debes iniciar sesion para comentar.");
+    setCommentError("You must sign in to comment.");
     return;
   }
 
@@ -246,7 +246,7 @@ const submitComment = async (comment) => {
 
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
-    setCommentError(payload?.message || "No se pudo enviar el comentario.");
+    setCommentError(payload?.message || "Could not send the comment.");
     return;
   }
 
@@ -255,14 +255,14 @@ const submitComment = async (comment) => {
     elements.commentInput.value = "";
   }
   await loadComments();
-  showToast("Comentario enviado");
+  showToast("Comment sent");
 };
 
 const submitMessage = async (message) => {
   if (!state.guideId) return;
   const token = getAuthToken();
   if (!token) {
-    setMessageError("Debes iniciar sesion para enviar mensajes.");
+    setMessageError("You must sign in to send messages.");
     return;
   }
 
@@ -280,7 +280,7 @@ const submitMessage = async (message) => {
 
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
-    setMessageError(payload?.message || "No se pudo enviar el mensaje.");
+    setMessageError(payload?.message || "Could not send the message.");
     return;
   }
 
@@ -289,7 +289,7 @@ const submitMessage = async (message) => {
     elements.messageInput.value = "";
   }
   elements.messagePanel?.classList.add("hidden");
-  showToast("Mensaje enviado");
+  showToast("Message sent");
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
@@ -312,7 +312,7 @@ const setupCommentForm = () => {
     event.preventDefault();
     const value = elements.commentInput?.value.trim() || "";
     if (!value) {
-      setCommentError("Escribe un comentario antes de enviar.");
+      setCommentError("Write a comment before sending.");
       return;
     }
     await submitComment(value);
@@ -334,7 +334,7 @@ const setupMessagePanel = () => {
     event.preventDefault();
     const value = elements.messageInput?.value.trim() || "";
     if (!value) {
-      setMessageError("Escribe un mensaje antes de enviar.");
+      setMessageError("Write a message before sending.");
       return;
     }
     await submitMessage(value);
@@ -349,7 +349,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     state.guideId = await resolveGuideId(state.guideId, state.guideName);
     if (!state.guideId) {
-      setRatingFeedback("No se encontro el guia solicitado.", "error");
+      setRatingFeedback("The requested guide was not found.", "error");
       return;
     }
 
@@ -357,7 +357,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadComments();
   } catch (error) {
     console.error(error);
-    setRatingFeedback("No se pudo cargar el perfil del guia.", "error");
+    setRatingFeedback("Could not load the guide profile.", "error");
   }
 
   setupRatingControl();

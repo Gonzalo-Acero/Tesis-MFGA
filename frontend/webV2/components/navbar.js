@@ -149,13 +149,13 @@ class CustomNavbar extends HTMLElement {
         </button>
         
         <ul class="nav-links" id="navLinks">
-          <li><a href="#about" class="nav-link">Inicio</a></li>
-          <li><a href="#features" class="nav-link">Conócenos</a></li>
-          <li><a href="#gallery" class="nav-link">App MFGA</a></li>
-          <li><a href="#gallery" class="nav-link">Experiencias</a></li>
-          <li><a href="#contact" class="nav-link">Contacto</a></li>
-          <li><a href="/Login_Register/Login.html" class="nav-link">Iniciar Sesión</a></li>
-          <li><a href="/Login_Register/Register.html" class="nav-link nav-cta">Regístrate</a></li>
+          <li><a href="#about" class="nav-link">Home</a></li>
+          <li><a href="#features" class="nav-link">About Us</a></li>
+          <li><a href="#gallery" class="nav-link">MFGA App</a></li>
+          <li><a href="#gallery" class="nav-link">Experiences</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+          <li><a href="/Login_Register/Login.html" class="nav-link">Sign In</a></li>
+          <li><a href="/Login_Register/Register.html" class="nav-link nav-cta">Sign Up</a></li>
         </ul>
       </nav>
     `;
