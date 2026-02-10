@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MFGA | Nearby Attractions</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    >
     <link rel="stylesheet" href="nearby_attractions.css">
     <link rel="stylesheet" href="../header.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -168,6 +174,10 @@
                             Clear Filters
                         </button>
                     </div>
+
+                    <div class="mt-5 flex justify-center">
+                        <p id="sortStatus" class="sort-status sort-status-rating" aria-live="polite">Sorted by: Top rated (0)</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -192,17 +202,8 @@
                 <h2 class="font-heading text-3xl md:text-4xl font-bold text-center mb-10">See attractions around you on the map</h2>
                 <div class="max-w-6xl mx-auto">
                     <div class="bg-gradient-to-br from-mfgalightblue to-white border border-gray-200 rounded-2xl overflow-hidden shadow-card relative">
-                        <div class="h-64 md:h-96 bg-gradient-to-r from-mfgablue/20 to-mfgayellow/20 flex items-center justify-center">
-                            <div class="text-center">
-                                <i data-feather="map" class="w-16 h-16 md:w-20 md:h-20 text-mfgablue mb-4"></i>
-                                <p class="text-gray-700 font-medium">Interactive map preview showing nearby attractions</p>
-                                <p class="text-gray-500 text-sm mt-2">(Map integration would show real locations here)</p>
-                            </div>
-                        </div>
-                        <div class="absolute top-1/4 left-1/4"><div class="w-8 h-8 bg-mfgayellow rounded-full border-4 border-white shadow-lg flex items-center justify-center"><i data-feather="map-pin" class="w-4 h-4 text-gray-900"></i></div></div>
-                        <div class="absolute top-1/3 right-1/3"><div class="w-8 h-8 bg-mfgablue rounded-full border-4 border-white shadow-lg flex items-center justify-center"><i data-feather="map-pin" class="w-4 h-4 text-white"></i></div></div>
-                        <div class="absolute bottom-1/3 left-1/3"><div class="w-8 h-8 bg-mfgayellow rounded-full border-4 border-white shadow-lg flex items-center justify-center"><i data-feather="map-pin" class="w-4 h-4 text-gray-900"></i></div></div>
-                        <div class="absolute bottom-1/4 right-1/4"><div class="w-8 h-8 bg-mfgablue rounded-full border-4 border-white shadow-lg flex items-center justify-center"><i data-feather="map-pin" class="w-4 h-4 text-white"></i></div></div>
+                        <div id="interactiveMap" class="nearby-map" aria-label="Interactive map with nearby attractions"></div>
+                        <div id="mapStatus" class="map-status hidden" role="status" aria-live="polite"></div>
                     </div>
                 </div>
             </div>
@@ -217,16 +218,6 @@
             </div>
         </section>
 
-        <section class="py-12 md:py-16 bg-gradient-to-r from-mfgayellow to-mfgadarkyellow">
-            <div class="container mx-auto px-4 md:px-8 text-center">
-                <h2 class="font-heading text-3xl md:text-4xl font-bold text-gray-900 mb-4">Ready to explore your surroundings?</h2>
-                <p class="text-gray-900/80 text-xl mb-8 max-w-2xl mx-auto">Argentina's wonders are closer than you think. Start your adventure today.</p>
-                <a href="#" class="inline-flex items-center gap-2 bg-white text-gray-900 font-bold py-4 px-8 rounded-xl shadow-soft hover:shadow-lg transform hover:-translate-y-1 transition duration-300">
-                    <i data-feather="compass" class="w-5 h-5"></i>
-                    Start Exploring Now
-                </a>
-            </div>
-        </section>
     </main>
 
     <div id="editProfileModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
@@ -270,6 +261,11 @@
     </script>
     <script src="../header.js"></script>
     <script src="../../components/footer.js"></script>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
     <script src="nearby_attractions.js"></script>
     <script>feather.replace();</script>
 </body>
