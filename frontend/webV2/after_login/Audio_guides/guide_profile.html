@@ -92,7 +92,6 @@
                     <div>
                         <p class="text-sm uppercase tracking-wide text-blue-500 font-semibold">Guide profile</p>
                         <h1 id="guideName" class="text-3xl md:text-4xl font-bold text-gray-900">MFGA Guide</h1>
-                        <p class="text-gray-600 mt-2">Guide information will be available soon.</p>
                     </div>
                     <a href="audio_guide.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-sm border border-gray-200 text-gray-600 hover:text-argentina-blue hover:border-argentina-blue transition-colors">
                         <i data-feather="arrow-left" class="h-4 w-4"></i>
@@ -124,6 +123,12 @@
                 </aside>
 
                 <div class="lg:col-span-2 space-y-8">
+                    <section id="guideDescriptionSection" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hidden">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-1">Guide description</h2>
+                        <p id="guideDescriptionLocation" class="text-sm text-gray-500 mb-4"></p>
+                        <p id="guideDescriptionText" class="text-gray-700 leading-relaxed"></p>
+                    </section>
+
                     <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <h2 class="text-xl font-semibold text-gray-900 mb-4">Rate this guide</h2>
                         <div class="flex items-center gap-3">
@@ -253,7 +258,76 @@
     </script>
     <script src="../header.js"></script>
     <script src="../../components/footer.js"></script>
-    <script src="guide_profile.js"></script>
+    <script src="guide_profile.js?v=20260212a"></script>
+    <script>
+      (function applyGuideHeadingFallback() {
+        const guideNameNode = document.getElementById("guideName");
+        if (!guideNameNode) return;
+
+        const params = new URLSearchParams(window.location.search);
+        const fallbackName = localStorage.getItem("mfga:lastSelectedGuideName");
+        const rawGuideName = params.get("name") || fallbackName;
+        if (!rawGuideName) return;
+
+        const normalize = (value) =>
+          (value || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+
+        const byName = new Map([
+          [
+            "dancer miguel fernandez",
+            "I am a professionally trained classical dancer and a true devotee of the performing arts. For over two decades, I graced the stage of the Teatro Colón as a member of the permanent ballet company, and today, I have the honor of sharing its secrets as a senior guide. I truly love my work; transitioning from dancing to storytelling has been a deeply rewarding journey. I believe that understanding the history of a theater like this isn't just about architecture, but about appreciating the discipline and passion that fuel every performance.",
+          ],
+          [
+            "dancer miguel fernandez the voice of adam",
+            "I am a professionally trained classical dancer and a true devotee of the performing arts. For over two decades, I graced the stage of the Teatro Colón as a member of the permanent ballet company, and today, I have the honor of sharing its secrets as a senior guide. I truly love my work; transitioning from dancing to storytelling has been a deeply rewarding journey. I believe that understanding the history of a theater like this isn't just about architecture, but about appreciating the discipline and passion that fuel every performance.",
+          ],
+          [
+            "dr maria lopez",
+            "I am a certified Doctor in Environmental Sciences with an outstanding academic record and a lifelong passion for conservation. Currently, I lead research projects within the Iguazú National Park while working as a freelance consultant for biodiversity initiatives. I started my career in the field years ago, and I am still incredibly happy to be surrounded by this natural wonder every day. I love helping people connect with nature; it is truly gratifying! I believe that exploring the jungle isn't just beneficial for our environment, but also vital for our mental well-being and our sense of global responsibility. 'Protecting Iguazú is preserving a piece of the world’s soul,' and I am here to guide you through that breathtaking experience.",
+          ],
+          [
+            "maria lopez",
+            "I am a certified Doctor in Environmental Sciences with an outstanding academic record and a lifelong passion for conservation. Currently, I lead research projects within the Iguazú National Park while working as a freelance consultant for biodiversity initiatives. I started my career in the field years ago, and I am still incredibly happy to be surrounded by this natural wonder every day. I love helping people connect with nature; it is truly gratifying! I believe that exploring the jungle isn't just beneficial for our environment, but also vital for our mental well-being and our sense of global responsibility. 'Protecting Iguazú is preserving a piece of the world’s soul,' and I am here to guide you through that breathtaking experience.",
+          ],
+          [
+            "prof carlos mendes",
+            "I am a tenured Professor of Urban History and a passionate researcher of Argentine heritage. I currently teach at the University of Buenos Aires and work as an independent historian focusing on the evolution of our city's landmarks. I am deeply enamored with my profession; I began conducting city tours years ago and find immense joy in every walk. I love helping visitors understand the 'why' behind our monuments; it is so fulfilling! I believe that studying urban history is not only essential for cultural identity, but also great for developing critical thinking and a deeper connection to our surroundings.",
+          ],
+          [
+            "prof carlos mendez",
+            "I am a tenured Professor of Urban History and a passionate researcher of Argentine heritage. I currently teach at the University of Buenos Aires and work as an independent historian focusing on the evolution of our city's landmarks. I am deeply enamored with my profession; I began conducting city tours years ago and find immense joy in every walk. I love helping visitors understand the 'why' behind our monuments; it is so fulfilling! I believe that studying urban history is not only essential for cultural identity, but also great for developing critical thinking and a deeper connection to our surroundings.",
+          ],
+          [
+            "biologist ana torres",
+            "I am a qualified Biologist specializing in high-altitude ecosystems and a lover of the great outdoors. Currently, I work for the National Parks Administration in Bariloche and as a freelance mountain ecology consultant. I fell in love with my work the moment I stepped onto the Patagonian slopes years ago, and I am very happy to call this mountain my office. I love helping people realize the importance of our glaciers and forests; it is exceptionally rewarding! I believe that experiencing the mountains is not only great for physical health, but also improves cognitive flexibility and our appreciation for life’s resilience.",
+          ],
+          [
+            "ana torres",
+            "I am a qualified Biologist specializing in high-altitude ecosystems and a lover of the great outdoors. Currently, I work for the National Parks Administration in Bariloche and as a freelance mountain ecology consultant. I fell in love with my work the moment I stepped onto the Patagonian slopes years ago, and I am very happy to call this mountain my office. I love helping people realize the importance of our glaciers and forests; it is exceptionally rewarding! I believe that experiencing the mountains is not only great for physical health, but also improves cognitive flexibility and our appreciation for life’s resilience.",
+          ],
+        ]);
+
+        const normalizedName = normalize(rawGuideName);
+        const description = byName.get(normalizedName);
+        if (!description) return;
+
+        const escapeHtml = (value) =>
+          String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+
+        guideNameNode.innerHTML = `${escapeHtml(rawGuideName)}<span class="block mt-2 text-sm md:text-base font-normal text-gray-600 leading-relaxed">${escapeHtml(description)}</span>`;
+      })();
+    </script>
     <script>feather.replace();</script>
 </body>
 </html>

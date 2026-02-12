@@ -1,4 +1,5 @@
 (() => {
+  const LAST_SELECTED_GUIDE_KEY = "mfga:lastSelectedGuideName";
   const audioGuides = [
     {
       id: 1,
@@ -370,7 +371,8 @@
     const params = new URLSearchParams();
     if (guide?.guideId) {
       params.set("guideId", guide.guideId);
-    } else if (guide?.guide) {
+    }
+    if (guide?.guide) {
       params.set("name", guide.guide);
     }
     const query = params.toString();
@@ -410,6 +412,11 @@
           buildGuideProfileUrl({ guideId: match.GuideId, guide: name })
         );
       }
+
+      // Keep the selected guide as a resilient fallback for the profile page.
+      link.addEventListener("click", () => {
+        localStorage.setItem(LAST_SELECTED_GUIDE_KEY, name);
+      });
     });
   };
 
