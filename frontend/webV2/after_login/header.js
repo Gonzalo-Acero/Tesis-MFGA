@@ -32,6 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const API_BASE_URL = resolveApiBaseUrl();
   const buildUrl = (path) =>
     `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
+  const getAuthToken = () => sessionStore?.load?.()?.token ?? session?.token ?? null;
+  const buildAuthHeaders = () => {
+    const token = getAuthToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
 
   const profileButton = document.getElementById('profileButton');
   const profileDropdown = document.getElementById('profileDropdown');
@@ -384,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(buildUrl('/auth/change-password'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...buildAuthHeaders() },
         body: JSON.stringify({
           userId: currentUser.UserId,
           currentPassword: currentValue,

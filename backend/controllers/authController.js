@@ -86,8 +86,19 @@ const login = async (req, res) => {
 
 const changePassword = async (req, res) => {
   const { userId, currentPassword, newPassword } = req.body ?? {};
+  const authenticatedUserId = req.user?.UserId;
 
-  if (!userId || !currentPassword || !newPassword) {
+  if (!authenticatedUserId) {
+    return res.status(401).json({ message: "Usuario no autenticado" });
+  }
+
+  if (userId && String(userId) !== String(authenticatedUserId)) {
+    return res
+      .status(403)
+      .json({ message: "No autorizado para cambiar esta contrasena" });
+  }
+
+  if (!currentPassword || !newPassword) {
     return res
       .status(400)
       .json({ message: "Faltan datos para actualizar la contrasena" });
@@ -100,7 +111,7 @@ const changePassword = async (req, res) => {
   }
 
   try {
-    const user = await findUserByIdWithPassword(userId);
+    const user = await findUserByIdWithPassword(authenticatedUserId);
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
