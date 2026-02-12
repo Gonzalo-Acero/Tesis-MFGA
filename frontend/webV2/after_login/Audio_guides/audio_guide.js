@@ -2,7 +2,7 @@
   const audioGuides = [
     {
       id: 1,
-      title: "History of Buenos Aires",
+      title: "Obelisco",
       category: "history",
       location: "Buenos Aires",
       duration: "12 min",
@@ -12,7 +12,7 @@
       rating: 4.7,
       reviews: 189,
       completed: 45,
-      audioFile: "AudioGuides/Adam_Obelisco.mp3",
+      audioFile: "AudioGuides/Prof. Carlos Mendes_Obelisco.mp3",
     },
     {
       id: 2,
@@ -29,7 +29,7 @@
     },
     {
       id: 3,
-      title: "Patagonia Wildlife Guide",
+      title: "CerroCatedral",
       category: "nature",
       location: "Patagonia",
       duration: "22 min",
@@ -39,11 +39,11 @@
       rating: 4.8,
       reviews: 167,
       completed: 28,
-      audioFile: "AudioGuides/Monica_CerroCatedral.mp3",
+      audioFile: "AudioGuides/Bio. Ana Torres_CerroCatedral.mp3",
     },
     {
       id: 4,
-      title: "Tango Culture & History",
+      title: "TeatroColon",
       category: "culture",
       location: "Buenos Aires",
       duration: "15 min",
@@ -53,7 +53,7 @@
       rating: 4.6,
       reviews: 198,
       completed: 51,
-      audioFile: "AudioGuides/Mark_TeatroColon.mp3",
+      audioFile: "AudioGuides/Miguel Fernandez_TeatroColon.mp3",
     },
     {
       id: 5,
@@ -124,13 +124,13 @@
 
   const featuredGuide = {
     id: 1001,
-    title: "Iguazu Falls: Nature's Symphony",
+    title: "CataratasIguazu",
     category: "nature",
     location: "Misiones Province",
     duration: "24 min",
     image: "http://static.photos/nature/640x360/1",
     guide: "Dr. Maria Lopez",
-    audioFile: "AudioGuides/Serafina_CataratasIguazu.mp3",
+    audioFile: "AudioGuides/Dr. Maria Lopez_CataratasIguazu.mp3",
   };
 
   const resolveApiBaseUrl = () => {
@@ -144,7 +144,14 @@
   const API_BASE_URL = resolveApiBaseUrl();
   const buildApiUrl = (path) =>
     `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
-  const normalizeGuideName = (value) => (value || "").trim().toLowerCase();
+  const normalizeGuideName = (value) =>
+    (value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
 
   let guideDirectory = new Map();
   let audioGrid;

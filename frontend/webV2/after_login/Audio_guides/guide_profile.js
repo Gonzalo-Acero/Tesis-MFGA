@@ -10,7 +10,14 @@ const API_BASE_URL = resolveApiBaseUrl();
 const buildApiUrl = (path) =>
   `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 
-const normalizeGuideName = (value) => (value || "").trim().toLowerCase();
+const normalizeGuideName = (value) =>
+  (value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 
 const getSession = () => window.mfgaSession?.load?.();
 const getAuthToken = () => getSession()?.token;
