@@ -1,3 +1,4 @@
+(() => {
 const resolveApiBaseUrl = () => {
   const candidate =
     window.__API_BASE_URL__ ||
@@ -209,6 +210,27 @@ const setMessageError = (message) => {
   elements.messageError.classList.toggle("hidden", !message);
 };
 
+const ensureGuideSelected = async (onMissing) => {
+  if (state.guideId) return true;
+
+  const params = new URLSearchParams(window.location.search);
+  const fallbackGuideName =
+    state.guideName ||
+    params.get("name") ||
+    localStorage.getItem(LAST_SELECTED_GUIDE_KEY) ||
+    null;
+
+  try {
+    state.guideId = await resolveGuideId(state.guideId, fallbackGuideName);
+  } catch (error) {
+    console.error("Could not resolve guide id:", error);
+  }
+
+  if (state.guideId) return true;
+  onMissing?.("The requested guide was not found.");
+  return false;
+};
+
 const updateStarDisplay = (value) => {
   if (!elements.ratingControl) return;
   elements.ratingControl.querySelectorAll(".rating-star").forEach((star) => {
@@ -281,15 +303,52 @@ const resolveGuideId = async (guideId, guideName) => {
   if (guideId) return guideId;
   if (!guideName) return null;
 
+  try {
+    const directResponse = await fetch(
+      buildApiUrl(`/guides/resolve?name=${encodeURIComponent(guideName)}`)
+    );
+    if (directResponse.ok) {
+      const guide = await directResponse.json().catch(() => ({}));
+      if (guide?.GuideId) {
+        return guide.GuideId;
+      }
+    }
+  } catch (error) {
+    console.warn("Guide resolve endpoint unavailable, using fallback:", error);
+  }
+
   const response = await fetch(buildApiUrl("/guides"));
   if (!response.ok) {
     return null;
   }
   const guides = await response.json();
-  const match = guides.find(
-    (guide) => normalizeGuideName(guide?.Name) === normalizeGuideName(guideName)
+  if (!Array.isArray(guides) || !guides.length) {
+    return null;
+  }
+
+  const normalizedTarget = normalizeGuideName(guideName);
+  const canonicalTarget = toCanonicalGuideName(guideName);
+
+  const exactMatch = guides.find(
+    (guide) => normalizeGuideName(guide?.Name) === normalizedTarget
   );
-  return match?.GuideId || null;
+  if (exactMatch?.GuideId) return exactMatch.GuideId;
+
+  const canonicalMatch = guides.find(
+    (guide) => toCanonicalGuideName(guide?.Name) === canonicalTarget
+  );
+  if (canonicalMatch?.GuideId) return canonicalMatch.GuideId;
+
+  const partialCanonicalMatch = guides.find((guide) => {
+    const guideCanonical = toCanonicalGuideName(guide?.Name);
+    if (!guideCanonical || !canonicalTarget) return false;
+    return (
+      guideCanonical.includes(canonicalTarget) ||
+      canonicalTarget.includes(guideCanonical)
+    );
+  });
+
+  return partialCanonicalMatch?.GuideId || null;
 };
 
 const loadGuide = async () => {
@@ -320,7 +379,9 @@ const loadComments = async () => {
 };
 
 const submitRating = async (value) => {
-  if (!state.guideId) return;
+  if (!(await ensureGuideSelected((message) => setRatingFeedback(message, "error")))) {
+    return;
+  }
   const token = getAuthToken();
   if (!token) {
     setRatingFeedback("You must sign in to rate.", "error");
@@ -354,7 +415,9 @@ const submitRating = async (value) => {
 };
 
 const submitComment = async (comment) => {
-  if (!state.guideId) return;
+  if (!(await ensureGuideSelected((message) => setCommentError(message)))) {
+    return;
+  }
   const token = getAuthToken();
   if (!token) {
     setCommentError("You must sign in to comment.");
@@ -388,7 +451,9 @@ const submitComment = async (comment) => {
 };
 
 const submitMessage = async (message) => {
-  if (!state.guideId) return;
+  if (!(await ensureGuideSelected((missingMessage) => setMessageError(missingMessage)))) {
+    return;
+  }
   const token = getAuthToken();
   if (!token) {
     setMessageError("You must sign in to send messages.");
@@ -418,7 +483,7 @@ const submitMessage = async (message) => {
     elements.messageInput.value = "";
   }
   elements.messagePanel?.classList.add("hidden");
-  showToast("Message sent");
+  showToast("Mensaje Enviado");
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
@@ -450,12 +515,14 @@ const setupCommentForm = () => {
 
 const setupMessagePanel = () => {
   elements.openMessageBtn?.addEventListener("click", () => {
+    setMessageError("");
     elements.messagePanel?.classList.remove("hidden");
     elements.messageInput?.focus();
     elements.messagePanel?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   elements.closeMessageBtn?.addEventListener("click", () => {
+    setMessageError("");
     elements.messagePanel?.classList.add("hidden");
   });
 
@@ -500,3 +567,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupMessagePanel();
   updateStarDisplay(state.selectedRating);
 });
+})();

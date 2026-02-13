@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getGuides,
+  resolveGuideByName,
   getGuideById,
   getGuideComments,
   addGuideComment,
@@ -12,6 +13,7 @@ import { requireAuth } from "../middleware/requireAuth.js";
 const guideRouter = Router();
 
 guideRouter.get("/", getGuides);
+guideRouter.get("/resolve", resolveGuideByName);
 guideRouter.get("/:id", getGuideById);
 guideRouter.get("/:id/comments", getGuideComments);
 

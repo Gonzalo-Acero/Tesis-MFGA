@@ -1,8 +1,10 @@
 import {
   findAllGuides,
   findGuideById,
+  findGuideByNameOrAlias,
   findCommentsByGuideId,
   insertGuideComment,
+  insertGuideMessage,
   upsertGuideRating,
   getGuideRatingSummary,
 } from "../models/guideModel.js";
@@ -16,6 +18,32 @@ const getGuides = async (_req, res) => {
     return res
       .status(500)
       .json({ message: "Error interno al obtener guias" });
+  }
+};
+
+const resolveGuideByName = async (req, res) => {
+  const name = req.query?.name?.trim();
+  if (!name) {
+    return res.status(400).json({ message: "Nombre de guia requerido" });
+  }
+
+  try {
+    const guide = await findGuideByNameOrAlias(name);
+    if (!guide) {
+      return res.status(404).json({ message: "Guia no encontrado" });
+    }
+
+    const summary = await getGuideRatingSummary(guide.GuideId);
+    return res.json({
+      ...guide,
+      ratingAverage: summary?.Average ?? null,
+      ratingCount: summary?.Count ?? 0,
+    });
+  } catch (error) {
+    console.error("Error al resolver guia por nombre:", error);
+    return res
+      .status(500)
+      .json({ message: "Error interno al resolver guia" });
   }
 };
 
@@ -148,6 +176,12 @@ const sendGuideMessage = async (req, res) => {
       return res.status(404).json({ message: "Guia no encontrado" });
     }
 
+    await insertGuideMessage({
+      guideId: id,
+      userId,
+      message,
+    });
+
     return res.json({ message: "Mensaje enviado" });
   } catch (error) {
     console.error("Error al enviar mensaje:", error);
@@ -159,6 +193,7 @@ const sendGuideMessage = async (req, res) => {
 
 export {
   getGuides,
+  resolveGuideByName,
   getGuideById,
   getGuideComments,
   addGuideComment,

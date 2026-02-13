@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS public."guide_comment" (
     "GuideId" integer NOT NULL REFERENCES public."guide" ("GuideId") ON DELETE CASCADE,
     "UserId" integer NOT NULL REFERENCES public."user" ("UserId") ON DELETE CASCADE,
     "Comment" text NOT NULL,
-    "CreatedAt" timestamptz NOT NULL DEFAULT now()
+    "CreatedAt" timestamptz NOT NULL DEFAULT now(),
+    UNIQUE ("GuideId", "UserId")
 );
 
 CREATE TABLE IF NOT EXISTS public."guide_rating" (
@@ -22,3 +23,15 @@ CREATE TABLE IF NOT EXISTS public."guide_rating" (
     "CreatedAt" timestamptz NOT NULL DEFAULT now(),
     UNIQUE ("GuideId", "UserId")
 );
+
+CREATE TABLE IF NOT EXISTS public."guide_message" (
+    "GuideMessageId" serial PRIMARY KEY,
+    "GuideId" integer NOT NULL REFERENCES public."guide" ("GuideId") ON DELETE CASCADE,
+    "UserId" integer NOT NULL REFERENCES public."user" ("UserId") ON DELETE CASCADE,
+    "Message" text NOT NULL,
+    "CreatedAt" timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS "idx_guide_comment_guide_createdat" ON public."guide_comment" ("GuideId", "CreatedAt" DESC);
+CREATE INDEX IF NOT EXISTS "idx_guide_rating_guide" ON public."guide_rating" ("GuideId");
+CREATE INDEX IF NOT EXISTS "idx_guide_message_guide_createdat" ON public."guide_message" ("GuideId", "CreatedAt" DESC);
