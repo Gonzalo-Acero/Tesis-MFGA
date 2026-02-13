@@ -3,7 +3,7 @@ const destinations = [
     {
         id: 1,
         name: "Buenos Aires",
-        image: "http://static.photos/cityscape/640x360/101",
+        image: "https://static.photos/cityscape/640x360/101",
         description: "The vibrant capital with European flair and passionate tango.",
         category: "city",
         tag: "City"
@@ -11,7 +11,7 @@ const destinations = [
     {
         id: 2,
         name: "Mendoza",
-        image: "http://static.photos/food/640x360/102",
+        image: "https://static.photos/food/640x360/102",
         description: "Argentina's famous wine region at the foot of the Andes.",
         category: "culture",
         tag: "Culture"
@@ -19,7 +19,7 @@ const destinations = [
     {
         id: 3,
         name: "Patagonia",
-        image: "http://static.photos/nature/640x360/103",
+        image: "https://static.photos/nature/640x360/103",
         description: "Breathtaking landscapes of glaciers and mountains.",
         category: "nature",
         tag: "Nature"
@@ -27,7 +27,7 @@ const destinations = [
     {
         id: 4,
         name: "Bariloche",
-        image: "http://static.photos/travel/640x360/104",
+        image: "https://static.photos/travel/640x360/104",
         description: "Swiss-style alpine town surrounded by lakes and forests.",
         category: "adventure",
         tag: "Adventure"
@@ -35,7 +35,7 @@ const destinations = [
     {
         id: 5,
         name: "Salta",
-        image: "http://static.photos/outdoor/640x360/105",
+        image: "https://static.photos/outdoor/640x360/105",
         description: "Colonial architecture and colorful mountains.",
         category: "culture",
         tag: "Culture"
@@ -43,7 +43,7 @@ const destinations = [
     {
         id: 6,
         name: "Iguazú Falls",
-        image: "http://static.photos/nature/640x360/106",
+        image: "https://static.photos/nature/640x360/106",
         description: "One of the world's most spectacular waterfalls.",
         category: "nature",
         tag: "Nature"

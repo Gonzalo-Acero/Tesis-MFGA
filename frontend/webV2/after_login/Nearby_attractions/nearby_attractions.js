@@ -8,7 +8,7 @@ const mockAttractions = [
         category: 'culture',
         province: 'Buenos Aires',
         rating: 4.7,
-        image: 'http://static.photos/cityscape/640x360/101',
+        image: 'https://static.photos/cityscape/640x360/101',
         lat: -34.6083,
         lng: -58.3712
     },
@@ -20,7 +20,7 @@ const mockAttractions = [
         category: 'nature',
         province: 'Misiones',
         rating: 4.9,
-        image: 'http://static.photos/nature/640x360/202',
+        image: 'https://static.photos/nature/640x360/202',
         lat: -25.6953,
         lng: -54.4367
     },
@@ -32,7 +32,7 @@ const mockAttractions = [
         category: 'food',
         province: 'Buenos Aires',
         rating: 4.5,
-        image: 'http://static.photos/restaurant/640x360/303',
+        image: 'https://static.photos/restaurant/640x360/303',
         lat: -34.6087,
         lng: -58.3782
     },
@@ -44,7 +44,7 @@ const mockAttractions = [
         category: 'adventure',
         province: 'Santa Cruz',
         rating: 4.8,
-        image: 'http://static.photos/outdoor/640x360/404',
+        image: 'https://static.photos/outdoor/640x360/404',
         lat: -49.2718,
         lng: -73.0436
     },
@@ -56,7 +56,7 @@ const mockAttractions = [
         category: 'food',
         province: 'Mendoza',
         rating: 4.6,
-        image: 'http://static.photos/travel/640x360/505',
+        image: 'https://static.photos/travel/640x360/505',
         lat: -32.8895,
         lng: -68.8458
     },
@@ -68,7 +68,7 @@ const mockAttractions = [
         category: 'nature',
         province: 'Jujuy',
         rating: 4.7,
-        image: 'http://static.photos/abstract/640x360/606',
+        image: 'https://static.photos/abstract/640x360/606',
         lat: -23.2054,
         lng: -65.3487
     },
@@ -80,7 +80,7 @@ const mockAttractions = [
         category: 'culture',
         province: 'Buenos Aires',
         rating: 4.8,
-        image: 'http://static.photos/indoor/640x360/707',
+        image: 'https://static.photos/indoor/640x360/707',
         lat: -34.6011,
         lng: -58.3830
     },
@@ -92,7 +92,7 @@ const mockAttractions = [
         category: 'nature',
         province: 'Santa Cruz',
         rating: 4.9,
-        image: 'http://static.photos/white/640x360/808',
+        image: 'https://static.photos/white/640x360/808',
         lat: -50.4952,
         lng: -73.0456
     }
@@ -104,35 +104,35 @@ const mockRecommendations = [
         name: 'La Boca Neighborhood',
         description: 'Colorful houses, tango dancers, and artistic atmosphere.',
         rating: 4.4,
-        image: 'http://static.photos/cityscape/320x240/111'
+        image: 'https://static.photos/cityscape/320x240/111'
     },
     {
         id: 102,
         name: 'Salinas Grandes',
         description: 'Vast salt flats creating a surreal white desert landscape.',
         rating: 4.7,
-        image: 'http://static.photos/white/320x240/222'
+        image: 'https://static.photos/white/320x240/222'
     },
     {
         id: 103,
         name: 'Parque Nacional Talampaya',
         description: 'Red sandstone canyons with ancient petroglyphs.',
         rating: 4.6,
-        image: 'http://static.photos/red/320x240/333'
+        image: 'https://static.photos/red/320x240/333'
     },
     {
         id: 104,
         name: 'Bariloche Chocolate Shops',
         description: 'Swiss-style alpine town famous for artisanal chocolate.',
         rating: 4.8,
-        image: 'http://static.photos/food/320x240/444'
+        image: 'https://static.photos/food/320x240/444'
     },
     {
         id: 105,
         name: 'Ushuaia End of the World',
         description: 'Southernmost city in the world with dramatic landscapes.',
         rating: 4.7,
-        image: 'http://static.photos/travel/320x240/555'
+        image: 'https://static.photos/travel/320x240/555'
     }
 ];
 
@@ -814,7 +814,7 @@ function normalizeAttractionRecord(record) {
         description: record.Description ?? record.description ?? '',
         category: record.Category ?? record.category ?? 'culture',
         province: record.Province ?? record.province ?? 'Unknown province',
-        image: record.ImageUrl ?? record.imageUrl ?? record.image ?? 'http://static.photos/travel/640x360/999',
+        image: record.ImageUrl ?? record.imageUrl ?? record.image ?? 'https://static.photos/travel/640x360/999',
         lat: latitude,
         lng: longitude,
         distance: Number.isFinite(distanceValue) ? distanceValue : null,

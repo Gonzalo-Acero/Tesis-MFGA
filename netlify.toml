@@ -4,6 +4,24 @@
   command = "npm run generate:env"
 
 [[redirects]]
+from = "/login_register/login"
+to = "/Login_Register/Login.html"
+status = 200
+force = true
+
+[[redirects]]
+from = "/login_register/register"
+to = "/Login_Register/Register.html"
+status = 200
+force = true
+
+[[redirects]]
+from = "/favicon.ico"
+to = "/img/logo_mfga.png"
+status = 200
+force = true
+
+[[redirects]]
 from = "/api/*"
 to = "https://tesis-mfga.onrender.com/api/:splat"
 status = 200
