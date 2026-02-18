@@ -1,14 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MFGA Dashboard | My Fellow Guide Argentina</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="logged_in.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="../env.js"></script>
     <script>
       tailwind.config = {
         theme: {
@@ -22,13 +23,13 @@
       }
     </script>
 </head>
-<body class="bg-gray-50 font-sans" data-api-base-url="http://localhost:4000/api" data-requires-auth="true">
+<body class="bg-gray-50 font-sans" data-api-base-url="/api" data-requires-auth="true">
     <nav class="bg-white shadow-sm relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-4">
                     <span class="text-xl font-bold text-argentina-blue">MFGA</span>
-                    <button id="mobileNavToggle" class="md:hidden text-gray-600 hover:text-argentina-blue focus:outline-none" aria-label="Abrir menu">
+                    <button id="mobileNavToggle" class="md:hidden text-gray-600 hover:text-argentina-blue focus:outline-none" aria-label="Open menu">
                         <i data-feather="menu" class="w-6 h-6"></i>
                     </button>
                 </div>
@@ -36,16 +37,16 @@
                   id="navLinks"
                   class="hidden flex flex-col gap-4 absolute top-full left-0 right-0 bg-white shadow-lg border-b border-gray-100 px-4 py-4 z-40 md:flex md:flex-row md:items-center md:gap-6 md:static md:shadow-none md:border-none md:bg-transparent md:px-0 md:py-0"
                 >
-                    <a href="#inicio" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Inicio</a>
-                    <a href="#conocenos" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Con&oacute;cenos</a>
-                    <a href="#app-mfga" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">App MFGA</a>
-                    <a href="#experiencias" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Experiencias</a>
-                    <a href="#contacto" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Contacto</a>
+                    <a href="#inicio" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Home</a>
+                    <a href="#conocenos" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">About Us</a>
+                    <a href="#app-mfga" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">MFGA App</a>
+                    <a href="#experiencias" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Experiences</a>
+                    <a href="#contact" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Contact</a>
                 </div>
                 <div class="flex items-center">
                     <div class="relative ml-3">
                         <button id="profileButton" class="flex items-center focus:outline-none">
-                            <img data-user-avatar class="h-8 w-8 rounded-full" src="http://static.photos/people/200x200/42" alt="Profile">
+                            <img data-user-avatar class="h-8 w-8 rounded-full" src="https://static.photos/people/200x200/42" alt="Profile">
                         </button>
                         <div
                           id="profileDropdown"
@@ -54,10 +55,10 @@
                         >
                             <div class="py-3 px-4 border-b border-gray-200">
                                 <div class="flex items-center space-x-3">
-                                    <img data-user-avatar class="h-10 w-10 rounded-full" src="http://static.photos/people/200x200/42" alt="Profile">
+                                    <img data-user-avatar class="h-10 w-10 rounded-full" src="https://static.photos/people/200x200/42" alt="Profile">
                                     <div>
-                                        <p class="text-sm font-medium text-gray-900" data-user-name>Explorador MFGA</p>
-                                        <p class="text-xs text-gray-500" data-user-email>usuario@example.com</p>
+                                        <p class="text-sm font-medium text-gray-900" data-user-name>MFGA Explorer</p>
+                                        <p class="text-xs text-gray-500" data-user-email>user@example.com</p>
                                     </div>
                                 </div>
                             </div>
@@ -87,35 +88,35 @@
         <!-- Hero Section -->
         <section id="inicio" class="relative h-96 overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-r from-argentina-blue/80 to-argentina-yellow/80 z-10"></div>
-            <img src="http://static.photos/travel/1200x630/argentina" alt="Argentina landscape" class="w-full h-full object-cover blur-sm animate-pulse-slow">
+            <img src="https://static.photos/travel/1200x630/argentina" alt="Argentina landscape" class="w-full h-full object-cover blur-sm animate-pulse-slow">
             <div class="relative z-20 h-full flex flex-col justify-center items-center text-center px-4">
                 <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 animate-fade-in">Welcome back, <span data-hero-name class="font-semibold">Traveler</span> <span class="animate-bounce inline-block">&#128075;</span></h1>
                 <p class="text-xl md:text-2xl text-white mb-8">Ready to explore Argentina today?</p>
-                <button class="bg-argentina-yellow text-argentina-blue font-bold py-3 px-8 rounded-full hover:scale-105 transition-transform duration-300 shadow-lg explore-btn">
+                <a href="Discover_places/discover.html" class="bg-argentina-yellow text-argentina-blue font-bold py-3 px-8 rounded-full hover:scale-105 transition-transform duration-300 shadow-lg explore-btn inline-flex items-center justify-center">
                     Start Exploring
-                </button>
+                </a>
             </div>
         </section>
 
         <section id="conocenos" class="container mx-auto px-4 py-12">
             <div class="bg-white rounded-2xl shadow-lg p-8 grid gap-8 md:grid-cols-2 items-center">
                 <div>
-                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Con&oacute;cenos</h2>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">About Us</h2>
                     <p class="text-gray-600 mb-4">
-                        MFGA evoluciona contigo. Desde este panel personalizado puedes acceder a nuevas rutas, tus experiencias favoritas y recomendaciones creadas por tu historial de viaje.
+                        MFGA evolves with you. From this personalized dashboard, you can access new routes, your favorite experiences, and recommendations based on your travel history.
                     </p>
                     <p class="text-gray-600 mb-6">
-                        Nuestro equipo actualiza diariamente contenido para que sigas descubriendo rincones aut&eacute;nticos de Argentina
+                        Our team updates content daily so you can keep discovering authentic corners of Argentina.
                     </p>
                     <div class="flex flex-wrap gap-4">
-                        <span class="px-4 py-2 bg-argentina-blue/10 text-argentina-blue rounded-full text-sm font-semibold">Equipo local</span>
-                        <span class="px-4 py-2 bg-argentina-yellow/10 text-argentina-yellow rounded-full text-sm font-semibold">Rutas curadas</span>
-                        <span class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold">Contenido diario</span>
+                        <span class="px-4 py-2 bg-argentina-blue/10 text-argentina-blue rounded-full text-sm font-semibold">Local team</span>
+                        <span class="px-4 py-2 bg-argentina-yellow/10 text-argentina-yellow rounded-full text-sm font-semibold">Curated routes</span>
+                        <span class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold">Daily content</span>
                     </div>
                 </div>
                 <div class="relative">
                     <div class="absolute -inset-4 bg-gradient-to-r from-argentina-blue/20 to-argentina-yellow/20 blur-xl rounded-2xl"></div>
-                    <img src="http://static.photos/people/640x360/32" alt="Team MFGA" class="relative rounded-2xl shadow-lg">
+                    <img src="https://static.photos/people/640x360/32" alt="Team MFGA" class="relative rounded-2xl shadow-lg">
                 </div>
             </div>
         </section>
@@ -146,7 +147,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-800 mb-2"> Discover Places</h3>
                         <p class="text-gray-600 mb-4">Explore destinations across Argentina</p>
-                        <a href="#" class="text-argentina-blue font-semibold hover:underline flex items-center">
+                        <a href="Discover_places/discover.html" class="text-argentina-blue font-semibold hover:underline flex items-center">
                             Learn More <i data-feather="chevron-right" class="ml-1 w-4 h-4"></i>
                         </a>
                     </div>
@@ -160,7 +161,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-800 mb-2">Audio Guides</h3>
                         <p class="text-gray-600 mb-4">Listen to local stories and culture</p>
-                        <a href="#" class="text-argentina-blue font-semibold hover:underline flex items-center">
+                        <a href="Audio_guides/audio_guide.html" class="text-argentina-blue font-semibold hover:underline flex items-center">
                             Learn More <i data-feather="chevron-right" class="ml-1 w-4 h-4"></i>
                         </a>
                     </div>
@@ -174,7 +175,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-800 mb-2"> Nearby Attractions</h3>
                         <p class="text-gray-600 mb-4">Find places close to you</p>
-                        <a href="#" class="text-argentina-blue font-semibold hover:underline flex items-center">
+                        <a href="Nearby_attractions/nearby_attractions.html" class="text-argentina-blue font-semibold hover:underline flex items-center">
                             Learn More <i data-feather="chevron-right" class="ml-1 w-4 h-4"></i>
                         </a>
                     </div>
@@ -188,7 +189,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-800 mb-2"> Travel Community</h3>
                         <p class="text-gray-600 mb-4">Connect with fellow explorers</p>
-                        <a href="#" class="text-argentina-blue font-semibold hover:underline flex items-center">
+                        <a href="Travel_community/travel_community.html" class="text-argentina-blue font-semibold hover:underline flex items-center">
                             Learn More <i data-feather="chevron-right" class="ml-1 w-4 h-4"></i>
                         </a>
                     </div>
@@ -196,42 +197,32 @@
             </div>
         </section>
 
-        <!-- CTA Banner -->
-        <section id="contacto" class="bg-gradient-to-r from-argentina-blue to-argentina-yellow py-16">
-            <div class="container mx-auto px-4 text-center">
-                <h2 class="text-3xl font-bold text-white mb-6">Experience Argentina like a local</h2>
-                <p class="text-xl text-white mb-8">Start your journey now and discover the magic of Argentina</p>
-                <button class="bg-white text-argentina-blue font-bold py-4 px-12 rounded-full hover:scale-105 transition-transform duration-300 shadow-lg text-lg explore-btn">
-                    Start Exploring
-                </button>
-            </div>
-        </section>
     </main>
 
     <div id="editProfileModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
             <form data-profile-form class="flex flex-col h-full">
                 <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-medium text-gray-900">Editar perfil</h3>
+                    <h3 class="text-lg font-medium text-gray-900">Edit profile</h3>
                 </div>
                 <div class="px-6 py-4 space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-name">Nombre completo</label>
-                        <input id="profile-name" name="profileName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Nombre y Apellido" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-name">Full name</label>
+                        <input id="profile-name" name="profileName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Full name" required>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-email">Email</label>
-                        <input id="profile-email" name="profileEmail" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="usuario@email.com" required>
+                        <input id="profile-email" name="profileEmail" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="user@email.com" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-phone">Telefono</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-phone">Phone number</label>
                         <input id="profile-phone" name="profilePhone" type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="+54 9 11 1111-1111">
                     </div>
                     <p data-form-feedback class="text-sm text-red-600 hidden"></p>
                 </div>
                 <div class="px-6 py-4 bg-gray-50 text-right">
-                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-profile-submit>Guardar cambios</button>
+                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-profile-submit>Save changes</button>
                 </div>
             </form>
         </div>
@@ -241,38 +232,41 @@
         <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
             <form data-password-form class="flex flex-col h-full">
                 <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-medium text-gray-900">Cambiar Contrasena</h3>
+                    <h3 class="text-lg font-medium text-gray-900">Change Password</h3>
                 </div>
                 <div class="px-6 py-4 space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="current-password">Contrasena actual</label>
-                        <input id="current-password" name="currentPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Ingrese su Contrasena" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="current-password">Current password</label>
+                        <input id="current-password" name="currentPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Enter your password" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="new-password">Nueva Contrasena</label>
-                        <input id="new-password" name="newPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Minimo 6 caracteres" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="new-password">New password</label>
+                        <input id="new-password" name="newPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Minimum 6 characters" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">Confirmar Contrasena</label>
-                        <input id="confirm-password" name="confirmPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Repita la nueva Contrasena" required>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">Confirm password</label>
+                        <input id="confirm-password" name="confirmPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Re-enter the new password" required>
                     </div>
                     <p data-password-feedback class="text-sm text-red-600 hidden"></p>
                 </div>
                 <div class="px-6 py-4 bg-gray-50 text-right">
-                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-password-submit>Actualizar</button>
+                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-password-submit>Update</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <custom-footer></custom-footer>
+    <custom-footer id="contact"></custom-footer>
 
     <!-- Scripts -->
     <script src="../components/footer.js"></script>
     <script src="../shared/session.js"></script>
     <script>
-      window.__API_BASE_URL__ = document.body.getAttribute("data-api-base-url") || window.__API_BASE_URL__ || "http://localhost:4000/api";
+      window.__API_BASE_URL__ =
+        window.__API_BASE_URL__ ||
+        document.body.getAttribute("data-api-base-url") ||
+        "http://localhost:4000/api";
     </script>
     <script src="header.js"></script>
     <script src="logged_in.js"></script>

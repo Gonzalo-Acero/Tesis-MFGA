@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFGA | Guide</title>
+    <link rel="icon" type="image/png" href="/img/logo_mfga.png">
+    <link rel="stylesheet" href="../header.css">
+    <link rel="stylesheet" href="guide_profile.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'argentina-blue': '#75AADB',
+              'argentina-yellow': '#F6D54A',
+            }
+          }
+        }
+      }
+    </script>
+    <script src="../../env.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800" data-api-base-url="/api" data-requires-auth="true" data-login-url="/Login_Register/Login.html">
+    <nav class="bg-white shadow-sm relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <a href="../logged_in.html" class="text-xl font-bold text-argentina-blue">MFGA</a>
+                    <button id="mobileNavToggle" class="md:hidden text-gray-600 hover:text-argentina-blue focus:outline-none" aria-label="Open menu">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <div
+                  id="navLinks"
+                  class="hidden flex flex-col gap-4 absolute top-full left-0 right-0 bg-white shadow-lg border-b border-gray-100 px-4 py-4 z-40 md:flex md:flex-row md:items-center md:gap-6 md:static md:shadow-none md:border-none md:bg-transparent md:px-0 md:py-0"
+                >
+                    <a href="../logged_in.html#inicio" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Home</a>
+                    <a href="../logged_in.html#conocenos" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">About Us</a>
+                    <a href="../logged_in.html#app-mfga" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">MFGA App</a>
+                    <a href="../logged_in.html#experiencias" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Experiences</a>
+                    <a href="../logged_in.html#contact" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Contact</a>
+                </div>
+                <div class="flex items-center">
+                    <div class="relative ml-3">
+                        <button id="profileButton" class="flex items-center focus:outline-none">
+                            <img data-user-avatar class="h-8 w-8 rounded-full" src="https://static.photos/people/200x200/42" alt="Profile">
+                        </button>
+                        <div
+                          id="profileDropdown"
+                          data-logout-url="/Login_Register/Login.html"
+                          class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none transform transition-all duration-200 ease-out scale-95 opacity-0 z-50"
+                        >
+                            <div class="py-3 px-4 border-b border-gray-200">
+                                <div class="flex items-center space-x-3">
+                                    <img data-user-avatar class="h-10 w-10 rounded-full" src="https://static.photos/people/200x200/42" alt="Profile">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900" data-user-name>MFGA Explorer</p>
+                                        <p class="text-xs text-gray-500" data-user-email>user@example.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-1">
+                                <a href="#" data-profile-action="edit-profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-argentina-blue hover:text-white transition-colors duration-200">
+                                    <i data-feather="user" class="inline mr-2 w-4 h-4"></i> Edit Profile
+                                </a>
+                                <a href="#" data-profile-action="change-email" class="block px-4 py-2 text-sm text-gray-700 hover:bg-argentina-blue hover:text-white transition-colors duration-200">
+                                    <i data-feather="mail" class="inline mr-2 w-4 h-4"></i> Change Email
+                                </a>
+                                <a href="#" data-profile-action="change-password" class="block px-4 py-2 text-sm text-gray-700 hover:bg-argentina-blue hover:text-white transition-colors duration-200">
+                                    <i data-feather="lock" class="inline mr-2 w-4 h-4"></i> Change Password
+                                </a>
+                                <div class="border-t border-gray-200"></div>
+                                <a href="#" data-profile-action="logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
+                                    <i data-feather="log-out" class="inline mr-2 w-4 h-4"></i> Log out
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pb-16">
+        <section class="bg-gradient-to-b from-blue-50 to-white py-10 px-4">
+            <div class="container mx-auto max-w-6xl">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <p class="text-sm uppercase tracking-wide text-blue-500 font-semibold">Guide profile</p>
+                        <h1 id="guideName" class="text-3xl md:text-4xl font-bold text-gray-900">MFGA Guide</h1>
+                    </div>
+                    <a href="audio_guide.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-sm border border-gray-200 text-gray-600 hover:text-argentina-blue hover:border-argentina-blue transition-colors">
+                        <i data-feather="arrow-left" class="h-4 w-4"></i>
+                        Back to Audio Guides
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="container mx-auto max-w-6xl px-4 py-10">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <aside class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <div class="guide-photo">
+                        <div class="guide-photo-placeholder">
+                            <i data-feather="user" class="h-12 w-12 text-gray-300"></i>
+                        </div>
+                    </div>
+                    <button id="openMessageBtn" class="mt-6 w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-argentina-blue text-white font-semibold shadow-sm hover:bg-blue-600 transition-colors">
+                        <i data-feather="message-circle" class="h-5 w-5"></i>
+                        Send message
+                    </button>
+                    <div class="mt-6">
+                        <p class="text-xs uppercase tracking-wide text-gray-400">Average rating</p>
+                        <div class="flex items-center gap-3 mt-2">
+                            <span id="ratingAverage" class="text-2xl font-bold text-gray-900">-</span>
+                            <span id="ratingCount" class="text-sm text-gray-500">(0 votos)</span>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="lg:col-span-2 space-y-8">
+                    <section id="guideDescriptionSection" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hidden">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-1">Guide description</h2>
+                        <p id="guideDescriptionLocation" class="text-sm text-gray-500 mb-4"></p>
+                        <p id="guideDescriptionText" class="text-gray-700 leading-relaxed"></p>
+                    </section>
+
+                    <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Rate this guide</h2>
+                        <div class="flex items-center gap-3">
+                            <div id="ratingControl" class="flex items-center gap-2">
+                                <button class="rating-star" type="button" data-value="1" aria-label="1 estrella">&#9733;</button>
+                                <button class="rating-star" type="button" data-value="2" aria-label="2 estrellas">&#9733;</button>
+                                <button class="rating-star" type="button" data-value="3" aria-label="3 estrellas">&#9733;</button>
+                                <button class="rating-star" type="button" data-value="4" aria-label="4 estrellas">&#9733;</button>
+                                <button class="rating-star" type="button" data-value="5" aria-label="5 estrellas">&#9733;</button>
+                            </div>
+                            <span id="ratingFeedback" class="text-sm text-gray-500">Select a rating.</span>
+                        </div>
+                    </section>
+
+                    <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-semibold text-gray-900">Comments</h2>
+                            <span id="commentsCount" class="text-sm text-gray-500">0 comments</span>
+                        </div>
+                        <form id="commentForm" class="space-y-3">
+                            <textarea id="commentInput" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent" placeholder="Write your comment..."></textarea>
+                            <div class="flex items-center justify-between">
+                                <p id="commentError" class="text-sm text-red-500 hidden"></p>
+                                <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-argentina-yellow text-argentina-blue font-semibold shadow-sm hover:bg-yellow-400 transition-colors">
+                                    <i data-feather="send" class="h-4 w-4"></i>
+                                    Post
+                                </button>
+                            </div>
+                        </form>
+                        <div id="commentsList" class="mt-6 space-y-4"></div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+        <section id="messagePanel" class="container mx-auto max-w-4xl px-4 pb-12 hidden">
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Send a message to the guide</h2>
+                    <button id="closeMessageBtn" class="text-gray-400 hover:text-gray-600" type="button">
+                        <i data-feather="x" class="h-5 w-5"></i>
+                    </button>
+                </div>
+                <form id="messageForm" class="space-y-4">
+                    <textarea id="messageInput" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent" placeholder="Write your message..."></textarea>
+                    <div class="flex items-center justify-between">
+                        <p id="messageError" class="text-sm text-red-500 hidden"></p>
+                        <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-argentina-blue text-white font-semibold shadow-sm hover:bg-blue-600 transition-colors">
+                            <i data-feather="send" class="h-4 w-4"></i>
+                            Enviar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <div id="editProfileModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
+            <form data-profile-form class="flex flex-col h-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Edit profile</h3>
+                </div>
+                <div class="px-6 py-4 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-name">Full name</label>
+                        <input id="profile-name" name="profileName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Full name" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-email">Email</label>
+                        <input id="profile-email" name="profileEmail" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="user@email.com" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-phone">Phone number</label>
+                        <input id="profile-phone" name="profilePhone" type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="+54 9 11 1111-1111">
+                    </div>
+                    <p data-form-feedback class="text-sm text-red-600 hidden"></p>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 text-right">
+                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-profile-submit>Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="changePasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
+            <form data-password-form class="flex flex-col h-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Change Password</h3>
+                </div>
+                <div class="px-6 py-4 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="current-password">Current password</label>
+                        <input id="current-password" name="currentPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Enter your password" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="new-password">New password</label>
+                        <input id="new-password" name="newPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Minimum 6 characters" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">Confirm password</label>
+                        <input id="confirm-password" name="confirmPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Re-enter the new password" required>
+                    </div>
+                    <p data-password-feedback class="text-sm text-red-600 hidden"></p>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 text-right">
+                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-password-submit>Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <custom-footer></custom-footer>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <!-- Components -->
+    <script src="../../shared/session.js"></script>
+    <script>
+      window.__API_BASE_URL__ =
+        window.__API_BASE_URL__ ||
+        document.body.getAttribute("data-api-base-url") ||
+        "http://localhost:4000/api";
+    </script>
+    <script src="../header.js"></script>
+    <script src="../../components/footer.js"></script>
+    <script src="guide_profile.js?v=20260213e"></script>
+    <script>
+      (function applyGuideHeadingFallback() {
+        const guideNameNode = document.getElementById("guideName");
+        if (!guideNameNode) return;
+
+        const params = new URLSearchParams(window.location.search);
+        const fallbackName = localStorage.getItem("mfga:lastSelectedGuideName");
+        const rawGuideName = params.get("name") || fallbackName;
+        if (!rawGuideName) return;
+
+        const normalize = (value) =>
+          (value || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+
+        const byName = new Map([
+          [
+            "dancer miguel fernandez",
+            "I am a professionally trained classical dancer and a true devotee of the performing arts. For over two decades, I graced the stage of the Teatro Colón as a member of the permanent ballet company, and today, I have the honor of sharing its secrets as a senior guide. I truly love my work; transitioning from dancing to storytelling has been a deeply rewarding journey. I believe that understanding the history of a theater like this isn't just about architecture, but about appreciating the discipline and passion that fuel every performance.",
+          ],
+          [
+            "dancer miguel fernandez the voice of adam",
+            "I am a professionally trained classical dancer and a true devotee of the performing arts. For over two decades, I graced the stage of the Teatro Colón as a member of the permanent ballet company, and today, I have the honor of sharing its secrets as a senior guide. I truly love my work; transitioning from dancing to storytelling has been a deeply rewarding journey. I believe that understanding the history of a theater like this isn't just about architecture, but about appreciating the discipline and passion that fuel every performance.",
+          ],
+          [
+            "dr maria lopez",
+            "I am a certified Doctor in Environmental Sciences with an outstanding academic record and a lifelong passion for conservation. Currently, I lead research projects within the Iguazú National Park while working as a freelance consultant for biodiversity initiatives. I started my career in the field years ago, and I am still incredibly happy to be surrounded by this natural wonder every day. I love helping people connect with nature; it is truly gratifying! I believe that exploring the jungle isn't just beneficial for our environment, but also vital for our mental well-being and our sense of global responsibility. 'Protecting Iguazú is preserving a piece of the world’s soul,' and I am here to guide you through that breathtaking experience.",
+          ],
+          [
+            "maria lopez",
+            "I am a certified Doctor in Environmental Sciences with an outstanding academic record and a lifelong passion for conservation. Currently, I lead research projects within the Iguazú National Park while working as a freelance consultant for biodiversity initiatives. I started my career in the field years ago, and I am still incredibly happy to be surrounded by this natural wonder every day. I love helping people connect with nature; it is truly gratifying! I believe that exploring the jungle isn't just beneficial for our environment, but also vital for our mental well-being and our sense of global responsibility. 'Protecting Iguazú is preserving a piece of the world’s soul,' and I am here to guide you through that breathtaking experience.",
+          ],
+          [
+            "prof carlos mendes",
+            "I am a tenured Professor of Urban History and a passionate researcher of Argentine heritage. I currently teach at the University of Buenos Aires and work as an independent historian focusing on the evolution of our city's landmarks. I am deeply enamored with my profession; I began conducting city tours years ago and find immense joy in every walk. I love helping visitors understand the 'why' behind our monuments; it is so fulfilling! I believe that studying urban history is not only essential for cultural identity, but also great for developing critical thinking and a deeper connection to our surroundings.",
+          ],
+          [
+            "prof carlos mendez",
+            "I am a tenured Professor of Urban History and a passionate researcher of Argentine heritage. I currently teach at the University of Buenos Aires and work as an independent historian focusing on the evolution of our city's landmarks. I am deeply enamored with my profession; I began conducting city tours years ago and find immense joy in every walk. I love helping visitors understand the 'why' behind our monuments; it is so fulfilling! I believe that studying urban history is not only essential for cultural identity, but also great for developing critical thinking and a deeper connection to our surroundings.",
+          ],
+          [
+            "biologist ana torres",
+            "I am a qualified Biologist specializing in high-altitude ecosystems and a lover of the great outdoors. Currently, I work for the National Parks Administration in Bariloche and as a freelance mountain ecology consultant. I fell in love with my work the moment I stepped onto the Patagonian slopes years ago, and I am very happy to call this mountain my office. I love helping people realize the importance of our glaciers and forests; it is exceptionally rewarding! I believe that experiencing the mountains is not only great for physical health, but also improves cognitive flexibility and our appreciation for life’s resilience.",
+          ],
+          [
+            "ana torres",
+            "I am a qualified Biologist specializing in high-altitude ecosystems and a lover of the great outdoors. Currently, I work for the National Parks Administration in Bariloche and as a freelance mountain ecology consultant. I fell in love with my work the moment I stepped onto the Patagonian slopes years ago, and I am very happy to call this mountain my office. I love helping people realize the importance of our glaciers and forests; it is exceptionally rewarding! I believe that experiencing the mountains is not only great for physical health, but also improves cognitive flexibility and our appreciation for life’s resilience.",
+          ],
+        ]);
+
+        const normalizedName = normalize(rawGuideName);
+        const description = byName.get(normalizedName);
+        if (!description) return;
+
+        const escapeHtml = (value) =>
+          String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+
+        guideNameNode.innerHTML = `${escapeHtml(rawGuideName)}<span class="block mt-2 text-sm md:text-base font-normal text-gray-600 leading-relaxed">${escapeHtml(description)}</span>`;
+      })();
+    </script>
+    <script>feather.replace();</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+.guide-photo {
+    display: flex;
+    justify-content: center;
+}
+
+.guide-photo-placeholder {
+    height: 180px;
+    width: 180px;
+    border-radius: 24px;
+    background: #f3f4f6;
+    border: 1px dashed #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rating-star {
+    font-size: 1.8rem;
+    color: #d1d5db;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+    line-height: 1;
+}
+
+.rating-star:hover {
+    color: #fbbf24;
+    transform: translateY(-1px);
+}
+
+.rating-star.is-active {
+    color: #f59e0b;
+}
+
+.comment-card {
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+}
+
+.comment-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.toast {
+    position: fixed;
+    top: 5rem;
+    right: 1.5rem;
+    min-width: 220px;
+    background: #111827;
+    color: #ffffff;
+    padding: 0.9rem 1.2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 18px 30px rgba(15, 23, 42, 0.25);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 50;
+}
+
+.toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}

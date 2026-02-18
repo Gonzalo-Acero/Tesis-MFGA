@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFGA | Travel Community</title>
+    <link rel="stylesheet" href="travel_community.css">
+    <link rel="stylesheet" href="../header.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'argentina-blue': '#75AADB',
+              'argentina-yellow': '#F6D54A',
+              'mfgablue': '#8FAED9',
+              'mfgalightblue': '#E3ECFA',
+              'mfgayellow': '#F2DC6D',
+              'mfgadarkyellow': '#E8CD3A'
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+              heading: ['Poppins', 'system-ui', 'sans-serif']
+            },
+            boxShadow: {
+              soft: '0 8px 30px rgba(0, 0, 0, 0.08)',
+              softer: '0 4px 20px rgba(0, 0, 0, 0.05)',
+              card: '0 10px 25px -5px rgba(143, 174, 217, 0.15)'
+            }
+          }
+        }
+      };
+    </script>
+    <script src="../../env.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-sans bg-gray-50 text-gray-800" data-api-base-url="/api" data-requires-auth="true" data-login-url="/Login_Register/Login.html">
+    <nav class="bg-white shadow-sm relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <a href="../logged_in.html" class="text-xl font-bold text-argentina-blue">MFGA</a>
+                    <button id="mobileNavToggle" class="md:hidden text-gray-600 hover:text-argentina-blue focus:outline-none" aria-label="Open menu">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <div
+                  id="navLinks"
+                  class="hidden flex flex-col gap-4 absolute top-full left-0 right-0 bg-white shadow-lg border-b border-gray-100 px-4 py-4 z-40 md:flex md:flex-row md:items-center md:gap-6 md:static md:shadow-none md:border-none md:bg-transparent md:px-0 md:py-0"
+                >
+                    <a href="../logged_in.html#inicio" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Home</a>
+                    <a href="../logged_in.html#conocenos" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">About Us</a>
+                    <a href="../logged_in.html#app-mfga" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">MFGA App</a>
+                    <a href="../logged_in.html#experiencias" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Experiences</a>
+                    <a href="../logged_in.html#contact" class="text-gray-700 font-medium hover:text-argentina-blue transition-colors">Contact</a>
+                </div>
+                <div class="flex items-center">
+                    <div class="relative ml-3">
+                        <button id="profileButton" class="flex items-center focus:outline-none">
+                            <img data-user-avatar class="h-8 w-8 rounded-full" src="https://static.photos/people/200x200/42" alt="Profile">
+                        </button>
+                        <div
+                          id="profileDropdown"
+                          data-logout-url="/Login_Register/Login.html"
+                          class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none transform transition-all duration-200 ease-out scale-95 opacity-0 z-50"
+                        >
+                            <div class="py-3 px-4 border-b border-gray-200">
+                                <div class="flex items-center space-x-3">
+                                    <img data-user-avatar class="h-10 w-10 rounded-full" src="https://static.photos/people/200x200/42" alt="Profile">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900" data-user-name>MFGA Explorer</p>
+                                        <p class="text-xs text-gray-500" data-user-email>user@example.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-1">
+                                <a href="#" data-profile-action="edit-profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-argentina-blue hover:text-white transition-colors duration-200">
+                                    <i data-feather="user" class="inline mr-2 w-4 h-4"></i> Edit Profile
+                                </a>
+                                <a href="#" data-profile-action="change-email" class="block px-4 py-2 text-sm text-gray-700 hover:bg-argentina-blue hover:text-white transition-colors duration-200">
+                                    <i data-feather="mail" class="inline mr-2 w-4 h-4"></i> Change Email
+                                </a>
+                                <a href="#" data-profile-action="change-password" class="block px-4 py-2 text-sm text-gray-700 hover:bg-argentina-blue hover:text-white transition-colors duration-200">
+                                    <i data-feather="lock" class="inline mr-2 w-4 h-4"></i> Change Password
+                                </a>
+                                <div class="border-t border-gray-200"></div>
+                                <a href="#" data-profile-action="logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
+                                    <i data-feather="log-out" class="inline mr-2 w-4 h-4"></i> Log out
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="min-h-screen">
+        <section class="bg-gradient-to-r from-mfgayellow to-mfgadarkyellow py-12 md:py-20">
+            <div class="container mx-auto px-4 md:px-8">
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/2 text-center md:text-left">
+                        <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">Travel Community</h1>
+                        <p class="text-xl text-gray-800/90 mb-8">Connect with fellow explorers and share your journey across Argentina.</p>
+                        <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                            <a href="#communityFeed" class="btn-primary">Explore feed</a>
+                            <a href="#groupsSection" class="btn-secondary">Find groups</a>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 flex justify-center">
+                        <div class="relative hero-visual">
+                            <div class="w-72 h-72 md:w-96 md:h-96 rounded-full bg-white/35 border-8 border-white/50 shadow-2xl flex items-center justify-center">
+                                <i data-feather="users" class="w-40 h-40 md:w-48 md:h-48 text-gray-900/80"></i>
+                            </div>
+                            <div class="absolute -top-4 -right-4 bg-mfgablue text-white p-4 rounded-2xl shadow-xl">
+                                <i data-feather="map-pin" class="w-8 h-8"></i>
+                            </div>
+                            <div class="absolute -bottom-6 -left-6 bg-white text-gray-800 p-4 rounded-2xl shadow-xl">
+                                <i data-feather="heart" class="w-8 h-8 text-mfgadarkyellow"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-14 bg-white">
+            <div class="container mx-auto px-4 md:px-8">
+                <h2 class="font-heading text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10">How We Connect</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="highlight-card">
+                        <div class="icon-wrapper bg-mfgayellow/25 text-mfgadarkyellow">
+                            <i data-feather="user-plus" class="w-10 h-10"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mt-6 mb-3">Meet travelers</h3>
+                        <p class="text-gray-600">Find people exploring similar regions, share plans, and discover partners for your next route.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <div class="icon-wrapper bg-mfgablue/20 text-mfgablue">
+                            <i data-feather="message-circle" class="w-10 h-10"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mt-6 mb-3">Share experiences</h3>
+                        <p class="text-gray-600">Post practical tips, photos, and stories to help others travel smarter and safer.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <div class="icon-wrapper bg-mfgayellow/25 text-mfgadarkyellow">
+                            <i data-feather="compass" class="w-10 h-10"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mt-6 mb-3">Plan together</h3>
+                        <p class="text-gray-600">Join interest groups and coordinate upcoming events in cities and natural destinations.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="communityFeed" class="py-14 bg-gray-50">
+            <div class="container mx-auto px-4 md:px-8">
+                <div class="max-w-5xl mx-auto">
+                    <h2 class="font-heading text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10">Community Feed</h2>
+
+                    <div class="feed-composer-card mb-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <i data-feather="edit-3" class="w-5 h-5 text-mfgablue"></i>
+                            Share something with the community
+                        </h3>
+                        <form id="postComposerForm" class="space-y-4">
+                            <textarea id="postComposerInput" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-mfgablue/40 focus:border-mfgablue" placeholder="What did you discover in Argentina today?" required></textarea>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <select id="postCategorySelect" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-mfgablue/40">
+                                    <option value="tips">Travel Tips</option>
+                                    <option value="food">Food</option>
+                                    <option value="adventure">Adventure</option>
+                                    <option value="culture">Culture</option>
+                                    <option value="question">Question</option>
+                                </select>
+                                <input id="postLocationInput" type="text" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-mfgablue/40" placeholder="Location (e.g., Mendoza)">
+                                <select id="postRegionSelect" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-mfgablue/40"></select>
+                            </div>
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                <p id="composerFeedback" class="text-sm hidden"></p>
+                                <button type="submit" class="inline-flex items-center justify-center gap-2 bg-mfgablue hover:bg-mfgablue/90 text-white font-medium py-2.5 px-5 rounded-xl transition duration-300">
+                                    <i data-feather="send" class="w-4 h-4"></i>
+                                    Publish post
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-gray-100 shadow-card p-4 md:p-6 mb-8">
+                        <div class="flex flex-col lg:flex-row gap-4 lg:items-center">
+                            <div class="relative flex-1">
+                                <i data-feather="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                                <input id="feedSearchInput" type="text" class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-mfgablue/40 focus:border-mfgablue" placeholder="Search by traveler, location, or text">
+                            </div>
+                            <div id="categoryFilterContainer" class="flex flex-wrap gap-2">
+                                <button class="filter-chip active" data-category="all">All</button>
+                                <button class="filter-chip" data-category="tips">Tips</button>
+                                <button class="filter-chip" data-category="food">Food</button>
+                                <button class="filter-chip" data-category="adventure">Adventure</button>
+                                <button class="filter-chip" data-category="culture">Culture</button>
+                                <button class="filter-chip" data-category="question">Questions</button>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex flex-wrap gap-3">
+                            <div class="relative">
+                                <button id="regionFilterBtn" class="inline-flex items-center gap-2 bg-white border border-gray-200 hover:border-mfgablue text-gray-700 hover:text-mfgablue font-medium py-2 px-4 rounded-xl transition duration-300">
+                                    <i data-feather="map" class="w-4 h-4"></i>
+                                    All Regions
+                                    <i data-feather="chevron-down" class="w-4 h-4"></i>
+                                </button>
+                                <div id="regionDropdown" class="hidden absolute z-20 mt-2 w-52 max-h-64 overflow-y-auto bg-white rounded-xl shadow-soft border border-gray-100 py-2"></div>
+                            </div>
+                            <button id="clearFeedFiltersBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-medium py-2 px-4 rounded-xl transition duration-300">
+                                Clear filters
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="feedLoadingIndicator" class="text-center py-12 hidden">
+                        <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-mfgablue"></div>
+                        <p class="mt-4 text-gray-600">Loading community posts...</p>
+                    </div>
+
+                    <div id="communityFeedList" class="space-y-6"></div>
+
+                    <div id="noFeedResults" class="hidden text-center py-12 bg-white rounded-2xl border border-gray-100">
+                        <i data-feather="inbox" class="w-14 h-14 text-gray-400 mx-auto mb-3"></i>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-1">No posts found</h3>
+                        <p class="text-gray-500">Try a different filter or search term.</p>
+                    </div>
+
+                    <div class="text-center mt-8">
+                        <button id="loadMorePostsBtn" class="btn-secondary hidden">Load more posts</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="groupsSection" class="py-14 bg-white">
+            <div class="container mx-auto px-4 md:px-8">
+                <h2 class="font-heading text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10">Groups &amp; Interests</h2>
+                <div id="groupsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+            </div>
+        </section>
+
+        <section id="meetupsSection" class="py-14 bg-gray-50">
+            <div class="container mx-auto px-4 md:px-8">
+                <h2 class="font-heading text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10">Upcoming Meetups</h2>
+                <div id="meetupsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+
+        <section class="py-14 bg-gradient-to-r from-mfgablue to-argentina-blue">
+            <div class="container mx-auto px-4 md:px-8 text-center">
+                <h2 class="font-heading text-3xl md:text-4xl font-bold text-white mb-4">Join the MFGA Travel Community today</h2>
+                <p class="text-xl text-white/90 max-w-2xl mx-auto mb-8">Follow routes, meet local explorers, and get recommendations from people who are already there.</p>
+                <a href="#communityFeed" class="btn-cta-primary">Start now</a>
+            </div>
+        </section>
+    </main>
+
+    <div id="editProfileModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
+            <form data-profile-form class="flex flex-col h-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Edit profile</h3>
+                </div>
+                <div class="px-6 py-4 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-name">Full name</label>
+                        <input id="profile-name" name="profileName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Full name" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-email">Email</label>
+                        <input id="profile-email" name="profileEmail" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="user@email.com" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="profile-phone">Phone number</label>
+                        <input id="profile-phone" name="profilePhone" type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="+54 9 11 1111-1111">
+                    </div>
+                    <p data-form-feedback class="text-sm text-red-600 hidden"></p>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 text-right">
+                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-profile-submit>Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="changePasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div data-modal-panel class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
+            <form data-password-form class="flex flex-col h-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Change Password</h3>
+                </div>
+                <div class="px-6 py-4 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="current-password">Current password</label>
+                        <input id="current-password" name="currentPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Enter your password" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="new-password">New password</label>
+                        <input id="new-password" name="newPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Minimum 6 characters" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">Confirm password</label>
+                        <input id="confirm-password" name="confirmPassword" type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-argentina-blue" placeholder="Re-enter the new password" required>
+                    </div>
+                    <p data-password-feedback class="text-sm text-red-600 hidden"></p>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 text-right">
+                    <button type="button" data-modal-close class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-argentina-blue text-white rounded-md" data-password-submit>Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <custom-footer></custom-footer>
+
+    <script src="../../shared/session.js"></script>
+    <script>
+      window.__API_BASE_URL__ =
+        window.__API_BASE_URL__ ||
+        document.body.getAttribute("data-api-base-url") ||
+        "http://localhost:4000/api";
+    </script>
+    <script src="../header.js"></script>
+    <script src="../../components/footer.js"></script>
+    <script src="travel_community.js"></script>
+    <script>feather.replace();</script>
+</body>
+</html>

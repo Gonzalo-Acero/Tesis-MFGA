@@ -1,0 +1,192 @@
+/* Main Styles for MFGA Nearby Attractions */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #8FAED9;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #7A9BC9;
+}
+
+/* Hide scrollbar for carousel but keep functionality */
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+}
+
+/* Animation classes */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Custom utility classes */
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(143, 174, 217, 0.2);
+}
+
+/* Category tag colors */
+.category-nature {
+    background-color: rgba(76, 175, 80, 0.15);
+    color: #2E7D32;
+}
+
+.category-culture {
+    background-color: rgba(156, 39, 176, 0.15);
+    color: #7B1FA2;
+}
+
+.category-food {
+    background-color: rgba(255, 152, 0, 0.15);
+    color: #EF6C00;
+}
+
+.category-adventure {
+    background-color: rgba(244, 67, 54, 0.15);
+    color: #D32F2F;
+}
+
+/* Loading spinner */
+.spinner {
+    border: 3px solid rgba(143, 174, 217, 0.3);
+    border-radius: 50%;
+    border-top: 3px solid #8FAED9;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Interactive map */
+.nearby-map {
+    width: 100%;
+    height: clamp(280px, 58vh, 520px);
+}
+
+.nearby-map .leaflet-container {
+    font-family: Inter, system-ui, sans-serif;
+}
+
+.map-status {
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 9999px;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+    z-index: 500;
+    pointer-events: none;
+}
+
+.map-status-info {
+    background: rgba(219, 234, 254, 0.95);
+    color: #1d4ed8;
+}
+
+.map-status-warning {
+    background: rgba(254, 243, 199, 0.95);
+    color: #92400e;
+}
+
+.map-status-error {
+    background: rgba(254, 226, 226, 0.95);
+    color: #991b1b;
+}
+
+.map-marker-wrapper {
+    background: transparent;
+    border: none;
+}
+
+.map-marker-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    display: block;
+    background: #8FAED9;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.35);
+    transition: transform 0.18s ease, background-color 0.18s ease;
+}
+
+.map-marker-dot.is-active {
+    background: #f59e0b;
+    transform: scale(1.15);
+}
+
+.map-focused-card {
+    outline: 2px solid #8FAED9;
+    outline-offset: 2px;
+    box-shadow: 0 14px 30px rgba(143, 174, 217, 0.25);
+}
+
+.sort-status {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+
+.sort-status-rating {
+    color: #4b5563;
+    background: #f3f4f6;
+    border-color: #e5e7eb;
+}
+
+.sort-status-nearest {
+    color: #1d4ed8;
+    background: #dbeafe;
+    border-color: #93c5fd;
+}
+

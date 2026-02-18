@@ -2,7 +2,7 @@ const resolveApiBaseUrl = () => {
   const candidate =
     window.__API_BASE_URL__ ||
     document.body.getAttribute("data-api-base-url") ||
-    "http://localhost:4000";
+    "http://localhost:4000/api";
   return candidate.replace(/\/+$/, "");
 };
 
@@ -67,7 +67,7 @@ const toggleButtonState = (button, loading) => {
 
   if (loading) {
     button.dataset.originalHtml = button.dataset.originalHtml || button.innerHTML;
-    button.innerHTML = `<svg class="animate-spin h-5 w-5 text-white mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg> Registrando...`;
+    button.innerHTML = `<svg class="animate-spin h-5 w-5 text-white mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg> Registering...`;
   } else if (button.dataset.originalHtml) {
     button.innerHTML = button.dataset.originalHtml;
     delete button.dataset.originalHtml;
@@ -135,7 +135,7 @@ const attachRegisterHandlers = () => {
       toggleButtonState(submitButton, true);
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/users`, {
+        const response = await fetch(`${API_BASE_URL}/users`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

@@ -1,20 +1,20 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co'; // <- reemplaza
-const SUPABASE_ANON_KEY = 'TU_ANON_KEY'; // <- reemplaza
+const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co'; // <- replace
+const SUPABASE_ANON_KEY = 'TU_ANON_KEY'; // <- replace
 
-// === NEW: resolver base URL para API propia ===
+// Resolve base URL for the custom API
 const resolveApiBaseUrl = () => {
   const candidate =
     window._API_BASE_URL_ ||
     window.__API_BASE_URL__ ||
     document.body.getAttribute("data-api-base-url") ||
-    "http://localhost:4000";
+    "http://localhost:4000/api";
   return candidate.replace(/\/+$/, "");
 };
 const API_BASE_URL = resolveApiBaseUrl();
 const useCustomApi = !!(document.body.getAttribute("data-api-base-url") || window._API_BASE_URL_ || window.__API_BASE_URL__);
-// === end new ===
+// End custom API base URL resolution
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -32,7 +32,7 @@ const saveSession = (session) => {
       window.localStorage.setItem("mfga_session", serialized);
     }
   } catch (error) {
-    console.warn("No se pudo persistir la sesión:", error);
+    console.warn("Could not persist the session:", error);
   }
 };
 
@@ -51,7 +51,7 @@ const normalizeUserData = (user, { email = "", name = "" } = {}) => {
   const fallbackEmail = email ?? "";
   return {
     UserId: null,
-    Name: name || fallbackEmail.split("@")[0] || "Explorador MFGA",
+    Name: name || fallbackEmail.split("@")[0] || "MFGA Explorer",
     Email: fallbackEmail,
   };
 };
@@ -66,7 +66,7 @@ const mapSupabaseUser = (user) => {
     Name:
       user.user_metadata?.full_name ||
       user.email?.split("@")[0] ||
-      "Explorador MFGA",
+      "MFGA Explorer",
     Email: user.email ?? "",
   };
 };
@@ -154,14 +154,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!emailValid && loginEmailError) loginEmailError.classList.remove("hidden");
       if (!passwordValid && loginPasswordError) loginPasswordError.classList.remove("hidden");
       if (!emailValid || !passwordValid) return;
-
-      // Deshabilitar botón si existe
+      // Disable submit button if present
       const submitBtn = loginForm.querySelector('button[type="submit"]');
       if (submitBtn) submitBtn.disabled = true;
 
       try {
         if (useCustomApi) {
-          // Validación contra tu backend (POST /auth/login) — ajusta la ruta según tu API
+          // Validate against your backend (POST /auth/login) - adjust route as needed
           const res = await fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -169,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
           });
           const payload = await res.json().catch(() => ({}));
           if (!res.ok) {
-            const message = payload?.message || 'Credenciales inválidas';
+            const message = payload?.message || 'Invalid credentials';
             setGeneralError(message);
             if (submitBtn) submitBtn.disabled = false;
             return;
@@ -187,11 +186,11 @@ document.addEventListener("DOMContentLoaded", () => {
           setGeneralError("");
           window.location.href = '../after_login/logged_in.html';
         } else {
-          // Fallback: usar Supabase Auth (si lo prefieres)
+          // Fallback: use Supabase Auth if preferred
           const { data, error } = await supabase.auth.signInWithPassword({ email, password });
           if (error) {
             console.error('Login error', error);
-            setGeneralError(error.message || 'Error al iniciar sesión');
+            setGeneralError(error.message || 'Error signing in');
             if (submitBtn) submitBtn.disabled = false;
             return;
           }
@@ -206,13 +205,13 @@ document.addEventListener("DOMContentLoaded", () => {
             setGeneralError("");
             window.location.href = '../after_login/logged_in.html';
           } else {
-            setGeneralError('No se pudo iniciar sesión con estas credenciales.');
+            setGeneralError('Could not sign in with these credentials.');
             if (submitBtn) submitBtn.disabled = false;
           }
         }
        } catch (err) {
          console.error(err);
-         setGeneralError('Error inesperado al iniciar sesión.');
+         setGeneralError('Unexpected sign-in error.');
          if (submitBtn) submitBtn.disabled = false;
         }
     });
