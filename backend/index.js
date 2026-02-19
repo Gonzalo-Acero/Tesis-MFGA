@@ -6,6 +6,7 @@ import { userRouter } from './routes/userRoutes.js';
 import { authRouter } from './routes/authRoutes.js';
 import { guideRouter } from './routes/guideRoutes.js';
 import { attractionRouter } from './routes/attractionRoutes.js';
+import { communityRouter } from './routes/communityRoutes.js';
 import { testConnection } from './config/ConnectDatabase.js';
 
 process.loadEnvFile();
@@ -24,6 +25,7 @@ app.use('/api/users', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/guides', guideRouter);
 app.use('/api/attractions', attractionRouter);
+app.use('/api/community', communityRouter);
 
 const startServer = async () => {
   try {
