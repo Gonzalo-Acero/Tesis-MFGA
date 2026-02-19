@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Place Details — MFGA</title>
+  <meta name="description" content="Detailed information about this Argentine destination.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./place.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <span class="logo-mfga">MFGA</span>
+        <span class="logo-dot">·</span>
+        <span class="logo-sub">Argentina</span>
+      </a>
+      <nav class="header-nav">
+        <a href="/" class="nav-link">Home</a>
+        <a href="./discover.html" class="nav-link">Discover</a>
+        <a href="#" class="nav-link">Itineraries</a>
+        <a href="#" class="nav-link">About</a>
+      </nav>
+      <a href="./discover.html" class="back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        Back to Discover
+      </a>
+    </div>
+  </header>
+
+  <!-- DYNAMIC CONTENT — injected by place.js -->
+  <main id="placeMain">
+    <!-- Loading state -->
+    <div class="loading-state" id="loadingState">
+      <div class="hero-skeleton">
+        <div class="skeleton skeleton-full"></div>
+      </div>
+      <div class="loading-content">
+        <div class="skeleton skeleton-title-l"></div>
+        <div class="skeleton skeleton-text-l"></div>
+        <div class="skeleton skeleton-text-l short"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="logo-mfga">MFGA</span>
+      <p>© 2025 Made For Go Argentina. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="./place.js"></script>
+</body>
+</html>

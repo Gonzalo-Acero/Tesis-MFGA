@@ -1,0 +1,230 @@
+[
+  {
+    "id": "1",
+    "name": "Perito Moreno Glacier",
+    "city": "El Calafate",
+    "province": "Santa Cruz",
+    "category": "Nature",
+    "tag": "UNESCO Site",
+    "description": "One of the world's most awe-inspiring natural wonders, the Perito Moreno Glacier stretches 30 km and towers 60 metres above Lake Argentino.",
+    "image": "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80",
+    "heroImage": "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1400&q=90",
+    "gallery": [
+      "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=80",
+      "https://images.unsplash.com/photo-1566438480900-0609be27a4be?w=800&q=80",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80",
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80"
+    ],
+    "highlights": [
+      "Watch massive ice blocks calve into the turquoise lake",
+      "Walk the elevated boardwalks for panoramic glacier views",
+      "Take an ice trekking adventure on the glacier surface",
+      "Witness the spectacular rupture cycle every 4–5 years",
+      "Spot Andean condors soaring above the ice field"
+    ],
+    "bestTimeToVisit": "October – April",
+    "estimatedBudget": "$80–$150 USD/day",
+    "duration": "1–2 days",
+    "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11830.167!2d-73.0497!3d-50.4978!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xbd4d4e5e5e5e5e5e%3A0x0!2sGlaciar+Perito+Moreno!5e0!3m2!1sen!2sar!4v1700000000000",
+    "audioGuides": [
+      { "title": "Glacier Formation & History", "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+      { "title": "Wildlife of Los Glaciares", "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" }
+    ],
+    "tips": [
+      "Arrive early to beat the crowds and get the best light for photos.",
+      "Bring layered clothing — the glacial winds can be very cold even in summer.",
+      "Book ice trekking tours at least 48 hours in advance.",
+      "The park entrance fee is ~$25 USD for foreigners."
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Buenos Aires",
+    "city": "Buenos Aires",
+    "province": "Buenos Aires",
+    "category": "City",
+    "tag": "Capital City",
+    "description": "The vibrant capital of Argentina blends European architecture with Latin passion — tango halls, world-class steakhouses, colourful La Boca, and a buzzing nightlife.",
+    "image": "https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=600&q=80",
+    "heroImage": "https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=1400&q=90",
+    "gallery": [
+      "https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=800&q=80",
+      "https://images.unsplash.com/photo-1548783300-4d4d4d4d4d4d?w=800&q=80",
+      "https://images.unsplash.com/photo-1612294037637-ec400d0e5d97?w=800&q=80",
+      "https://images.unsplash.com/photo-1552353617-3bfd679b3bdd?w=800&q=80"
+    ],
+    "highlights": [
+      "Explore the colourful Caminito street in La Boca neighbourhood",
+      "Watch a live tango show in San Telmo or Palermo",
+      "Visit the iconic Recoleta Cemetery — final resting place of Eva Perón",
+      "Stroll the wide Avenida 9 de Julio — the world's widest boulevard",
+      "Dine on a world-famous Argentine asado"
+    ],
+    "bestTimeToVisit": "March – May, Sept – Nov",
+    "estimatedBudget": "$60–$120 USD/day",
+    "duration": "3–5 days",
+    "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d208838.55!2d-58.5661!3d-34.6118!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcca3b4ef90cbd%3A0xa0b3812e88e88e55!2sBuenos+Aires!5e0!3m2!1sen!2sar!4v1700000000000",
+    "audioGuides": [
+      { "title": "History of Buenos Aires", "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+      { "title": "Tango & Culture Walking Tour", "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
+    ],
+    "tips": [
+      "Use the Subte (metro) to get around — it's cheap and efficient.",
+      "Avoid peak summer (December–February) as the city can get very humid.",
+      "Many restaurants don't open for dinner until 9 PM — embrace the late schedule.",
+      "Exchange money at official exchange houses (casas de cambio) for the best rates."
+    ]
+  },
+  {
+    "id": "3",
+    "name": "Iguazú Falls",
+    "city": "Puerto Iguazú",
+    "province": "Misiones",
+    "category": "Nature",
+    "tag": "7th Wonder",
+    "description": "Wider than Niagara and taller than Victoria Falls, Iguazú is a network of 275 waterfalls spanning nearly 3 km across the Argentine-Brazilian border.",
+    "image": "https://images.unsplash.com/photo-1544015759-237f2a4ac73f?w=600&q=80",
+    "heroImage": "https://images.unsplash.com/photo-1544015759-237f2a4ac73f?w=1400&q=90",
+    "gallery": [
+      "https://images.unsplash.com/photo-1544015759-237f2a4ac73f?w=800&q=80",
+      "https://images.unsplash.com/photo-1518457607834-6e8d80c183c5?w=800&q=80",
+      "https://images.unsplash.com/photo-1612789083373-1dab5eda2e6d?w=800&q=80",
+      "https://images.unsplash.com/photo-1502920514313-52581002a659?w=800&q=80"
+    ],
+    "highlights": [
+      "Stand at the Garganta del Diablo (Devil's Throat) viewpoint",
+      "Take a zodiac boat ride under the spray of the falls",
+      "Spot toucans, coatis, and butterflies on jungle trails",
+      "Visit both the Argentine and Brazilian sides for full views",
+      "Sunrise visit for golden light and zero crowds"
+    ],
+    "bestTimeToVisit": "August – November",
+    "estimatedBudget": "$70–$130 USD/day",
+    "duration": "2–3 days",
+    "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30000!2d-54.4426!3d-25.6953!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94f6e9b5b5b5b5b5%3A0x0!2sCataratas+del+Iguaz%C3%BA!5e0!3m2!1sen!2sar!4v1700000000000",
+    "audioGuides": [
+      { "title": "The Power of Iguazú", "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+      { "title": "Jungle Wildlife Guide", "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" }
+    ],
+    "tips": [
+      "Wear a waterproof poncho or bring a full change of clothes for the boat ride.",
+      "The Argentine side has more trails and closer waterfall access than the Brazilian side.",
+      "Go early in the morning — the park gets extremely busy by noon.",
+      "The park is inside Iguazú National Park; entry is ~$30 USD for foreigners."
+    ]
+  },
+  {
+    "id": "4",
+    "name": "Mendoza Wine Region",
+    "city": "Mendoza",
+    "province": "Mendoza",
+    "category": "Culture",
+    "tag": "Wine Country",
+    "description": "Argentina's wine capital nestled at the foot of the Andes produces some of the world's finest Malbec. Cycle through vineyards and taste wine with mountain views.",
+    "image": "https://images.unsplash.com/photo-1474314881477-04c4aac40a0e?w=600&q=80",
+    "heroImage": "https://images.unsplash.com/photo-1474314881477-04c4aac40a0e?w=1400&q=90",
+    "gallery": [
+      "https://images.unsplash.com/photo-1474314881477-04c4aac40a0e?w=800&q=80",
+      "https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?w=800&q=80",
+      "https://images.unsplash.com/photo-1510076857177-7470076d4098?w=800&q=80",
+      "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&q=80"
+    ],
+    "highlights": [
+      "Cycle the vineyard routes of Maipú and Luján de Cuyo",
+      "Taste world-class Malbec at boutique bodegas",
+      "Enjoy an olive oil tasting paired with local cheeses",
+      "Day trip to Aconcagua — highest peak in the Americas",
+      "Visit during Vendimia harvest festival (March)"
+    ],
+    "bestTimeToVisit": "March – May",
+    "estimatedBudget": "$55–$110 USD/day",
+    "duration": "2–4 days",
+    "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d110000!2d-68.8458!3d-32.8895!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x967e09ae44b4e71d%3A0x3e2fb01b0b7b14c7!2sMendoza!5e0!3m2!1sen!2sar!4v1700000000000",
+    "audioGuides": [
+      { "title": "The Art of Argentine Malbec", "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" },
+      { "title": "Mendoza City Walking Tour", "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" }
+    ],
+    "tips": [
+      "Rent a bicycle in Maipú — the flat vineyard routes are perfect for cycling.",
+      "Book winery tours in advance, especially during harvest season.",
+      "The city itself has beautiful tree-lined streets and excellent restaurants.",
+      "Pair your Malbec with a local empanada for an authentic experience."
+    ]
+  },
+  {
+    "id": "5",
+    "name": "Bariloche & Patagonia",
+    "city": "San Carlos de Bariloche",
+    "province": "Río Negro",
+    "category": "Adventure",
+    "tag": "Mountain Escape",
+    "description": "The Swiss-alpine-meets-Patagonia town on the shores of Nahuel Huapi Lake — hike, ski, kayak, and indulge in legendary Argentine chocolate.",
+    "image": "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=600&q=80",
+    "heroImage": "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1400&q=90",
+    "gallery": [
+      "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800&q=80",
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
+      "https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=800&q=80",
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&q=80"
+    ],
+    "highlights": [
+      "Hike the Cerro Catedral circuit for Andean panoramas",
+      "Ski or snowboard at Cerro Catedral ski resort (June–Sept)",
+      "Kayak on the crystal-clear Nahuel Huapi Lake",
+      "Drive the scenic Ruta de los Siete Lagos",
+      "Sample artisan chocolate at Bariloche's famous chocolate shops"
+    ],
+    "bestTimeToVisit": "Dec–Feb (summer), Jun–Aug (ski)",
+    "estimatedBudget": "$65–$130 USD/day",
+    "duration": "3–5 days",
+    "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d100000!2d-71.3103!3d-41.1335!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x961a89af0ab2a3e5%3A0xd7d90a4ceb9c0af4!2sBariloche!5e0!3m2!1sen!2sar!4v1700000000000",
+    "audioGuides": [
+      { "title": "Bariloche & the Lake District", "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
+      { "title": "Andean Trekking Guide", "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" }
+    ],
+    "tips": [
+      "The cable car to Cerro Catedral summit is worth every peso for the views.",
+      "Book accommodation months in advance for ski season (July–August).",
+      "Try the local cerveza artesanal (craft beer) scene alongside the chocolate.",
+      "Colectivo buses connect most key spots — a car is not required."
+    ]
+  },
+  {
+    "id": "6",
+    "name": "Salta & the Northwest",
+    "city": "Salta",
+    "province": "Salta",
+    "category": "Culture",
+    "tag": "Colonial Heritage",
+    "description": "Known as 'La Linda' (The Beautiful), Salta enchants with colonial baroque architecture, Andean culture, the spectacular Quebrada de Humahuaca, and the cloud-forest Yungas.",
+    "image": "https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=600&q=80",
+    "heroImage": "https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=1400&q=90",
+    "gallery": [
+      "https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=800&q=80",
+      "https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=800&q=80",
+      "https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=800&q=80",
+      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80"
+    ],
+    "highlights": [
+      "Explore the UNESCO-listed Quebrada de Humahuaca valley",
+      "Ride the Train to the Clouds — the world's highest railway",
+      "Visit the baroque Cathedral and MAAM museum in Salta city",
+      "Taste traditional Andean foods: humitas, tamales, and locro",
+      "See the rainbow-striped Cerro de los Siete Colores in Purmamarca"
+    ],
+    "bestTimeToVisit": "April – October",
+    "estimatedBudget": "$50–$100 USD/day",
+    "duration": "3–5 days",
+    "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d100000!2d-65.4117!3d-24.7821!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x941bc2b41561fc23%3A0x735438d54498e007!2sSalta!5e0!3m2!1sen!2sar!4v1700000000000",
+    "audioGuides": [
+      { "title": "Colonial Salta City Tour", "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3" },
+      { "title": "The Quebrada de Humahuaca", "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3" }
+    ],
+    "tips": [
+      "Altitude sickness can affect visitors — acclimatize slowly and drink mate coca tea.",
+      "Hire a local guide for the Quebrada de Humahuaca for the best cultural context.",
+      "The Tren a las Nubes (Train to the Clouds) requires advance booking.",
+      "Markets in Purmamarca sell excellent artisan textiles and silver jewellery."
+    ]
+  }
+]
