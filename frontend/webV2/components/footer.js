@@ -154,7 +154,7 @@ class CustomFooter extends HTMLElement {
             </ul>
           </div>
           
-          <div class="footer-links">
+          <div class="footer-links" id="contact-info">
             <h3>Contact Info</h3>
             <ul>
               <li><i data-feather="mail" class="mr-2"></i> info@mfga.com</li>
@@ -171,6 +171,24 @@ class CustomFooter extends HTMLElement {
     `;
     
     feather.replace();
+
+    this.handleHashContact = () => {
+      if (window.location.hash !== '#contact') return;
+      const contactInfo = this.shadowRoot.getElementById('contact-info');
+      if (!contactInfo) return;
+      requestAnimationFrame(() => {
+        contactInfo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    };
+
+    window.addEventListener('hashchange', this.handleHashContact);
+    this.handleHashContact();
+  }
+
+  disconnectedCallback() {
+    if (this.handleHashContact) {
+      window.removeEventListener('hashchange', this.handleHashContact);
+    }
   }
 }
 
