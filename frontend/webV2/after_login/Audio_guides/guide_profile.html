@@ -105,8 +105,16 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <aside class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                     <div class="guide-photo">
-                        <div class="guide-photo-placeholder">
-                            <i data-feather="user" class="h-12 w-12 text-gray-300"></i>
+                        <div class="guide-photo-frame">
+                            <img
+                                id="guideProfileImage"
+                                class="guide-photo-image hidden"
+                                src=""
+                                alt="Guide profile photo"
+                            >
+                            <div id="guidePhotoPlaceholder" class="guide-photo-placeholder">
+                                <i data-feather="user" class="h-12 w-12 text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                     <button id="openMessageBtn" class="mt-6 w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-argentina-blue text-white font-semibold shadow-sm hover:bg-blue-600 transition-colors">

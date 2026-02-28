@@ -47,6 +47,14 @@ const destinations = [
         description: "One of the world's most spectacular waterfalls.",
         category: "nature",
         tag: "Nature"
+    },
+    {
+        id: 7,
+        name: "Mar del Plata",
+        image: "https://static.photos/nature/640x360/107",
+        description: "A beautiful coastal city with golden beaches.",
+        category: "nature",
+        tag: "Nature"
     }
 ];
 

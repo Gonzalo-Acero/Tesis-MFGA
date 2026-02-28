@@ -31,6 +31,8 @@ const buildAuthHeaders = () => {
 
 const elements = {
   guideName: document.getElementById("guideName"),
+  guideProfileImage: document.getElementById("guideProfileImage"),
+  guidePhotoPlaceholder: document.getElementById("guidePhotoPlaceholder"),
   guideDescriptionSection: document.getElementById("guideDescriptionSection"),
   guideDescriptionLocation: document.getElementById("guideDescriptionLocation"),
   guideDescriptionText: document.getElementById("guideDescriptionText"),
@@ -65,12 +67,14 @@ const GUIDE_PROFILE_DESCRIPTIONS = [
       "Dancer Miguel Fernandez (The Voice of Adam)",
       "Miguel Fernandez",
     ],
+    image: "AudioGuides/dancer-miguel-fernandez-profile.jpeg",
     location: "Teatro Colón",
     description:
       "I am a professionally trained classical dancer and a true devotee of the performing arts. For over two decades, I graced the stage of the Teatro Colón as a member of the permanent ballet company, and today, I have the honor of sharing its secrets as a senior guide. I truly love my work; transitioning from dancing to storytelling has been a deeply rewarding journey. I believe that understanding the history of a theater like this isn't just about architecture, but about appreciating the discipline and passion that fuel every performance.",
   },
   {
     names: ["Dr. Maria Lopez", "Maria Lopez"],
+    image: "AudioGuides/dr-maria-lopez-profile.jpeg",
     location: "Iguazú Falls",
     description:
       "I am a certified Doctor in Environmental Sciences with an outstanding academic record and a lifelong passion for conservation. Currently, I lead research projects within the Iguazú National Park while working as a freelance consultant for biodiversity initiatives. I started my career in the field years ago, and I am still incredibly happy to be surrounded by this natural wonder every day. I love helping people connect with nature; it is truly gratifying! I believe that exploring the jungle isn't just beneficial for our environment, but also vital for our mental well-being and our sense of global responsibility. 'Protecting Iguazú is preserving a piece of the world’s soul,' and I am here to guide you through that breathtaking experience.",
@@ -82,12 +86,14 @@ const GUIDE_PROFILE_DESCRIPTIONS = [
       "Carlos Mendes",
       "Carlos Mendez",
     ],
+    image: "AudioGuides/prof-carlos-mendez-profile.jpeg",
     location: "The Obelisk",
     description:
       "I am a tenured Professor of Urban History and a passionate researcher of Argentine heritage. I currently teach at the University of Buenos Aires and work as an independent historian focusing on the evolution of our city's landmarks. I am deeply enamored with my profession; I began conducting city tours years ago and find immense joy in every walk. I love helping visitors understand the 'why' behind our monuments; it is so fulfilling! I believe that studying urban history is not only essential for cultural identity, but also great for developing critical thinking and a deeper connection to our surroundings.",
   },
   {
     names: ["Biologist Ana Torres", "Ana Torres"],
+    image: "AudioGuides/biologist-ana-torres-profile.jpeg",
     location: "Cerro Catedral",
     description:
       "I am a qualified Biologist specializing in high-altitude ecosystems and a lover of the great outdoors. Currently, I work for the National Parks Administration in Bariloche and as a freelance mountain ecology consultant. I fell in love with my work the moment I stepped onto the Patagonian slopes years ago, and I am very happy to call this mountain my office. I love helping people realize the importance of our glaciers and forests; it is exceptionally rewarding! I believe that experiencing the mountains is not only great for physical health, but also improves cognitive flexibility and our appreciation for life’s resilience.",
@@ -164,8 +170,37 @@ const renderGuideHeading = (guideName) => {
   )}</span>`;
 };
 
+const updateGuideProfilePhoto = (guideName) => {
+  const imageNode = elements.guideProfileImage;
+  const placeholderNode = elements.guidePhotoPlaceholder;
+  if (!imageNode || !placeholderNode) return;
+
+  if (!imageNode.dataset.boundErrorHandler) {
+    imageNode.addEventListener("error", () => {
+      imageNode.classList.add("hidden");
+      placeholderNode.classList.remove("hidden");
+    });
+    imageNode.dataset.boundErrorHandler = "true";
+  }
+
+  const entry = resolveGuideDescriptionEntry(guideName || "");
+  const imageSrc = entry?.image || "";
+  if (!imageSrc) {
+    imageNode.classList.add("hidden");
+    imageNode.removeAttribute("src");
+    placeholderNode.classList.remove("hidden");
+    return;
+  }
+
+  imageNode.src = imageSrc;
+  imageNode.alt = `Photo of ${guideName || "guide"}`;
+  imageNode.classList.remove("hidden");
+  placeholderNode.classList.add("hidden");
+};
+
 const updateGuideDescriptionSection = (guideName) => {
   renderGuideHeading(guideName);
+  updateGuideProfilePhoto(guideName);
   if (elements.guideDescriptionSection) {
     elements.guideDescriptionSection.classList.add("hidden");
   }

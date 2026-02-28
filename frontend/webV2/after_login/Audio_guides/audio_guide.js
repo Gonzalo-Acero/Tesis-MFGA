@@ -7,7 +7,7 @@
       category: "history",
       location: "Buenos Aires",
       duration: "12 min",
-      image: "https://static.photos/cityscape/640x360/1",
+      image: "AudioGuides/prof-carlos-mendez-profile.jpeg",
       description: "Explore the rich history of Argentina's capital city",
       guide: "Prof. Carlos Mendez",
       rating: 4.7,
@@ -34,7 +34,7 @@
       category: "nature",
       location: "Patagonia",
       duration: "22 min",
-      image: "https://static.photos/nature/640x360/3",
+      image: "AudioGuides/biologist-ana-torres-profile.jpeg",
       description: "Discover the unique wildlife of southern Argentina",
       guide: "Biologist Ana Torres",
       rating: 4.8,
@@ -48,7 +48,7 @@
       category: "culture",
       location: "Buenos Aires",
       duration: "15 min",
-      image: "https://static.photos/people/640x360/4",
+      image: "AudioGuides/dancer-miguel-fernandez-profile.jpeg",
       description: "The story behind Argentina's iconic dance",
       guide: "Dancer Miguel Fernandez",
       rating: 4.6,
@@ -129,7 +129,7 @@
     category: "nature",
     location: "Misiones Province",
     duration: "24 min",
-    image: "https://static.photos/nature/640x360/1",
+    image: "AudioGuides/dr-maria-lopez-profile.jpeg",
     guide: "Dr. Maria Lopez",
     audioFile: "AudioGuides/Dr. Maria Lopez_CataratasIguazu.mp3",
   };
@@ -868,3 +868,7 @@
     });
   });
 })();
+
+
+
+

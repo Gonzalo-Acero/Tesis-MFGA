@@ -1,0 +1,25 @@
+{
+  "name": "openapi-swagger-project",
+  "version": "1.0.0",
+  "description": "A project to generate Swagger documentation from OpenAPI specifications.",
+  "main": "src/server.ts",
+  "scripts": {
+    "start": "ts-node src/server.ts",
+    "build": "tsc",
+    "lint": "eslint .",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "swagger-ui-express": "^4.1.6",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.4",
+    "ts-node": "^10.4.0",
+    "eslint": "^7.32.0",
+    "jest": "^27.4.5"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}

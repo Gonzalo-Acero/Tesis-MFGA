@@ -1,7 +1,20 @@
 (() => {
   const FEED_PAGE_SIZE = 3;
+  const DEFAULT_API_BASE = "http://localhost:4000/api";
 
-  const communityPosts = [
+  const resolveApiBaseUrl = () => {
+    const candidate =
+      window.__API_BASE_URL__ ||
+      document.body?.getAttribute("data-api-base-url") ||
+      DEFAULT_API_BASE;
+    return String(candidate).replace(/\/+$/, "");
+  };
+
+  const API_BASE_URL = resolveApiBaseUrl();
+  const buildApiUrl = (path) =>
+    `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+
+  const seedCommunityPosts = [
     {
       id: 101,
       author: "Maria Fernandez",
@@ -98,6 +111,8 @@
     },
   ];
 
+  let communityPosts = [...seedCommunityPosts];
+
   const communityGroups = [
     {
       id: 1,
@@ -186,6 +201,7 @@
   const feedState = { ...defaultFeedState };
   let renderTimer = null;
   let searchTimer = null;
+  let isApiSyncInProgress = false;
 
   let likedPostIds = new Set();
   let bookmarkedPostIds = new Set();
@@ -193,7 +209,6 @@
   let interestedMeetupIds = new Set();
 
   const STORAGE_KEYS = {
-    likedPosts: "communityLikedPosts",
     bookmarkedPosts: "communityBookmarkedPosts",
     joinedGroups: "communityJoinedGroups",
     interestedMeetups: "communityInterestedMeetups",
@@ -229,6 +244,12 @@
   const getSessionUser = () =>
     window.mfgaSession?.load?.()?.user || window.mfgaCurrentUser || null;
 
+  const getAuthToken = () => window.mfgaSession?.load?.()?.token ?? null;
+  const buildAuthHeaders = () => {
+    const token = getAuthToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
+
   const getUserNamespace = () => {
     const user = getSessionUser();
     if (!user) return "guest";
@@ -257,8 +278,117 @@
     }
   };
 
+  const formatRelativeTime = (value) => {
+    const date = value ? new Date(value) : null;
+    if (!date || Number.isNaN(date.getTime())) return "Just now";
+    const diffSeconds = Math.max(0, Math.floor((Date.now() - date.getTime()) / 1000));
+    if (diffSeconds < 60) return "Just now";
+    const minutes = Math.floor(diffSeconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}d ago`;
+    const weeks = Math.floor(days / 7);
+    if (weeks < 5) return `${weeks}w ago`;
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const mapApiPostToFeedPost = (post) => {
+    const id = Number(post?.id);
+    if (!Number.isFinite(id)) return null;
+    return {
+      id,
+      author: post?.author || "MFGA Explorer",
+      avatar: post?.avatar || "https://static.photos/people/200x200/42",
+      location: post?.location || "Argentina",
+      region: post?.region || "All Regions",
+      category: post?.category || "tips",
+      message: post?.message || "",
+      image: post?.image || null,
+      createdAt: post?.createdAt || null,
+      timeLabel: formatRelativeTime(post?.createdAt),
+      likeCount: Number(post?.likeCount || 0),
+      commentCount: Number(post?.commentCount || 0),
+    };
+  };
+
+  const upsertPostInFeed = (post) => {
+    const idx = communityPosts.findIndex((item) => item.id === post.id);
+    if (idx >= 0) {
+      communityPosts[idx] = { ...communityPosts[idx], ...post };
+      return;
+    }
+    communityPosts.unshift(post);
+  };
+
+  const setFallbackPosts = () => {
+    communityPosts = seedCommunityPosts.map((post) => ({
+      ...post,
+      createdAt: null,
+      likeCount: Number(post.likes || 0),
+      commentCount: Number(post.comments || 0),
+    }));
+  };
+
+  const loadCommunityPostsFromApi = async () => {
+    const response = await fetch(buildApiUrl("/community/posts"));
+    if (!response.ok) {
+      throw new Error("Could not load community posts");
+    }
+    const payload = await response.json().catch(() => []);
+    if (!Array.isArray(payload)) {
+      throw new Error("Invalid community posts payload");
+    }
+    communityPosts = payload
+      .map((post) => mapApiPostToFeedPost(post))
+      .filter(Boolean);
+  };
+
+  const loadMyLikedPostsFromApi = async () => {
+    const token = getAuthToken();
+    if (!token) {
+      likedPostIds = new Set();
+      return;
+    }
+
+    const response = await fetch(buildApiUrl("/community/posts/likes"), {
+      headers: {
+        ...buildAuthHeaders(),
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Could not load liked posts");
+    }
+
+    const payload = await response.json().catch(() => []);
+    if (!Array.isArray(payload)) {
+      likedPostIds = new Set();
+      return;
+    }
+
+    likedPostIds = new Set(
+      payload.map((value) => Number(value)).filter((value) => Number.isFinite(value))
+    );
+  };
+
+  const syncCommunityFeedFromApi = async () => {
+    if (isApiSyncInProgress) return;
+    isApiSyncInProgress = true;
+    try {
+      await loadCommunityPostsFromApi();
+      await loadMyLikedPostsFromApi();
+    } finally {
+      isApiSyncInProgress = false;
+    }
+  };
+
   const loadInteractiveState = () => {
-    likedPostIds = readStoredSet(STORAGE_KEYS.likedPosts);
+    likedPostIds = new Set();
     bookmarkedPostIds = readStoredSet(STORAGE_KEYS.bookmarkedPosts);
     joinedGroupIds = readStoredSet(STORAGE_KEYS.joinedGroups);
     interestedMeetupIds = readStoredSet(STORAGE_KEYS.interestedMeetups);
@@ -331,7 +461,8 @@
     const bookmarked = bookmarkedPostIds.has(post.id);
     const categoryClass =
       categoryBadgeClasses[post.category] || "post-category-tips";
-    const likeCount = post.likes + (liked ? 1 : 0);
+    const likeCount = Number(post.likeCount || 0);
+    const commentCount = Number(post.commentCount || 0);
 
     return `
       <article class="feed-post">
@@ -374,7 +505,7 @@
             </button>
             <button class="feed-action-btn" data-action="comment" data-post-id="${post.id}">
               ${icon("message-circle", "w-5 h-5")}
-              <span>${post.comments}</span>
+              <span>${commentCount}</span>
             </button>
           </div>
           <button class="feed-action-btn ${
@@ -550,7 +681,7 @@
 
     if (!form || !messageInput || !categorySelect || !regionSelect) return;
 
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const messageValue = String(messageInput.value || "").trim();
@@ -563,37 +694,60 @@
         return;
       }
 
-      const user = getSessionUser();
-      const newPost = {
-        id: Date.now(),
-        author: user?.Name || "MFGA Explorer",
-        avatar: user?.AvatarUrl || "https://static.photos/people/200x200/42",
-        location: locationValue || "Argentina",
-        region: regionValue,
-        category: categoryValue,
-        message: messageValue,
-        timeLabel: "Just now",
-        likes: 0,
-        comments: 0,
-      };
+      const token = getAuthToken();
+      if (!token) {
+        setComposerFeedback("You must sign in to publish.");
+        return;
+      }
 
-      communityPosts.unshift(newPost);
-      messageInput.value = "";
-      if (locationInput) locationInput.value = "";
-      categorySelect.value = "tips";
-      regionSelect.value = "All Regions";
+      try {
+        const response = await fetch(buildApiUrl("/community/posts"), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...buildAuthHeaders(),
+          },
+          body: JSON.stringify({
+            category: categoryValue,
+            location: locationValue || "Argentina",
+            region: regionValue,
+            message: messageValue,
+          }),
+        });
 
-      feedState.search = "";
-      feedState.category = "all";
-      feedState.region = "All Regions";
-      feedState.visibleCount = FEED_PAGE_SIZE;
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          setComposerFeedback(payload?.message || "Could not publish post.");
+          return;
+        }
 
-      const searchInput = document.getElementById("feedSearchInput");
-      if (searchInput) searchInput.value = "";
+        const mapped = mapApiPostToFeedPost(payload);
+        if (mapped) {
+          upsertPostInFeed(mapped);
+        } else {
+          await syncCommunityFeedFromApi();
+        }
 
-      updateFilterUi();
-      setComposerFeedback("Post published successfully.", "success");
-      renderFeed(false);
+        messageInput.value = "";
+        if (locationInput) locationInput.value = "";
+        categorySelect.value = "tips";
+        regionSelect.value = "All Regions";
+
+        feedState.search = "";
+        feedState.category = "all";
+        feedState.region = "All Regions";
+        feedState.visibleCount = FEED_PAGE_SIZE;
+
+        const searchInput = document.getElementById("feedSearchInput");
+        if (searchInput) searchInput.value = "";
+
+        updateFilterUi();
+        setComposerFeedback("Post published successfully.", "success");
+        renderFeed(false);
+      } catch (error) {
+        console.error("Failed to publish community post:", error);
+        setComposerFeedback("Network error while publishing.");
+      }
     });
   }
 
@@ -614,7 +768,7 @@
       composerFeedback.textContent = "";
     });
 
-    feedList?.addEventListener("click", (event) => {
+    feedList?.addEventListener("click", async (event) => {
       const actionButton = event.target.closest("[data-action][data-post-id]");
       if (!actionButton) return;
 
@@ -623,13 +777,89 @@
 
       const action = actionButton.getAttribute("data-action");
       if (action === "like") {
-        if (likedPostIds.has(postId)) {
-          likedPostIds.delete(postId);
-        } else {
-          likedPostIds.add(postId);
+        const token = getAuthToken();
+        if (!token) {
+          setComposerFeedback("You must sign in to react to posts.");
+          return;
         }
-        writeStoredSet(STORAGE_KEYS.likedPosts, likedPostIds);
-        renderFeed(false);
+
+        try {
+          const response = await fetch(buildApiUrl(`/community/posts/${postId}/likes`), {
+            method: "POST",
+            headers: {
+              ...buildAuthHeaders(),
+            },
+          });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            setComposerFeedback(payload?.message || "Could not save your like.");
+            return;
+          }
+
+          if (payload?.liked) {
+            likedPostIds.add(postId);
+          } else {
+            likedPostIds.delete(postId);
+          }
+
+          const post = communityPosts.find((item) => item.id === postId);
+          if (post) {
+            post.likeCount = Number(payload?.likeCount || 0);
+          }
+          renderFeed(false);
+        } catch (error) {
+          console.error("Failed to toggle post like:", error);
+          setComposerFeedback("Network error while saving like.");
+        }
+        return;
+      }
+
+      if (action === "comment") {
+        const token = getAuthToken();
+        if (!token) {
+          setComposerFeedback("You must sign in to comment.");
+          return;
+        }
+
+        const value = window.prompt("Write your comment:");
+        if (value === null) {
+          return;
+        }
+
+        const comment = String(value || "").trim();
+        if (!comment) {
+          setComposerFeedback("Comment cannot be empty.");
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            buildApiUrl(`/community/posts/${postId}/comments`),
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                ...buildAuthHeaders(),
+              },
+              body: JSON.stringify({ comment }),
+            }
+          );
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            setComposerFeedback(payload?.message || "Could not save the comment.");
+            return;
+          }
+
+          const post = communityPosts.find((item) => item.id === postId);
+          if (post) {
+            post.commentCount = Number(payload?.commentCount || 0);
+          }
+          setComposerFeedback("Comment posted.", "success");
+          renderFeed(false);
+        } catch (error) {
+          console.error("Failed to save comment:", error);
+          setComposerFeedback("Network error while saving comment.");
+        }
         return;
       }
 
@@ -749,8 +979,9 @@
     });
   }
 
-  function initCommunityPage() {
+  async function initCommunityPage() {
     loadInteractiveState();
+    setFallbackPosts();
     populateRegionControls();
     updateFilterUi();
 
@@ -763,13 +994,29 @@
     renderMeetups();
     renderFeed(true);
 
-    window.addEventListener("mfga:user-loaded", () => {
+    try {
+      await syncCommunityFeedFromApi();
+      renderFeed(false);
+    } catch (error) {
+      console.warn("Community API unavailable, using fallback posts:", error);
+    }
+
+    window.addEventListener("mfga:user-loaded", async () => {
       loadInteractiveState();
       renderGroups();
       renderMeetups();
+      try {
+        await syncCommunityFeedFromApi();
+      } catch (error) {
+        console.warn("Community API unavailable on user refresh:", error);
+      }
       renderFeed(false);
     });
   }
 
-  document.addEventListener("DOMContentLoaded", initCommunityPage);
+  document.addEventListener("DOMContentLoaded", () => {
+    initCommunityPage().catch((error) => {
+      console.error("Failed to initialize community page:", error);
+    });
+  });
 })();

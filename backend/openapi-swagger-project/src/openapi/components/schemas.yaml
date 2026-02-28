@@ -1,0 +1,44 @@
+schemas:
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      username:
+        type: string
+      email:
+        type: string
+        format: email
+      createdAt:
+        type: string
+        format: date-time
+      updatedAt:
+        type: string
+        format: date-time
+  Post:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      title:
+        type: string
+      content:
+        type: string
+      authorId:
+        type: integer
+        format: int64
+      createdAt:
+        type: string
+        format: date-time
+      updatedAt:
+        type: string
+        format: date-time
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
