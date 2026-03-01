@@ -1,46 +1,225 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
+  Pressable,
+  RefreshControl,
   ScrollView,
+  StyleSheet,
+  Text,
   TextInput,
-  TouchableOpacity,
+  View,
 } from 'react-native';
-import { Image } from 'expo-image';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Search, Play, Star, Clock } from 'lucide-react-native';
-import Colors from '@/constants/colors';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Search } from 'lucide-react-native';
+
 import Header from '@/components/Header';
-import { audioGuides, audioCategories } from '@/mocks/audioGuides';
+import { EmptyState } from '@/components/common/EmptyState';
+import { LoadingState } from '@/components/common/LoadingState';
+import { ContinueListeningCard } from '@/components/guides/ContinueListeningCard';
+import { FeaturedGuideCard } from '@/components/guides/FeaturedGuideCard';
+import { GuideCard } from '@/components/guides/GuideCard';
+import Colors from '@/constants/colors';
+import {
+  getGuideBookmarksStorageKey,
+  loadAudioProgress,
+  loadLastGuideId,
+  loadNumberSet,
+  persistNumberSet,
+} from '@/lib/audioProgress';
+import { useAuth } from '@/hooks/useAuth';
+import { attachGuideIdsToCatalog, guideCategories } from '@/services/guides';
+import type { AudioProgressRecord } from '@/lib/audioProgress';
+import type { GuideCatalogItem } from '@/types';
+
+const parseDurationToSeconds = (value: string) => {
+  const match = value.match(/(\d+)\s*min/i);
+  if (match?.[1]) {
+    return Number(match[1]) * 60;
+  }
+  const clock = value.match(/^(\d+):(\d{2})$/);
+  if (clock?.[1] && clock?.[2]) {
+    return Number(clock[1]) * 60 + Number(clock[2]);
+  }
+  return 0;
+};
+
+const formatSeconds = (value: number) => {
+  const safeValue = Math.max(0, Math.round(value));
+  const minutes = Math.floor(safeValue / 60);
+  const seconds = safeValue % 60;
+  return `${minutes}:${String(seconds).padStart(2, '0')}`;
+};
 
 export default function GuidesScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { user } = useAuth();
+  const namespace = String(user?.UserId ?? user?.Email ?? 'guest');
+
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [catalog, setCatalog] = useState<GuideCatalogItem[]>([]);
+  const [featured, setFeatured] = useState<GuideCatalogItem | null>(null);
+  const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
+  const [progressMap, setProgressMap] = useState<Record<number, AudioProgressRecord>>({});
+  const [lastGuideId, setLastGuideId] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const filtered = audioGuides.filter((g) => {
-    const matchSearch = g.title.toLowerCase().includes(search.toLowerCase());
-    const matchCategory = activeCategory === 'All' || g.category === activeCategory;
-    return matchSearch && matchCategory;
-  });
+  const hydrate = useCallback(async () => {
+    try {
+      setError(null);
+      const [{ catalog: nextCatalog, featured: nextFeatured }, bookmarkSet, storedLastGuideId] =
+        await Promise.all([
+          attachGuideIdsToCatalog(),
+          loadNumberSet(getGuideBookmarksStorageKey(namespace)),
+          loadLastGuideId(namespace),
+        ]);
+
+      const allGuides = [...nextCatalog, nextFeatured];
+      const progressEntries = await Promise.all(
+        allGuides.map(async (guide) => {
+          const progress = await loadAudioProgress(namespace, guide.id);
+          return [guide.id, progress] as const;
+        })
+      );
+
+      setCatalog(nextCatalog);
+      setFeatured(nextFeatured);
+      setBookmarks(bookmarkSet);
+      setLastGuideId(storedLastGuideId);
+      setProgressMap(
+        progressEntries.reduce<Record<number, AudioProgressRecord>>((accumulator, [id, progress]) => {
+          if (progress) {
+            accumulator[id] = progress;
+          }
+          return accumulator;
+        }, {})
+      );
+    } catch (nextError: any) {
+      setError(nextError?.message || 'Could not load audio guides.');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [namespace]);
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
+  const filteredGuides = useMemo(() => {
+    const searchValue = search.trim().toLowerCase();
+    return catalog.filter((guide) => {
+      const matchesCategory = activeCategory === 'All' || guide.category === activeCategory;
+      const matchesSearch =
+        !searchValue ||
+        guide.title.toLowerCase().includes(searchValue) ||
+        guide.guideName.toLowerCase().includes(searchValue) ||
+        guide.location.toLowerCase().includes(searchValue) ||
+        guide.description.toLowerCase().includes(searchValue);
+      return matchesCategory && matchesSearch;
+    });
+  }, [activeCategory, catalog, search]);
+
+  const continueGuide = useMemo(() => {
+    if (!lastGuideId) return null;
+    const match = [...catalog, ...(featured ? [featured] : [])].find((guide) => guide.id === lastGuideId);
+    if (!match) return null;
+    const progress = progressMap[lastGuideId];
+    if (!progress?.progress || progress.progress <= 0) return null;
+    return { guide: match, progress };
+  }, [catalog, featured, lastGuideId, progressMap]);
+
+  const toggleBookmark = async (guideId: number) => {
+    const next = new Set(bookmarks);
+    if (next.has(guideId)) {
+      next.delete(guideId);
+    } else {
+      next.add(guideId);
+    }
+    setBookmarks(next);
+    await persistNumberSet(getGuideBookmarksStorageKey(namespace), next);
+  };
+
+  const openGuideProfile = (guide: GuideCatalogItem) => {
+    const routeId = String(guide.guideId ?? guide.id);
+    router.push({
+      pathname: '/guides/[id]',
+      params: {
+        id: routeId,
+        name: guide.guideName,
+        catalogId: String(guide.id),
+      },
+    });
+  };
+
+  const openPlayer = (guide: GuideCatalogItem) => {
+    router.push(`/audio-player/${guide.id}`);
+  };
+
+  const continueRemainingLabel = continueGuide
+    ? formatSeconds(
+        Math.max(
+          0,
+          (continueGuide.progress.total || parseDurationToSeconds(continueGuide.guide.duration)) -
+            continueGuide.progress.progress
+        )
+      ) + ' remaining'
+    : '';
+
+  const continueCompletion = continueGuide
+    ? ((continueGuide.progress.progress || 0) /
+        Math.max(
+          continueGuide.progress.total || parseDurationToSeconds(continueGuide.guide.duration),
+          1
+        )) *
+      100
+    : 0;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <Header />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => {
+              setRefreshing(true);
+              hydrate();
+            }}
+          />
+        }
+        showsVerticalScrollIndicator={false}
+      >
+        {featured ? (
+          <FeaturedGuideCard
+            guide={featured}
+            onPlay={() => openPlayer(featured)}
+            onOpenProfile={() => openGuideProfile(featured)}
+          />
+        ) : null}
+
+        {continueGuide ? (
+          <ContinueListeningCard
+            guide={continueGuide.guide}
+            remainingLabel={continueRemainingLabel}
+            completion={continueCompletion}
+            onResume={() => openPlayer(continueGuide.guide)}
+          />
+        ) : null}
+
         <View style={styles.searchRow}>
           <View style={styles.searchBar}>
             <Search size={18} color={Colors.gray400} />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search audio guides..."
+              placeholder="Search by guide, title, or location"
               placeholderTextColor={Colors.gray400}
               value={search}
               onChangeText={setSearch}
-              testID="guides-search"
             />
           </View>
         </View>
@@ -50,59 +229,51 @@ export default function GuidesScreen() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.chipsRow}
         >
-          {audioCategories.map((cat) => (
-            <TouchableOpacity
-              key={cat}
-              style={[styles.chip, activeCategory === cat && styles.chipActive]}
-              onPress={() => setActiveCategory(cat)}
+          {guideCategories.map((category) => (
+            <Pressable
+              key={category}
+              style={[styles.chip, activeCategory === category ? styles.chipActive : null]}
+              onPress={() => setActiveCategory(category)}
             >
-              <Text style={[styles.chipText, activeCategory === cat && styles.chipTextActive]}>
-                {cat}
+              <Text
+                style={[
+                  styles.chipText,
+                  activeCategory === category ? styles.chipTextActive : null,
+                ]}
+              >
+                {category}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </ScrollView>
 
-        {filtered.map((guide) => (
-          <TouchableOpacity
-            key={guide.id}
-            style={styles.guideCard}
-            activeOpacity={0.85}
-            onPress={() => router.push(`/audio-player/${guide.id}`)}
-            testID={`guide-${guide.id}`}
-          >
-            <Image source={ guide.image } style={styles.guideImage} />
-            <View style={styles.guideBody}>
-              <View style={styles.guideCatPill}>
-                <Text style={styles.guideCatText}>{guide.category}</Text>
-              </View>
-              <Text style={styles.guideTitle} numberOfLines={2}>{guide.title}</Text>
-              <Text style={styles.guideNarrator}>{guide.narrator}</Text>
-              <View style={styles.guideMeta}>
-                <View style={styles.guideMetaItem}>
-                  <Clock size={12} color={Colors.gray400} />
-                  <Text style={styles.guideMetaText}>{guide.duration}</Text>
-                </View>
-                <View style={styles.guideMetaItem}>
-                  <Star size={12} color={Colors.accent} fill={Colors.accent} />
-                  <Text style={styles.guideMetaText}>{guide.rating}</Text>
-                </View>
-              </View>
-            </View>
-            <TouchableOpacity
-              style={styles.playBtn}
-              onPress={() => router.push(`/audio-player/${guide.id}`)}
-            >
-              <Play size={18} color={Colors.white} fill={Colors.white} />
-            </TouchableOpacity>
-          </TouchableOpacity>
-        ))}
+        <View style={styles.resultsHeader}>
+          <Text style={styles.resultsTitle}>
+            {filteredGuides.length} audio guide{filteredGuides.length === 1 ? '' : 's'}
+          </Text>
+          <Text style={styles.resultsSubtitle}>
+            Includes mobile playback, progress persistence, and guide profiles.
+          </Text>
+        </View>
 
-        {filtered.length === 0 && (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>No guides found</Text>
-          </View>
-        )}
+        {loading ? <LoadingState label="Loading guides..." /> : null}
+        {!loading && error ? <EmptyState title="Could not load guides" subtitle={error} /> : null}
+        {!loading && !error && filteredGuides.length === 0 ? (
+          <EmptyState title="No guides found" subtitle="Try another category or search term." />
+        ) : null}
+
+        {!loading &&
+          !error &&
+          filteredGuides.map((guide) => (
+            <GuideCard
+              key={guide.id}
+              guide={guide}
+              bookmarked={bookmarks.has(guide.id)}
+              onPlay={() => openPlayer(guide)}
+              onToggleBookmark={() => toggleBookmark(guide.id)}
+              onOpenProfile={() => openGuideProfile(guide)}
+            />
+          ))}
       </ScrollView>
     </View>
   );
@@ -114,133 +285,59 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray50,
   },
   scrollContent: {
-    paddingBottom: 30,
+    paddingBottom: 28,
   },
   searchRow: {
     paddingHorizontal: 20,
-    marginTop: 8,
+    marginTop: 18,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
+    borderRadius: 16,
     backgroundColor: Colors.white,
-    borderRadius: 14,
     paddingHorizontal: 14,
-    height: 48,
+    height: 50,
     gap: 10,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
   },
   searchInput: {
     flex: 1,
-    fontSize: 15,
     color: Colors.black,
+    fontSize: 15,
   },
   chipsRow: {
+    gap: 8,
     paddingHorizontal: 20,
     paddingVertical: 16,
-    gap: 8,
   },
   chip: {
-    paddingHorizontal: 18,
-    paddingVertical: 8,
-    borderRadius: 20,
+    borderRadius: 999,
+    paddingHorizontal: 16,
+    paddingVertical: 9,
     backgroundColor: Colors.white,
-    borderWidth: 1.5,
-    borderColor: Colors.gray200,
   },
   chipActive: {
     backgroundColor: Colors.accent,
-    borderColor: Colors.accent,
   },
   chipText: {
-    fontSize: 13,
-    fontWeight: '600' as const,
     color: Colors.gray600,
+    fontWeight: '700' as const,
   },
   chipTextActive: {
+    color: Colors.primaryDark,
+  },
+  resultsHeader: {
+    paddingHorizontal: 20,
+    marginBottom: 12,
+  },
+  resultsTitle: {
     color: Colors.black,
-  },
-  guideCard: {
-    marginHorizontal: 20,
-    marginBottom: 14,
-    backgroundColor: Colors.white,
-    borderRadius: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  guideImage: {
-    width: 72,
-    height: 72,
-    borderRadius: 12,
-  },
-  guideBody: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  guideCatPill: {
-    alignSelf: 'flex-start',
-    backgroundColor: Colors.accentFaded,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
-    marginBottom: 4,
-  },
-  guideCatText: {
-    fontSize: 10,
-    fontWeight: '600' as const,
-    color: Colors.accentDark,
-  },
-  guideTitle: {
-    fontSize: 15,
-    fontWeight: '700' as const,
-    color: Colors.black,
-  },
-  guideNarrator: {
-    fontSize: 12,
-    color: Colors.gray400,
-    marginTop: 2,
-  },
-  guideMeta: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 6,
-  },
-  guideMetaItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  guideMetaText: {
-    fontSize: 12,
-    color: Colors.gray500,
-    fontWeight: '500' as const,
-  },
-  playBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 8,
-  },
-  emptyState: {
-    alignItems: 'center',
-    paddingTop: 60,
-  },
-  emptyText: {
+    fontWeight: '800' as const,
     fontSize: 16,
-    fontWeight: '600' as const,
-    color: Colors.gray600,
+  },
+  resultsSubtitle: {
+    marginTop: 4,
+    color: Colors.gray500,
+    lineHeight: 18,
   },
 });

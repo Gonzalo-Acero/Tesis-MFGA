@@ -3,10 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native
 import { User } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Header() {
   const router = useRouter();
   const scaleAnim = useRef(new Animated.Value(1)).current;
+  const { user } = useAuth();
 
   const handleAvatarPress = () => {
     Animated.sequence([
@@ -35,7 +37,11 @@ export default function Header() {
           activeOpacity={0.7}
           testID="profile-avatar"
         >
-          <User size={20} color={Colors.white} />
+          {user?.Name ? (
+            <Text style={styles.avatarText}>{user.Name.slice(0, 1).toUpperCase()}</Text>
+          ) : (
+            <User size={20} color={Colors.white} />
+          )}
         </TouchableOpacity>
       </Animated.View>
     </View>
@@ -88,5 +94,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  avatarText: {
+    color: Colors.white,
+    fontSize: 16,
+    fontWeight: '800' as const,
   },
 });

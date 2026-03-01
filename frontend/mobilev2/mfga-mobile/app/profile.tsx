@@ -1,101 +1,147 @@
-import React from 'react';
+import { Stack, useRouter } from 'expo-router';
+import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { Stack } from 'expo-router';
-import {
-  X,
-  User,
-  Bookmark,
-  Download,
-  Globe,
-  LogOut,
-  ChevronRight,
-  Settings,
-} from 'lucide-react-native';
-import Colors from '@/constants/colors';
+import { LogOut, X } from 'lucide-react-native';
 
-const MENU_ITEMS = [
-  { id: 'edit', label: 'Edit Profile', icon: User, color: Colors.primary },
-  { id: 'saved', label: 'Saved Places', icon: Bookmark, color: Colors.accent },
-  { id: 'downloads', label: 'Downloads', icon: Download, color: Colors.success },
-  { id: 'language', label: 'Language', icon: Globe, color: Colors.primaryDark },
-  { id: 'settings', label: 'Settings', icon: Settings, color: Colors.gray600 },
-];
+import Colors from '@/constants/colors';
+import { ChangePasswordForm } from '@/components/profile/ChangePasswordForm';
+import { ProfileForm } from '@/components/profile/ProfileForm';
+import { useAuth } from '@/hooks/useAuth';
+import { changePassword } from '@/services/auth';
+import { updateUserProfile } from '@/services/users';
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { user, updateUser, signOut, token } = useAuth();
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [profileFeedback, setProfileFeedback] = useState<string | null>(null);
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [passwordFeedback, setPasswordFeedback] = useState<string | null>(null);
+  const [passwordTone, setPasswordTone] = useState<'error' | 'success'>('error');
+
+  if (!user) {
+    return null;
+  }
+
+  const handleProfileSave = async (payload: {
+    Name: string;
+    Email: string;
+    PhoneNumber?: string | null;
+  }) => {
+    setProfileFeedback(null);
+    if (!payload.Name || !payload.Email) {
+      setProfileFeedback('Name and email are required.');
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(payload.Email)) {
+      setProfileFeedback('Enter a valid email.');
+      return;
+    }
+
+    try {
+      setSavingProfile(true);
+      const updatedUser = await updateUserProfile(user.UserId || 0, payload);
+      await updateUser(updatedUser);
+      setProfileFeedback('Profile updated successfully.');
+    } catch (error: any) {
+      setProfileFeedback(error?.message || 'Could not update the profile.');
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
+  const handlePasswordChange = async (payload: {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  }) => {
+    setPasswordFeedback(null);
+    setPasswordTone('error');
+
+    if (!payload.currentPassword || !payload.newPassword || !payload.confirmPassword) {
+      setPasswordFeedback('Fill in all password fields.');
+      return;
+    }
+    if (payload.newPassword.length < 6) {
+      setPasswordFeedback('The new password must contain at least 6 characters.');
+      return;
+    }
+    if (payload.newPassword !== payload.confirmPassword) {
+      setPasswordFeedback('Passwords do not match.');
+      return;
+    }
+    if (!token || !user.UserId) {
+      setPasswordFeedback('You must sign in again before changing your password.');
+      return;
+    }
+
+    try {
+      setChangingPassword(true);
+      await changePassword(token, {
+        userId: user.UserId,
+        currentPassword: payload.currentPassword,
+        newPassword: payload.newPassword,
+      });
+      setPasswordTone('success');
+      setPasswordFeedback('Password updated successfully.');
+    } catch (error: any) {
+      setPasswordFeedback(error?.message || 'Could not update the password.');
+    } finally {
+      setChangingPassword(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ headerShown: false, presentation: 'modal' }} />
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <Text style={styles.headerTitle}>Profile</Text>
-        <TouchableOpacity style={styles.closeBtn} onPress={() => router.back()} testID="close-profile">
+        <Pressable style={styles.closeBtn} onPress={() => router.back()} testID="close-profile">
           <X size={20} color={Colors.gray600} />
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        <View style={styles.profileCard}>
-          <Image
-            source={{ uri: '../../assets/profile.jpeg' }}
-            style={styles.profileAvatar}
-          />
-          <Text style={styles.profileName}>Traveler</Text>
-          <Text style={styles.profileEmail}>traveler@mfga.app</Text>
-          <View style={styles.statsRow}>
-            <View style={styles.statItem}>
-              <Text style={styles.statNum}>12</Text>
-              <Text style={styles.statLabel}>Places</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statNum}>5</Text>
-              <Text style={styles.statLabel}>Guides</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statNum}>3</Text>
-              <Text style={styles.statLabel}>Posts</Text>
-            </View>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <View style={styles.heroCard}>
+          <View style={styles.avatarCircle}>
+            <Text style={styles.avatarText}>{user.Name.slice(0, 1).toUpperCase()}</Text>
           </View>
+          <Text style={styles.name}>{user.Name}</Text>
+          <Text style={styles.email}>{user.Email}</Text>
         </View>
 
-        <View style={styles.menuSection}>
-          {MENU_ITEMS.map((item) => {
-            const IconComp = item.icon;
-            return (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.menuItem}
-                activeOpacity={0.7}
-                testID={`menu-${item.id}`}
-              >
-                <View style={[styles.menuIconWrap, { backgroundColor: `${item.color}15` }]}>
-                  <IconComp size={18} color={item.color} />
-                </View>
-                <Text style={styles.menuLabel}>{item.label}</Text>
-                <ChevronRight size={16} color={Colors.gray300} />
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+        <ProfileForm
+          user={user}
+          loading={savingProfile}
+          feedback={profileFeedback}
+          onSubmit={handleProfileSave}
+        />
 
-        <TouchableOpacity style={styles.logoutBtn} testID="logout-btn">
+        <ChangePasswordForm
+          loading={changingPassword}
+          feedback={passwordFeedback}
+          tone={passwordTone}
+          onSubmit={handlePasswordChange}
+        />
+
+        <Pressable
+          style={styles.logoutButton}
+          onPress={async () => {
+            await signOut();
+            router.replace('/(auth)/login');
+          }}
+        >
           <LogOut size={18} color={Colors.danger} />
-          <Text style={styles.logoutText}>Log Out</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.version}>MFGA v1.0.0</Text>
+          <Text style={styles.logoutText}>Log out</Text>
+        </Pressable>
       </ScrollView>
     </View>
   );
@@ -128,118 +174,51 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   scrollContent: {
-    paddingBottom: 40,
+    padding: 20,
+    gap: 16,
   },
-  profileCard: {
+  heroCard: {
     backgroundColor: Colors.white,
-    margin: 20,
     borderRadius: 24,
-    padding: 28,
-    alignItems: 'center',
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 16,
-    elevation: 4,
-  },
-  profileAvatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 14,
-    borderWidth: 3,
-    borderColor: Colors.primaryLight,
-  },
-  profileName: {
-    fontSize: 20,
-    fontWeight: '700' as const,
-    color: Colors.black,
-  },
-  profileEmail: {
-    fontSize: 13,
-    color: Colors.gray400,
-    marginTop: 4,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 20,
-    gap: 24,
-  },
-  statItem: {
+    padding: 24,
     alignItems: 'center',
   },
-  statNum: {
-    fontSize: 18,
-    fontWeight: '800' as const,
-    color: Colors.primary,
-  },
-  statLabel: {
-    fontSize: 11,
-    color: Colors.gray400,
-    marginTop: 2,
-    fontWeight: '500' as const,
-  },
-  statDivider: {
-    width: 1,
-    height: 28,
-    backgroundColor: Colors.gray200,
-  },
-  menuSection: {
-    backgroundColor: Colors.white,
-    marginHorizontal: 20,
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray100,
-  },
-  menuIconWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
+  avatarCircle: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginBottom: 14,
   },
-  menuLabel: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: '500' as const,
+  avatarText: {
+    fontSize: 28,
+    fontWeight: '800' as const,
+    color: Colors.white,
+  },
+  name: {
+    fontSize: 22,
+    fontWeight: '800' as const,
     color: Colors.black,
   },
-  logoutBtn: {
+  email: {
+    marginTop: 6,
+    color: Colors.gray500,
+  },
+  logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    marginHorizontal: 20,
-    marginTop: 24,
-    paddingVertical: 14,
     borderRadius: 14,
+    paddingVertical: 14,
     backgroundColor: Colors.white,
     borderWidth: 1.5,
     borderColor: 'rgba(239,68,68,0.2)',
   },
   logoutText: {
-    fontSize: 15,
-    fontWeight: '600' as const,
     color: Colors.danger,
-  },
-  version: {
-    textAlign: 'center',
-    fontSize: 12,
-    color: Colors.gray400,
-    marginTop: 20,
+    fontWeight: '700' as const,
   },
 });

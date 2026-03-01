@@ -1,0 +1,159 @@
+import { buildStaticUrl } from '@/lib/config';
+import type { GuideCatalogItem } from '@/types';
+
+export const AUDIO_CATEGORIES = ['All', 'History', 'Food', 'Nature', 'Culture'];
+
+export const getGuideCatalog = (): GuideCatalogItem[] => [
+  {
+    id: 1,
+    title: 'Obelisco',
+    category: 'History',
+    location: 'Buenos Aires',
+    duration: '12 min',
+    imageUrl: buildStaticUrl(
+      '/after_login/Audio_guides/AudioGuides/prof-carlos-mendez-profile.jpeg'
+    ),
+    description: 'Explore the rich history of Argentina\'s capital city.',
+    guideName: 'Prof. Carlos Mendes',
+    rating: 4.7,
+    reviews: 189,
+    completed: 45,
+    audioUrl: buildStaticUrl(
+      '/after_login/Audio_guides/AudioGuides/Prof. Carlos Mendes_Obelisco.mp3'
+    ),
+  },
+  {
+    id: 2,
+    title: 'Argentine Asado Masterclass',
+    category: 'Food',
+    location: 'Countrywide',
+    duration: '18 min',
+    imageUrl: 'https://static.photos/food/640x360/2',
+    description: 'Learn the secrets of authentic Argentine barbecue.',
+    guideName: 'Chef Sofia Ramirez',
+    rating: 4.9,
+    reviews: 234,
+    completed: 32,
+  },
+  {
+    id: 3,
+    title: 'Cerro Catedral',
+    category: 'Nature',
+    location: 'Patagonia',
+    duration: '22 min',
+    imageUrl: buildStaticUrl(
+      '/after_login/Audio_guides/AudioGuides/biologist-ana-torres-profile.jpeg'
+    ),
+    description: 'Discover wildlife and ecology on Patagonia\'s slopes.',
+    guideName: 'Biologist Ana Torres',
+    rating: 4.8,
+    reviews: 167,
+    completed: 28,
+    audioUrl: buildStaticUrl(
+      '/after_login/Audio_guides/AudioGuides/Bio. Ana Torres_CerroCatedral.mp3'
+    ),
+  },
+  {
+    id: 4,
+    title: 'Teatro Colon',
+    category: 'Culture',
+    location: 'Buenos Aires',
+    duration: '15 min',
+    imageUrl: buildStaticUrl(
+      '/after_login/Audio_guides/AudioGuides/dancer-miguel-fernandez-profile.jpeg'
+    ),
+    description: 'The story behind Argentina\'s most iconic performing arts venue.',
+    guideName: 'Dancer Miguel Fernandez',
+    rating: 4.6,
+    reviews: 198,
+    completed: 51,
+    audioUrl: buildStaticUrl(
+      '/after_login/Audio_guides/AudioGuides/Miguel Fernandez_TeatroColon.mp3'
+    ),
+  },
+  {
+    id: 5,
+    title: 'Mendoza Wine Region',
+    category: 'Food',
+    location: 'Mendoza',
+    duration: '20 min',
+    imageUrl: 'https://static.photos/travel/640x360/5',
+    description: 'Explore Argentina\'s famous wine country.',
+    guideName: 'Sommelier Lucia Gonzalez',
+    rating: 4.9,
+    reviews: 156,
+    completed: 23,
+  },
+  {
+    id: 6,
+    title: 'Salta Colonial Architecture',
+    category: 'History',
+    location: 'Salta',
+    duration: '14 min',
+    imageUrl: 'https://static.photos/architecture/640x360/6',
+    description: 'A walking tour through colonial Salta.',
+    guideName: 'Architect Jorge Silva',
+    rating: 4.5,
+    reviews: 123,
+    completed: 19,
+  },
+  {
+    id: 7,
+    title: 'Andean Culture and Traditions',
+    category: 'Culture',
+    location: 'Northwest Argentina',
+    duration: '25 min',
+    imageUrl: 'https://static.photos/travel/640x360/7',
+    description: 'Indigenous cultures of the Andes mountains.',
+    guideName: 'Anthropologist Elena Morales',
+    rating: 4.7,
+    reviews: 145,
+    completed: 31,
+  },
+  {
+    id: 8,
+    title: 'Buenos Aires Street Art',
+    category: 'Culture',
+    location: 'Buenos Aires',
+    duration: '16 min',
+    imageUrl: 'https://static.photos/art/640x360/8',
+    description: 'Urban art scene in Palermo and San Telmo.',
+    guideName: 'Artist Pablo Rojas',
+    rating: 4.8,
+    reviews: 178,
+    completed: 42,
+  },
+  {
+    id: 9,
+    title: 'Iguazu Falls Legends',
+    category: 'Nature',
+    location: 'Misiones',
+    duration: '19 min',
+    imageUrl: 'https://static.photos/nature/640x360/9',
+    description: 'Indigenous legends of the mighty waterfalls.',
+    guideName: 'Storyteller Isabel Vargas',
+    rating: 4.9,
+    reviews: 201,
+    completed: 37,
+  },
+];
+
+export const getFeaturedGuide = (): GuideCatalogItem => ({
+  id: 1001,
+  title: 'Cataratas Iguazu',
+  category: 'Nature',
+  location: 'Misiones Province',
+  duration: '24 min',
+  imageUrl: buildStaticUrl(
+    '/after_login/Audio_guides/AudioGuides/dr-maria-lopez-profile.jpeg'
+  ),
+  description: 'A scientific and cultural journey through Iguazu Falls.',
+  guideName: 'Dr. Maria Lopez',
+  rating: 4.9,
+  reviews: 248,
+  completed: 56,
+  featured: true,
+  audioUrl: buildStaticUrl(
+    '/after_login/Audio_guides/AudioGuides/Dr. Maria Lopez_CataratasIguazu.mp3'
+  ),
+});

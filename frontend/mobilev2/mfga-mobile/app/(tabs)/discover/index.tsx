@@ -1,48 +1,104 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
+  Pressable,
+  RefreshControl,
   ScrollView,
+  StyleSheet,
+  Text,
   TextInput,
-  TouchableOpacity,
-  FlatList,
-  Animated,
+  View,
 } from 'react-native';
 import { Image } from 'expo-image';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Search, MapPin, ChevronRight } from 'lucide-react-native';
-import Colors from '@/constants/colors';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { MapPin, Search } from 'lucide-react-native';
+
 import Header from '@/components/Header';
-import { destinations, categories } from '@/mocks/destinations';
+import { EmptyState } from '@/components/common/EmptyState';
+import { LoadingState } from '@/components/common/LoadingState';
+import Colors from '@/constants/colors';
+import { fetchDestinations } from '@/services/content';
+import type { Destination } from '@/types';
 
 export default function DiscoverScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [destinations, setDestinations] = useState<Destination[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const filtered = destinations.filter((d) => {
-    const matchSearch = d.title.toLowerCase().includes(search.toLowerCase());
-    const matchCategory = activeCategory === 'All' || d.category === activeCategory;
-    return matchSearch && matchCategory;
-  });
-
-  const handleDestinationPress = (id: string) => {
-    router.push(`/destination/${id}`);
+  const loadDestinations = async () => {
+    try {
+      setError(null);
+      const response = await fetchDestinations();
+      setDestinations(response);
+    } catch (nextError: any) {
+      setError(nextError?.message || 'Could not load destinations.');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   };
+
+  useEffect(() => {
+    loadDestinations();
+  }, []);
+
+  const categories = useMemo(() => {
+    const values = new Set(destinations.map((destination) => destination.category).filter(Boolean));
+    return ['All', ...Array.from(values)];
+  }, [destinations]);
+
+  const filteredDestinations = useMemo(() => {
+    const searchValue = search.trim().toLowerCase();
+    return destinations.filter((destination) => {
+      const matchesSearch =
+        !searchValue ||
+        destination.name.toLowerCase().includes(searchValue) ||
+        destination.city.toLowerCase().includes(searchValue) ||
+        destination.province.toLowerCase().includes(searchValue) ||
+        destination.description.toLowerCase().includes(searchValue);
+
+      const matchesCategory =
+        activeCategory === 'All' || destination.category === activeCategory;
+
+      return matchesSearch && matchesCategory;
+    });
+  }, [activeCategory, destinations, search]);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <Header />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => {
+              setRefreshing(true);
+              loadDestinations();
+            }}
+          />
+        }
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.heroCard}>
+          <Text style={styles.heroEyebrow}>Discover Places</Text>
+          <Text style={styles.heroTitle}>Explore Argentina destination by destination</Text>
+          <Text style={styles.heroSubtitle}>
+            Browse the same travel catalog used on web, adapted to a mobile-first flow.
+          </Text>
+        </View>
+
         <View style={styles.searchRow}>
           <View style={styles.searchBar}>
             <Search size={18} color={Colors.gray400} />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search destinations..."
+              placeholder="Search by place, city, or province"
               placeholderTextColor={Colors.gray400}
               value={search}
               onChangeText={setSearch}
@@ -56,71 +112,94 @@ export default function DiscoverScreen() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.chipsRow}
         >
-          {categories.map((cat) => (
-            <TouchableOpacity
-              key={cat}
+          {categories.map((category) => (
+            <Pressable
+              key={category}
               style={[
                 styles.chip,
-                activeCategory === cat && styles.chipActive,
+                activeCategory === category ? styles.chipActive : null,
               ]}
-              onPress={() => setActiveCategory(cat)}
-              testID={`chip-${cat}`}
+              onPress={() => setActiveCategory(category)}
             >
               <Text
                 style={[
                   styles.chipText,
-                  activeCategory === cat && styles.chipTextActive,
+                  activeCategory === category ? styles.chipTextActive : null,
                 ]}
               >
-                {cat}
+                {category}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </ScrollView>
 
         <View style={styles.resultsHeader}>
           <Text style={styles.resultsTitle}>
-            {filtered.length} destination{filtered.length !== 1 ? 's' : ''}
+            {filteredDestinations.length} destination
+            {filteredDestinations.length === 1 ? '' : 's'}
+          </Text>
+          <Text style={styles.resultsSubtitle}>
+            Filter by category, then open the full detail page.
           </Text>
         </View>
 
-        {filtered.map((dest) => (
-          <TouchableOpacity
-            key={dest.id}
-            style={styles.destCard}
-            activeOpacity={0.85}
-            onPress={() => handleDestinationPress(dest.id)}
-            testID={`dest-${dest.id}`}
-          >
-            <Image source={dest.image} style={styles.destImage} />
-            <View style={styles.destBody}>
-              <View style={styles.destCatRow}>
-                <View style={styles.destCatPill}>
-                  <Text style={styles.destCatText}>{dest.category}</Text>
+        {loading ? <LoadingState label="Loading destinations..." /> : null}
+
+        {!loading && error ? (
+          <EmptyState title="Could not load destinations" subtitle={error} />
+        ) : null}
+
+        {!loading && !error && filteredDestinations.length === 0 ? (
+          <EmptyState
+            title="No destinations found"
+            subtitle="Try a different search term or category."
+          />
+        ) : null}
+
+        {!loading &&
+          !error &&
+          filteredDestinations.map((destination) => (
+            <Pressable
+              key={destination.id}
+              style={styles.destinationCard}
+              onPress={() => router.push(`/destination/${destination.id}`)}
+            >
+              <Image source={{ uri: destination.image }} style={styles.destinationImage} />
+              <View style={styles.destinationBody}>
+                <View style={styles.destinationMetaRow}>
+                  <View style={styles.pill}>
+                    <Text style={styles.pillText}>{destination.category}</Text>
+                  </View>
+                  <View style={styles.pillMuted}>
+                    <Text style={styles.pillMutedText}>{destination.tag}</Text>
+                  </View>
+                </View>
+
+                <Text style={styles.destinationTitle}>{destination.name}</Text>
+                <View style={styles.locationRow}>
+                  <MapPin size={14} color={Colors.gray400} />
+                  <Text style={styles.locationText}>
+                    {destination.city}, {destination.province}
+                  </Text>
+                </View>
+
+                <Text style={styles.description} numberOfLines={3}>
+                  {destination.description}
+                </Text>
+
+                <View style={styles.footerRow}>
+                  <View style={styles.footerMetric}>
+                    <Text style={styles.footerLabel}>Best time</Text>
+                    <Text style={styles.footerValue}>{destination.bestTimeToVisit}</Text>
+                  </View>
+                  <View style={styles.footerMetric}>
+                    <Text style={styles.footerLabel}>Ideal stay</Text>
+                    <Text style={styles.footerValue}>{destination.duration}</Text>
+                  </View>
                 </View>
               </View>
-              <Text style={styles.destTitle}>{dest.title}</Text>
-              <View style={styles.destLocationRow}>
-                <MapPin size={12} color={Colors.gray400} />
-                <Text style={styles.destLocation}>{dest.location}</Text>
-              </View>
-              <Text style={styles.destDesc} numberOfLines={2}>
-                {dest.description}
-              </Text>
-              <View style={styles.destViewRow}>
-                <Text style={styles.destViewText}>View Details</Text>
-                <ChevronRight size={14} color={Colors.primary} />
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-
-        {filtered.length === 0 && (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>No destinations found</Text>
-            <Text style={styles.emptySubtext}>Try a different search or category</Text>
-          </View>
-        )}
+            </Pressable>
+          ))}
       </ScrollView>
     </View>
   );
@@ -134,50 +213,70 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 30,
   },
+  heroCard: {
+    marginHorizontal: 20,
+    marginTop: 8,
+    borderRadius: 24,
+    backgroundColor: Colors.primaryDark,
+    padding: 20,
+  },
+  heroEyebrow: {
+    color: Colors.accent,
+    fontSize: 12,
+    fontWeight: '800' as const,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  heroTitle: {
+    marginTop: 10,
+    color: Colors.white,
+    fontSize: 24,
+    fontWeight: '800' as const,
+    lineHeight: 30,
+  },
+  heroSubtitle: {
+    marginTop: 10,
+    color: 'rgba(255,255,255,0.78)',
+    lineHeight: 20,
+  },
   searchRow: {
     paddingHorizontal: 20,
-    marginTop: 8,
+    marginTop: 18,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: Colors.white,
-    borderRadius: 14,
+    borderRadius: 16,
     paddingHorizontal: 14,
-    height: 48,
+    height: 50,
     gap: 10,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
   },
   searchInput: {
     flex: 1,
-    fontSize: 15,
     color: Colors.black,
+    fontSize: 15,
   },
   chipsRow: {
+    gap: 8,
     paddingHorizontal: 20,
     paddingVertical: 16,
-    gap: 8,
   },
   chip: {
-    paddingHorizontal: 18,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: Colors.white,
-    borderWidth: 1.5,
+    borderRadius: 999,
+    borderWidth: 1,
     borderColor: Colors.gray200,
+    backgroundColor: Colors.white,
+    paddingHorizontal: 16,
+    paddingVertical: 9,
   },
   chipActive: {
     backgroundColor: Colors.primary,
     borderColor: Colors.primary,
   },
   chipText: {
-    fontSize: 13,
-    fontWeight: '600' as const,
     color: Colors.gray600,
+    fontWeight: '600' as const,
   },
   chipTextActive: {
     color: Colors.white,
@@ -187,88 +286,94 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   resultsTitle: {
-    fontSize: 14,
-    color: Colors.gray500,
-    fontWeight: '500' as const,
-  },
-  destCard: {
-    marginHorizontal: 20,
-    marginBottom: 16,
-    backgroundColor: Colors.white,
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  destImage: {
-    width: '100%',
-    height: 160,
-  },
-  destBody: {
-    padding: 16,
-  },
-  destCatRow: {
-    flexDirection: 'row',
-    marginBottom: 6,
-  },
-  destCatPill: {
-    backgroundColor: Colors.primaryFaded,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-  destCatText: {
-    fontSize: 11,
-    fontWeight: '600' as const,
-    color: Colors.primary,
-  },
-  destTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '700' as const,
     color: Colors.black,
+  },
+  resultsSubtitle: {
+    marginTop: 4,
+    color: Colors.gray500,
+  },
+  destinationCard: {
+    backgroundColor: Colors.white,
+    marginHorizontal: 20,
+    marginBottom: 16,
+    borderRadius: 22,
+    overflow: 'hidden',
+  },
+  destinationImage: {
+    width: '100%',
+    height: 190,
+  },
+  destinationBody: {
+    padding: 16,
+  },
+  destinationMetaRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 10,
+  },
+  pill: {
+    borderRadius: 999,
+    backgroundColor: Colors.primaryFaded,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  pillText: {
+    color: Colors.primaryDark,
+    fontWeight: '700' as const,
+    fontSize: 12,
+  },
+  pillMuted: {
+    borderRadius: 999,
+    backgroundColor: Colors.accentFaded,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  pillMutedText: {
+    color: Colors.accentDark,
+    fontWeight: '700' as const,
+    fontSize: 12,
+  },
+  destinationTitle: {
+    fontSize: 20,
+    fontWeight: '800' as const,
+    color: Colors.black,
+  },
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    marginTop: 8,
+  },
+  locationText: {
+    color: Colors.gray500,
+  },
+  description: {
+    marginTop: 12,
+    color: Colors.gray600,
+    lineHeight: 20,
+  },
+  footerRow: {
+    flexDirection: 'row',
+    gap: 14,
+    marginTop: 16,
+  },
+  footerMetric: {
+    flex: 1,
+    borderRadius: 16,
+    backgroundColor: Colors.gray100,
+    padding: 12,
+  },
+  footerLabel: {
+    color: Colors.gray400,
+    fontSize: 12,
     marginBottom: 4,
   },
-  destLocationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginBottom: 8,
-  },
-  destLocation: {
-    fontSize: 12,
-    color: Colors.gray400,
-  },
-  destDesc: {
+  footerValue: {
+    color: Colors.black,
+    fontWeight: '700' as const,
     fontSize: 13,
-    color: Colors.gray500,
-    lineHeight: 19,
-  },
-  destViewRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-    marginTop: 12,
-  },
-  destViewText: {
-    fontSize: 14,
-    fontWeight: '600' as const,
-    color: Colors.primary,
-  },
-  emptyState: {
-    alignItems: 'center',
-    paddingTop: 60,
-  },
-  emptyText: {
-    fontSize: 16,
-    fontWeight: '600' as const,
-    color: Colors.gray600,
-  },
-  emptySubtext: {
-    fontSize: 13,
-    color: Colors.gray400,
-    marginTop: 4,
   },
 });

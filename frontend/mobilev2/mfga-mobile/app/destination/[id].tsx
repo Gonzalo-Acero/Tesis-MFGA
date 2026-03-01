@@ -1,66 +1,88 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
+  Linking,
+  Pressable,
   ScrollView,
-  TouchableOpacity,
-  Animated,
-  Dimensions,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Stack } from 'expo-router';
 import {
   ArrowLeft,
-  Heart,
-  MapPin,
-  Navigation,
-  CheckCircle,
-  Lightbulb,
-  ImageIcon,
+  Clock3,
+  MapPinned,
+  Mountain,
+  Wallet,
 } from 'lucide-react-native';
+
+import { EmptyState } from '@/components/common/EmptyState';
+import { LoadingState } from '@/components/common/LoadingState';
 import Colors from '@/constants/colors';
-import { destinations } from '@/mocks/destinations';
+import { fetchDestinations } from '@/services/content';
+import type { Destination } from '@/types';
 
-const { width } = Dimensions.get('window');
-
-export default function DestinationDetails() {
+export default function DestinationDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [saved, setSaved] = useState(false);
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(40)).current;
-  const heartScale = useRef(new Animated.Value(1)).current;
-
-  const destination = destinations.find((d) => d.id === id);
+  const [destinations, setDestinations] = useState<Destination[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
-      Animated.timing(slideAnim, { toValue: 0, duration: 500, useNativeDriver: true }),
-    ]).start();
+    let mounted = true;
+
+    fetchDestinations()
+      .then((response) => {
+        if (!mounted) return;
+        setDestinations(response);
+      })
+      .catch((nextError: any) => {
+        if (!mounted) return;
+        setError(nextError?.message || 'Could not load this destination.');
+      })
+      .finally(() => {
+        if (mounted) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  const handleSave = () => {
-    Animated.sequence([
-      Animated.timing(heartScale, { toValue: 1.3, duration: 120, useNativeDriver: true }),
-      Animated.timing(heartScale, { toValue: 1, duration: 120, useNativeDriver: true }),
-    ]).start();
-    setSaved(!saved);
+  const destination = useMemo(
+    () => destinations.find((item) => item.id === id),
+    [destinations, id]
+  );
+
+  const openMap = async () => {
+    if (!destination?.mapEmbedUrl) return;
+    await Linking.openURL(destination.mapEmbedUrl);
   };
 
-  if (!destination) {
+  if (loading) {
     return (
-      <View style={styles.errorContainer}>
+      <View style={styles.loadingContainer}>
         <Stack.Screen options={{ headerShown: false }} />
-        <Text style={styles.errorText}>Destination not found</Text>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.errorLink}>Go back</Text>
-        </TouchableOpacity>
+        <LoadingState label="Loading destination..." />
+      </View>
+    );
+  }
+
+  if (error || !destination) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Stack.Screen options={{ headerShown: false }} />
+        <EmptyState
+          title="Destination not found"
+          subtitle={error || 'This destination could not be loaded.'}
+        />
       </View>
     );
   }
@@ -68,125 +90,119 @@ export default function DestinationDetails() {
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
-      <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
-        <View style={styles.imageContainer}>
-          <Image source={destination.image} style={styles.heroImage} />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.heroWrapper}>
+          <Image source={{ uri: destination.heroImage }} style={styles.heroImage} />
           <LinearGradient
-            colors={['rgba(26,26,46,0.4)', 'transparent', 'rgba(26,26,46,0.7)']}
-            locations={[0, 0.4, 1]}
+            colors={['rgba(0,0,0,0.15)', 'rgba(0,0,0,0.62)']}
             style={styles.heroGradient}
           />
+
           <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
-            <TouchableOpacity
-              style={styles.topBtn}
-              onPress={() => router.back()}
-              testID="back-btn"
-            >
+            <Pressable style={styles.iconButton} onPress={() => router.back()}>
               <ArrowLeft size={20} color={Colors.white} />
-            </TouchableOpacity>
-            <Animated.View style={{ transform: [{ scale: heartScale }] }}>
-              <TouchableOpacity style={styles.topBtn} onPress={handleSave}>
-                <Heart
-                  size={20}
-                  color={Colors.white}
-                  fill={saved ? Colors.danger : 'transparent'}
-                />
-              </TouchableOpacity>
-            </Animated.View>
+            </Pressable>
           </View>
-          <View style={styles.heroBottom}>
-            <Text style={styles.heroTitle}>{destination.title}</Text>
-            <View style={styles.heroLocationRow}>
-              <MapPin size={14} color={Colors.accent} />
-              <Text style={styles.heroLocation}>{destination.location}</Text>
+
+          <View style={styles.heroContent}>
+            <View style={styles.heroTag}>
+              <Text style={styles.heroTagText}>{destination.tag}</Text>
             </View>
+            <Text style={styles.heroTitle}>{destination.name}</Text>
+            <Text style={styles.heroLocation}>
+              {destination.city}, {destination.province}
+            </Text>
           </View>
         </View>
 
-        <Animated.View
-          style={[
-            styles.content,
-            { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
-          ]}
-        >
-          <View style={styles.tagsRow}>
-            {destination.tags.map((tag) => (
-              <View key={tag} style={styles.tag}>
-                <Text style={styles.tagText}>{tag}</Text>
+        <View style={styles.content}>
+          <Text style={styles.description}>{destination.description}</Text>
+
+          <View style={styles.quickInfoGrid}>
+            <View style={styles.quickInfoCard}>
+              <Clock3 size={18} color={Colors.primaryDark} />
+              <Text style={styles.quickInfoLabel}>Ideal stay</Text>
+              <Text style={styles.quickInfoValue}>{destination.duration}</Text>
+            </View>
+            <View style={styles.quickInfoCard}>
+              <Mountain size={18} color={Colors.primaryDark} />
+              <Text style={styles.quickInfoLabel}>Best time</Text>
+              <Text style={styles.quickInfoValue}>{destination.bestTimeToVisit}</Text>
+            </View>
+            <View style={styles.quickInfoCard}>
+              <Wallet size={18} color={Colors.primaryDark} />
+              <Text style={styles.quickInfoLabel}>Budget</Text>
+              <Text style={styles.quickInfoValue}>{destination.estimatedBudget}</Text>
+            </View>
+            <Pressable style={styles.quickInfoCard} onPress={openMap}>
+              <MapPinned size={18} color={Colors.primaryDark} />
+              <Text style={styles.quickInfoLabel}>Map</Text>
+              <Text style={styles.quickInfoValue}>Open route</Text>
+            </Pressable>
+          </View>
+
+          <Section title="Highlights">
+            {destination.highlights.map((highlight) => (
+              <View key={highlight} style={styles.listRow}>
+                <View style={styles.dot} />
+                <Text style={styles.listText}>{highlight}</Text>
               </View>
             ))}
-          </View>
+          </Section>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Overview</Text>
-            <Text style={styles.sectionText}>{destination.overview}</Text>
-          </View>
-
-          <View style={styles.section}>
-            <View style={styles.sectionHeaderRow}>
-              <CheckCircle size={18} color={Colors.primary} />
-              <Text style={styles.sectionTitleInline}>Highlights</Text>
-            </View>
-            {destination.highlights.map((h, i) => (
-              <View key={i} style={styles.highlightRow}>
-                <View style={styles.highlightDot} />
-                <Text style={styles.highlightText}>{h}</Text>
+          <Section title="Audio Guides">
+            {destination.audioGuides.map((guide) => (
+              <View key={guide.title} style={styles.audioCard}>
+                <Text style={styles.audioTitle}>{guide.title}</Text>
+                <Text style={styles.audioSubtitle}>Available as a destination audio track</Text>
               </View>
             ))}
-          </View>
+          </Section>
 
-          <View style={styles.section}>
-            <View style={styles.sectionHeaderRow}>
-              <Lightbulb size={18} color={Colors.accent} />
-              <Text style={styles.sectionTitleInline}>Tips</Text>
-            </View>
-            {destination.tips.map((t, i) => (
-              <View key={i} style={styles.tipCard}>
-                <Text style={styles.tipNumber}>{i + 1}</Text>
-                <Text style={styles.tipText}>{t}</Text>
-              </View>
-            ))}
-          </View>
-
-          <View style={styles.section}>
-            <View style={styles.sectionHeaderRow}>
-              <ImageIcon size={18} color={Colors.gray500} />
-              <Text style={styles.sectionTitleInline}>Gallery</Text>
-            </View>
-            <View style={styles.galleryGrid}>
-              {[1].map((i) => (
-                <View key={i} style={styles.galleryItem}>
+          <Section title="Gallery">
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={styles.galleryRow}>
+                {destination.gallery.map((imageUrl) => (
                   <Image
-                    source={destination.image}
+                    key={imageUrl}
+                    source={{ uri: imageUrl }}
                     style={styles.galleryImage}
                   />
-                </View>
-              ))}
-            </View>
-          </View>
+                ))}
+              </View>
+            </ScrollView>
+          </Section>
 
-          <View style={styles.ctaRow}>
-            <TouchableOpacity
-              style={styles.ctaSave}
-              onPress={handleSave}
-              testID="save-btn"
-            >
-              <Heart
-                size={18}
-                color={saved ? Colors.danger : Colors.primary}
-                fill={saved ? Colors.danger : 'transparent'}
-              />
-              <Text style={[styles.ctaSaveText, saved && { color: Colors.danger }]}>
-                {saved ? 'Saved' : 'Save'}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.ctaStart} testID="start-route-btn">
-              <Navigation size={18} color={Colors.white} />
-              <Text style={styles.ctaStartText}>Start Route</Text>
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
+          <Section title="Travel Tips">
+            {destination.tips.map((tip, index) => (
+              <View key={tip} style={styles.tipCard}>
+                <Text style={styles.tipIndex}>{index + 1}</Text>
+                <Text style={styles.tipText}>{tip}</Text>
+              </View>
+            ))}
+          </Section>
+
+          <Pressable style={styles.mapButton} onPress={openMap}>
+            <MapPinned size={18} color={Colors.white} />
+            <Text style={styles.mapButtonText}>Open in Maps</Text>
+          </Pressable>
+        </View>
       </ScrollView>
+    </View>
+  );
+}
+
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      {children}
     </View>
   );
 }
@@ -194,217 +210,187 @@ export default function DestinationDetails() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
-  },
-  errorContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: Colors.gray50,
   },
-  errorText: {
-    fontSize: 16,
-    color: Colors.gray600,
-    fontWeight: '600' as const,
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: Colors.gray50,
+    justifyContent: 'center',
   },
-  errorLink: {
-    fontSize: 14,
-    color: Colors.primary,
-    fontWeight: '600' as const,
-    marginTop: 12,
-  },
-  imageContainer: {
-    height: 320,
+  heroWrapper: {
+    height: 360,
   },
   heroImage: {
     width: '100%',
     height: '100%',
   },
   heroGradient: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
+    ...StyleSheet.absoluteFillObject,
   },
   topBar: {
     position: 'absolute',
-    top: 0,
     left: 0,
     right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     paddingHorizontal: 16,
   },
-  topBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+  iconButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: 'rgba(0,0,0,0.28)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  heroBottom: {
+  heroContent: {
     position: 'absolute',
-    bottom: 20,
     left: 20,
     right: 20,
+    bottom: 24,
+  },
+  heroTag: {
+    alignSelf: 'flex-start',
+    borderRadius: 999,
+    backgroundColor: 'rgba(246,213,74,0.18)',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+  },
+  heroTagText: {
+    color: Colors.accent,
+    fontWeight: '800' as const,
+    fontSize: 12,
   },
   heroTitle: {
-    fontSize: 28,
-    fontWeight: '800' as const,
+    marginTop: 14,
     color: Colors.white,
-  },
-  heroLocationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginTop: 6,
+    fontSize: 30,
+    fontWeight: '800' as const,
+    lineHeight: 36,
   },
   heroLocation: {
-    fontSize: 14,
+    marginTop: 8,
     color: 'rgba(255,255,255,0.85)',
-    fontWeight: '500' as const,
+    fontSize: 15,
   },
   content: {
-    padding: 20,
-    backgroundColor: Colors.white,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    marginTop: -20,
+    marginTop: -22,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    backgroundColor: Colors.gray50,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 36,
   },
-  tagsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 24,
-  },
-  tag: {
-    backgroundColor: Colors.primaryFaded,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 10,
-  },
-  tagText: {
-    fontSize: 12,
-    fontWeight: '600' as const,
-    color: Colors.primary,
-  },
-  section: {
-    marginBottom: 28,
-  },
-  sectionHeaderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 12,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700' as const,
-    color: Colors.black,
-    marginBottom: 10,
-  },
-  sectionTitleInline: {
-    fontSize: 18,
-    fontWeight: '700' as const,
-    color: Colors.black,
-  },
-  sectionText: {
-    fontSize: 14,
+  description: {
     color: Colors.gray600,
     lineHeight: 22,
+    fontSize: 15,
   },
-  highlightRow: {
+  quickInfoGrid: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 10,
-    marginBottom: 10,
+    flexWrap: 'wrap',
+    gap: 12,
+    marginTop: 20,
   },
-  highlightDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+  quickInfoCard: {
+    width: '47%',
+    borderRadius: 18,
+    backgroundColor: Colors.white,
+    padding: 14,
+  },
+  quickInfoLabel: {
+    color: Colors.gray400,
+    marginTop: 10,
+    fontSize: 12,
+  },
+  quickInfoValue: {
+    color: Colors.black,
+    marginTop: 4,
+    fontWeight: '700' as const,
+    lineHeight: 18,
+  },
+  section: {
+    marginTop: 28,
+  },
+  sectionTitle: {
+    color: Colors.black,
+    fontSize: 20,
+    fontWeight: '800' as const,
+    marginBottom: 14,
+  },
+  listRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 12,
+    alignItems: 'flex-start',
+  },
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
     backgroundColor: Colors.primary,
     marginTop: 6,
   },
-  highlightText: {
+  listText: {
     flex: 1,
-    fontSize: 14,
     color: Colors.gray600,
     lineHeight: 20,
   },
+  audioCard: {
+    borderRadius: 16,
+    backgroundColor: Colors.white,
+    padding: 14,
+    marginBottom: 10,
+  },
+  audioTitle: {
+    color: Colors.black,
+    fontWeight: '700' as const,
+  },
+  audioSubtitle: {
+    marginTop: 4,
+    color: Colors.gray500,
+    lineHeight: 18,
+  },
+  galleryRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  galleryImage: {
+    width: 220,
+    height: 150,
+    borderRadius: 18,
+  },
   tipCard: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
     gap: 12,
-    backgroundColor: Colors.accentFaded,
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 8,
+    backgroundColor: Colors.white,
+    borderRadius: 18,
+    padding: 14,
+    marginBottom: 10,
   },
-  tipNumber: {
-    fontSize: 14,
+  tipIndex: {
+    width: 24,
+    color: Colors.primaryDark,
     fontWeight: '800' as const,
-    color: Colors.accentDark,
-    width: 20,
+    fontSize: 16,
   },
   tipText: {
     flex: 1,
-    fontSize: 13,
-    color: Colors.gray700,
-    lineHeight: 19,
+    color: Colors.gray600,
+    lineHeight: 20,
   },
-  galleryGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  galleryItem: {
-    width: (width - 56) / 2,
-    height: 100,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  galleryImage: {
-    width: '100%',
-    height: '100%',
-  },
-  ctaRow: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 40,
-  },
-  ctaSave: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 16,
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: Colors.gray200,
-    backgroundColor: Colors.white,
-  },
-  ctaSaveText: {
-    fontSize: 15,
-    fontWeight: '700' as const,
-    color: Colors.primary,
-  },
-  ctaStart: {
-    flex: 2,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 16,
-    borderRadius: 16,
+  mapButton: {
+    marginTop: 28,
     backgroundColor: Colors.primary,
+    borderRadius: 18,
+    minHeight: 54,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 10,
   },
-  ctaStartText: {
-    fontSize: 15,
-    fontWeight: '700' as const,
+  mapButtonText: {
     color: Colors.white,
+    fontWeight: '700' as const,
+    fontSize: 15,
   },
 });

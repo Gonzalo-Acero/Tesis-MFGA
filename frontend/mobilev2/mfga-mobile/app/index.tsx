@@ -1,18 +1,31 @@
+import { Redirect } from "expo-router";
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
+import Colors from "@/constants/colors";
+import { useAuth } from "@/hooks/useAuth";
 
-export default function Home() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>MFGA Mobile v2</Text>
-      <Text style={styles.subtitle}>App is running ✅</Text>
-    </View>
-  );
+export default function IndexScreen() {
+  const { ready, isAuthenticated } = useAuth();
+
+  if (!ready) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: Colors.gray50,
+        }}
+      >
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
+  if (isAuthenticated) {
+    return <Redirect href="/(tabs)/(home)" />;
+  }
+
+  return <Redirect href="/(auth)/login" />;
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#000" },
-  title: { color: "#fff", fontSize: 28, fontWeight: "700" },
-  subtitle: { color: "#aaa", marginTop: 10 },
-});

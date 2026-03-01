@@ -1,95 +1,185 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
+  Pressable,
+  RefreshControl,
   ScrollView,
-  TouchableOpacity,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import { Image } from 'expo-image';
+import * as Location from 'expo-location';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { MapPin, Navigation, Map, AlertCircle } from 'lucide-react-native';
+import { MapPin, Navigation } from 'lucide-react-native';
+
 import Colors from '@/constants/colors';
 import Header from '@/components/Header';
-import { nearbyPlaces } from '@/mocks/nearby';
+import { EmptyState } from '@/components/common/EmptyState';
+import { LoadingState } from '@/components/common/LoadingState';
+import { AttractionFiltersCard } from '@/components/nearby/AttractionFilters';
+import { NearbyMap } from '@/components/nearby/NearbyMap';
+import {
+  fetchAttractions,
+  fetchNearbyAttractions,
+  type AttractionFilters,
+} from '@/services/attractions';
+import type { NearbyAttraction } from '@/types';
 
 export default function NearbyScreen() {
   const insets = useSafeAreaInsets();
-  const [locationEnabled, setLocationEnabled] = useState(false);
+  const [locationPermission, setLocationPermission] = useState<'idle' | 'granted' | 'denied'>(
+    'idle'
+  );
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(
+    null
+  );
+  const [filters, setFilters] = useState<AttractionFilters>({
+    category: 'all',
+    province: 'All Provinces',
+    search: '',
+    radiusKm: null,
+  });
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [attractions, setAttractions] = useState<NearbyAttraction[]>([]);
+
+  const sortLabel = useMemo(
+    () => (userLocation ? 'Nearest to you' : 'Top rated'),
+    [userLocation]
+  );
+
+  const loadData = async (currentLocation = userLocation) => {
+    try {
+      setError(null);
+      const nextAttractions = currentLocation
+        ? await fetchNearbyAttractions(currentLocation.latitude, currentLocation.longitude, filters)
+        : await fetchAttractions(filters);
+      setAttractions(
+        [...nextAttractions].sort((left, right) => {
+          if (currentLocation) {
+            return (left.distanceKm || 0) - (right.distanceKm || 0);
+          }
+          return right.rating - left.rating;
+        })
+      );
+    } catch (nextError: any) {
+      setError(nextError?.message || 'Could not load nearby attractions.');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.category, filters.province, filters.radiusKm, filters.search]);
+
+  const requestLocation = async () => {
+    setLoading(true);
+    const permission = await Location.requestForegroundPermissionsAsync();
+    if (permission.status !== 'granted') {
+      setLocationPermission('denied');
+      setUserLocation(null);
+      await loadData(null);
+      return;
+    }
+
+    setLocationPermission('granted');
+    const position = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.Balanced,
+    });
+    const currentLocation = {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+    };
+    setUserLocation(currentLocation);
+    await loadData(currentLocation);
+  };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <Header />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        {!locationEnabled ? (
-          <View style={styles.permissionCard}>
-            <View style={styles.permIconWrap}>
-              <Navigation size={32} color={Colors.primary} />
-            </View>
-            <Text style={styles.permTitle}>Enable Location</Text>
-            <Text style={styles.permDesc}>
-              We need your location to show nearby attractions and places of interest around you.
+      <ScrollView
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => {
+          setRefreshing(true);
+          loadData();
+        }} />}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.hero}>
+          <Text style={styles.title}>Nearby Attractions</Text>
+          <Text style={styles.subtitle}>
+            {locationPermission === 'granted'
+              ? 'Showing attractions around your live location.'
+              : 'Use your location to sort by distance and unlock nearby results.'}
+          </Text>
+          <Pressable style={styles.locationButton} onPress={requestLocation}>
+            <MapPin size={16} color={Colors.white} />
+            <Text style={styles.locationButtonText}>
+              {locationPermission === 'granted' ? 'Refresh my location' : 'Use my location'}
             </Text>
-            <TouchableOpacity
-              style={styles.permBtn}
-              onPress={() => setLocationEnabled(true)}
-              testID="enable-location"
-            >
-              <MapPin size={16} color={Colors.white} />
-              <Text style={styles.permBtnText}>Use my location</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <>
-            <View style={styles.mapPlaceholder}>
-              <Map size={48} color={Colors.gray300} />
-              <Text style={styles.mapPlaceholderText}>Map View</Text>
-              <View style={styles.mapPins}>
-                {nearbyPlaces.slice(0, 3).map((place, i) => (
-                  <View
-                    key={place.id}
-                    style={[
-                      styles.mapPin,
-                      { left: 40 + i * 80, top: 30 + (i % 2) * 50 },
-                    ]}
-                  >
-                    <MapPin size={20} color={Colors.primary} fill={Colors.primaryLight} />
-                  </View>
-                ))}
-              </View>
-            </View>
+          </Pressable>
+          {locationPermission === 'denied' ? (
+            <Text style={styles.locationHint}>
+              Location permission is denied. Results are sorted by rating instead.
+            </Text>
+          ) : null}
+        </View>
 
-            <View style={styles.nearbyHeader}>
-              <Text style={styles.nearbyTitle}>Nearby Places</Text>
-              <Text style={styles.nearbySubtitle}>
-                {nearbyPlaces.length} places found near you
+        <AttractionFiltersCard filters={filters} onChange={setFilters} />
+
+        {loading ? <LoadingState label="Loading attractions..." /> : null}
+
+        {!loading && attractions.length ? (
+          <>
+            <NearbyMap attractions={attractions} userLocation={userLocation} />
+            <View style={styles.resultsHeader}>
+              <Text style={styles.resultsTitle}>Sorted by: {sortLabel}</Text>
+              <Text style={styles.resultsSubtitle}>
+                {attractions.length} place{attractions.length === 1 ? '' : 's'} found
               </Text>
             </View>
 
-            {nearbyPlaces.map((place) => (
-              <TouchableOpacity
-                key={place.id}
-                style={styles.placeCard}
-                activeOpacity={0.85}
-                testID={`nearby-${place.id}`}
-              >
-                <Image source={{ uri: place.image }} style={styles.placeImage} />
+            {attractions.map((place) => (
+              <View key={place.id} style={styles.placeCard}>
+                <Image source={{ uri: place.imageUrl }} style={styles.placeImage} />
                 <View style={styles.placeBody}>
                   <Text style={styles.placeName}>{place.name}</Text>
-                  <View style={styles.placeCatRow}>
-                    <View style={styles.placeCatPill}>
-                      <Text style={styles.placeCatText}>{place.category}</Text>
+                  <Text style={styles.placeProvince}>{place.province}</Text>
+                  <View style={styles.metaRow}>
+                    <View style={styles.metaPill}>
+                      <Text style={styles.metaText}>{place.category}</Text>
+                    </View>
+                    <View style={styles.metaPill}>
+                      <Navigation size={12} color={Colors.primary} />
+                      <Text style={styles.metaText}>
+                        {place.distanceKm !== null ? `${place.distanceKm.toFixed(1)} km` : 'N/A'}
+                      </Text>
+                    </View>
+                    <View style={styles.metaPill}>
+                      <Text style={styles.metaText}>{place.rating.toFixed(1)} rating</Text>
                     </View>
                   </View>
-                  <View style={styles.placeDistRow}>
-                    <Navigation size={12} color={Colors.primary} />
-                    <Text style={styles.placeDistText}>{place.distance}</Text>
-                  </View>
+                  <Text style={styles.placeDescription} numberOfLines={3}>
+                    {place.description}
+                  </Text>
                 </View>
-              </TouchableOpacity>
+              </View>
             ))}
           </>
-        )}
+        ) : null}
+
+        {!loading && !attractions.length && !error ? (
+          <EmptyState
+            title="No attractions found"
+            subtitle="Try changing category, province, or search filters."
+          />
+        ) : null}
+
+        {error ? <EmptyState title="Could not load attractions" subtitle={error} /> : null}
       </ScrollView>
     </View>
   );
@@ -101,149 +191,103 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray50,
   },
   scrollContent: {
-    paddingBottom: 30,
+    paddingBottom: 32,
   },
-  permissionCard: {
-    margin: 20,
-    backgroundColor: Colors.white,
-    borderRadius: 24,
-    padding: 32,
-    alignItems: 'center',
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 16,
-    elevation: 4,
+  hero: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
   },
-  permIconWrap: {
-    width: 72,
-    height: 72,
-    borderRadius: 24,
-    backgroundColor: Colors.primaryFaded,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  permTitle: {
-    fontSize: 20,
-    fontWeight: '700' as const,
+  title: {
+    fontSize: 22,
+    fontWeight: '800' as const,
     color: Colors.black,
-    marginBottom: 8,
   },
-  permDesc: {
-    fontSize: 14,
+  subtitle: {
     color: Colors.gray500,
-    textAlign: 'center',
+    marginTop: 6,
     lineHeight: 20,
-    marginBottom: 24,
   },
-  permBtn: {
+  locationButton: {
+    marginTop: 16,
+    alignSelf: 'flex-start',
+    backgroundColor: Colors.primary,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: Colors.primary,
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-    borderRadius: 14,
   },
-  permBtnText: {
-    fontSize: 15,
-    fontWeight: '700' as const,
+  locationButtonText: {
     color: Colors.white,
+    fontWeight: '700' as const,
   },
-  mapPlaceholder: {
-    marginHorizontal: 20,
-    marginTop: 8,
-    height: 200,
-    backgroundColor: Colors.primaryFaded,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
+  locationHint: {
+    marginTop: 10,
+    color: Colors.danger,
+    fontSize: 12,
   },
-  mapPlaceholderText: {
-    fontSize: 14,
-    color: Colors.gray400,
-    marginTop: 8,
-    fontWeight: '500' as const,
-  },
-  mapPins: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  mapPin: {
-    position: 'absolute',
-  },
-  nearbyHeader: {
+  resultsHeader: {
     paddingHorizontal: 20,
-    marginTop: 24,
-    marginBottom: 14,
+    marginTop: 18,
+    marginBottom: 12,
   },
-  nearbyTitle: {
-    fontSize: 20,
+  resultsTitle: {
+    fontSize: 15,
     fontWeight: '700' as const,
     color: Colors.black,
   },
-  nearbySubtitle: {
-    fontSize: 13,
+  resultsSubtitle: {
+    marginTop: 4,
     color: Colors.gray500,
-    marginTop: 2,
   },
   placeCard: {
     marginHorizontal: 20,
-    marginBottom: 12,
+    marginBottom: 14,
     backgroundColor: Colors.white,
-    borderRadius: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
+    borderRadius: 18,
+    overflow: 'hidden',
   },
   placeImage: {
-    width: 64,
-    height: 64,
-    borderRadius: 14,
+    width: '100%',
+    height: 164,
   },
   placeBody: {
-    flex: 1,
-    marginLeft: 12,
+    padding: 16,
   },
   placeName: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: '700' as const,
     color: Colors.black,
   },
-  placeCatRow: {
-    flexDirection: 'row',
+  placeProvince: {
+    color: Colors.gray400,
     marginTop: 4,
   },
-  placeCatPill: {
-    backgroundColor: Colors.accentFaded,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
+  metaRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 12,
   },
-  placeCatText: {
-    fontSize: 10,
-    fontWeight: '600' as const,
-    color: Colors.accentDark,
-  },
-  placeDistRow: {
+  metaPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    marginTop: 6,
+    gap: 5,
+    borderRadius: 999,
+    backgroundColor: Colors.primaryFaded,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
   },
-  placeDistText: {
+  metaText: {
+    color: Colors.primaryDark,
     fontSize: 12,
-    color: Colors.primary,
     fontWeight: '600' as const,
+    textTransform: 'capitalize',
+  },
+  placeDescription: {
+    marginTop: 12,
+    color: Colors.gray600,
+    lineHeight: 20,
   },
 });

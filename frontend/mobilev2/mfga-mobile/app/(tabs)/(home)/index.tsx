@@ -1,203 +1,101 @@
-import React, { useRef, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Animated,
-  Dimensions,
-} from 'react-native';
+import React from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Compass, Headphones, Navigation, Users, ArrowRight } from 'lucide-react-native';
-import Colors from '@/constants/colors';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Compass, Headphones, Navigation, Users } from 'lucide-react-native';
+
 import Header from '@/components/Header';
+import Colors from '@/constants/colors';
+import { useAuth } from '@/hooks/useAuth';
 
-const { width } = Dimensions.get('window');
-
-const FEATURES = [
+const modules = [
   {
-    id: 'discover',
+    key: 'discover',
     title: 'Discover Places',
-    subtitle: 'Explore stunning destinations across Argentina',
+    subtitle: 'Explore destinations with full mobile detail views.',
+    route: '/discover',
     icon: Compass,
     color: Colors.primary,
-    bgColor: Colors.primaryFaded,
-    route: '/discover' as const,
   },
   {
-    id: 'guides',
+    key: 'guides',
     title: 'Audio Guides',
-    subtitle: 'Listen to immersive stories and local insights',
+    subtitle: 'Play immersive guide audio and resume your progress.',
+    route: '/guides',
     icon: Headphones,
-    color: Colors.accent,
-    bgColor: Colors.accentFaded,
-    route: '/guides' as const,
+    color: Colors.accentDark,
   },
   {
-    id: 'nearby',
+    key: 'nearby',
     title: 'Nearby Attractions',
-    subtitle: 'Find amazing spots close to your location',
+    subtitle: 'Use live location and the same backend used on web.',
+    route: '/nearby',
     icon: Navigation,
-    color: Colors.primary,
-    bgColor: Colors.primaryFaded,
-    route: '/nearby' as const,
+    color: Colors.primaryDark,
   },
   {
-    id: 'community',
+    key: 'community',
     title: 'Travel Community',
-    subtitle: 'Share experiences with fellow travelers',
+    subtitle: 'Post, like, and comment with persistent backend data.',
+    route: '/community',
     icon: Users,
-    color: Colors.accent,
-    bgColor: Colors.accentFaded,
-    route: '/community' as const,
+    color: Colors.accentDark,
   },
 ];
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(30)).current;
-  const cardAnims = useRef(FEATURES.map(() => new Animated.Value(0))).current;
+  const { user } = useAuth();
 
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
-      Animated.timing(slideAnim, { toValue: 0, duration: 600, useNativeDriver: true }),
-    ]).start();
-
-    FEATURES.forEach((_, i) => {
-      Animated.timing(cardAnims[i], {
-        toValue: 1,
-        duration: 500,
-        delay: 300 + i * 120,
-        useNativeDriver: true,
-      }).start();
-    });
-  }, []);
-
-  const handleCardPress = (route: string, index: number) => {
-    const anim = cardAnims[index];
-    Animated.sequence([
-      Animated.timing(anim, { toValue: 0.95, duration: 80, useNativeDriver: true }),
-      Animated.timing(anim, { toValue: 1, duration: 80, useNativeDriver: true }),
-    ]).start(() => {
-      router.push(route as any);
-    });
-  };
+  const firstName = user?.Name?.split(' ')[0] || 'Traveler';
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <Header />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <Animated.View
-          style={[
-            styles.heroContainer,
-            { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
-          ]}
-        >
-         <Image
-          source={require("../../../assets/images/obelisco.webp")}
-          style={styles.heroImage}
-          contentFit="cover"
-          onError={(e) => console.log("HERO IMG ERROR:", e)}
-        />
-          <LinearGradient
-            colors={['transparent', 'rgba(52, 52, 75, 0.76)']}
-            style={styles.heroGradient}
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <View style={styles.heroCard}>
+          <Image
+            source={require('../../../assets/images/obelisco.webp')}
+            style={styles.heroImage}
+            contentFit="cover"
           />
+          <View style={styles.heroOverlay} />
           <View style={styles.heroContent}>
-            <Text style={styles.heroTag}>ARGENTINA</Text>
-            <Text style={styles.heroTitle}>Where will you{'\n'}explore today?</Text>
-            <View style={styles.heroStats}>
-              <View style={styles.heroStatItem}>
-                <Text style={styles.heroStatNum}>6+</Text>
-                <Text style={styles.heroStatLabel}>Regions</Text>
-              </View>
-              <View style={styles.heroStatDivider} />
-              <View style={styles.heroStatItem}>
-                <Text style={styles.heroStatNum}>50+</Text>
-                <Text style={styles.heroStatLabel}>Guides</Text>
-              </View>
-              <View style={styles.heroStatDivider} />
-              <View style={styles.heroStatItem}>
-                <Text style={styles.heroStatNum}>1K+</Text>
-                <Text style={styles.heroStatLabel}>Places</Text>
-              </View>
-            </View>
+            <Text style={styles.heroEyebrow}>MFGA Mobile</Text>
+            <Text style={styles.heroTitle}>Hello, {firstName}</Text>
+            <Text style={styles.heroSubtitle}>
+              Your mobile demo now runs on the existing backend with authenticated flows.
+            </Text>
           </View>
-        </Animated.View>
+        </View>
 
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Explore Features</Text>
-          <Text style={styles.sectionSubtitle}>Your gateway to Argentina</Text>
+          <Text style={styles.sectionTitle}>Core modules</Text>
+          <Text style={styles.sectionSubtitle}>
+            Open each feature from here or from the bottom tabs.
+          </Text>
         </View>
 
-        <View style={styles.cardsGrid}>
-          {FEATURES.map((feature, index) => {
-            const IconComp = feature.icon;
-            return (
-              <Animated.View
-                key={feature.id}
-                style={[
-                  styles.cardWrapper,
-                  {
-                    opacity: cardAnims[index],
-                    transform: [
-                      {
-                        translateY: cardAnims[index].interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [40, 0],
-                        }),
-                      },
-                      {
-                        scale: cardAnims[index].interpolate({
-                          inputRange: [0.95, 1],
-                          outputRange: [0.97, 1],
-                          extrapolate: 'clamp',
-                        }),
-                      },
-                    ],
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={styles.card}
-                  activeOpacity={0.85}
-                  onPress={() => handleCardPress(feature.route, index)}
-                  testID={`feature-card-${feature.id}`}
-                >
-                  <View style={[styles.cardIconArea, { backgroundColor: feature.bgColor }]}>
-                    <View style={[styles.cardIconCircle, { backgroundColor: feature.color }]}>
-                      <IconComp size={24} color={Colors.white} />
-                    </View>
-                  </View>
-                  <View style={styles.cardBody}>
-                    <Text style={styles.cardTitle}>{feature.title}</Text>
-                    <Text style={styles.cardSubtitle} numberOfLines={2}>
-                      {feature.subtitle}
-                    </Text>
-                    <View style={styles.cardLink}>
-                      <Text style={[styles.cardLinkText, { color: feature.color }]}>
-                        Learn more
-                      </Text>
-                      <ArrowRight size={14} color={feature.color} />
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              </Animated.View>
-            );
-          })}
-        </View>
-
-        <View style={styles.bottomSpacer} />
+        {modules.map((module) => {
+          const Icon = module.icon;
+          return (
+            <Pressable
+              key={module.key}
+              style={styles.moduleCard}
+              onPress={() => router.push(module.route as never)}
+            >
+              <View style={[styles.iconWrap, { backgroundColor: module.color }]}>
+                <Icon size={22} color={Colors.white} />
+              </View>
+              <View style={styles.moduleBody}>
+                <Text style={styles.moduleTitle}>{module.title}</Text>
+                <Text style={styles.moduleSubtitle}>{module.subtitle}</Text>
+              </View>
+            </Pressable>
+          );
+        })}
       </ScrollView>
     </View>
   );
@@ -209,139 +107,89 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray50,
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingBottom: 28,
   },
-  heroContainer: {
+  heroCard: {
     marginHorizontal: 20,
     marginTop: 8,
-    borderRadius: 24,
+    borderRadius: 28,
     overflow: 'hidden',
-    height: 220,
+    height: 250,
   },
   heroImage: {
     width: '100%',
     height: '100%',
   },
-  heroGradient: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: '70%',
+  heroOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(26,26,46,0.38)',
   },
   heroContent: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 20,
+    left: 20,
+    right: 20,
+    bottom: 22,
   },
-  heroTag: {
-    fontSize: 10,
-    fontWeight: '700' as const,
+  heroEyebrow: {
     color: Colors.accent,
-    letterSpacing: 2,
-    marginBottom: 6,
+    fontWeight: '800' as const,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    fontSize: 12,
   },
   heroTitle: {
-    fontSize: 24,
-    fontWeight: '800' as const,
-    color: Colors.white,
-    lineHeight: 30,
-  },
-  heroStats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 14,
-    gap: 16,
-  },
-  heroStatItem: {
-    alignItems: 'center',
-  },
-  heroStatNum: {
-    fontSize: 16,
+    marginTop: 10,
+    fontSize: 30,
     fontWeight: '800' as const,
     color: Colors.white,
   },
-  heroStatLabel: {
-    fontSize: 10,
-    color: 'rgba(255,255,255,0.7)',
-    fontWeight: '500' as const,
-  },
-  heroStatDivider: {
-    width: 1,
-    height: 24,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+  heroSubtitle: {
+    marginTop: 8,
+    color: 'rgba(255,255,255,0.8)',
+    lineHeight: 20,
   },
   sectionHeader: {
     paddingHorizontal: 20,
-    marginTop: 28,
-    marginBottom: 16,
+    marginTop: 24,
+    marginBottom: 14,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700' as const,
     color: Colors.black,
+    fontWeight: '800' as const,
+    fontSize: 22,
   },
   sectionSubtitle: {
-    fontSize: 13,
+    marginTop: 4,
     color: Colors.gray500,
-    marginTop: 2,
   },
-  cardsGrid: {
-    paddingHorizontal: 20,
-    gap: 14,
-  },
-  cardWrapper: {
-    width: '100%',
-  },
-  card: {
+  moduleCard: {
+    marginHorizontal: 20,
+    marginBottom: 14,
     backgroundColor: Colors.white,
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  cardIconArea: {
-    height: 80,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cardIconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cardBody: {
+    borderRadius: 22,
     padding: 16,
+    flexDirection: 'row',
+    gap: 14,
+    alignItems: 'center',
   },
-  cardTitle: {
-    fontSize: 17,
-    fontWeight: '700' as const,
+  iconWrap: {
+    width: 52,
+    height: 52,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  moduleBody: {
+    flex: 1,
+  },
+  moduleTitle: {
     color: Colors.black,
-    marginBottom: 4,
+    fontWeight: '800' as const,
+    fontSize: 17,
   },
-  cardSubtitle: {
-    fontSize: 13,
+  moduleSubtitle: {
+    marginTop: 4,
     color: Colors.gray500,
     lineHeight: 18,
-  },
-  cardLink: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginTop: 12,
-  },
-  cardLinkText: {
-    fontSize: 13,
-    fontWeight: '600' as const,
-  },
-  bottomSpacer: {
-    height: 20,
   },
 });
