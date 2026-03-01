@@ -1,0 +1,58 @@
+import { NearbyPlace } from '@/types';
+
+export const nearbyPlaces: NearbyPlace[] = [
+  {
+    id: '1',
+    name: 'Plaza de Mayo',
+    category: 'Landmark',
+    distance: '0.3 km',
+    image: 'https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=400&q=80',
+    lat: -34.6083,
+    lng: -58.3712,
+  },
+  {
+    id: '2',
+    name: 'Café Tortoni',
+    category: 'Restaurant',
+    distance: '0.5 km',
+    image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&q=80',
+    lat: -34.6098,
+    lng: -58.3808,
+  },
+  {
+    id: '3',
+    name: 'Teatro Colón',
+    category: 'Culture',
+    distance: '0.8 km',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
+    lat: -34.6011,
+    lng: -58.3833,
+  },
+  {
+    id: '4',
+    name: 'La Boca',
+    category: 'Neighborhood',
+    distance: '2.1 km',
+    image: 'https://images.unsplash.com/photo-1584646098378-0874589d76b1?w=400&q=80',
+    lat: -34.6345,
+    lng: -58.3631,
+  },
+  {
+    id: '5',
+    name: 'Recoleta Cemetery',
+    category: 'Landmark',
+    distance: '3.0 km',
+    image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&q=80',
+    lat: -34.5867,
+    lng: -58.3928,
+  },
+  {
+    id: '6',
+    name: 'Mercado de San Telmo',
+    category: 'Market',
+    distance: '1.2 km',
+    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80',
+    lat: -34.6215,
+    lng: -58.3714,
+  },
+];
