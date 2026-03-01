@@ -1,4 +1,4 @@
-import { buildStaticUrl } from '@/lib/config';
+import { buildStaticAssetUrl } from '@/lib/config';
 import type { GuideCatalogItem } from '@/types';
 
 export const AUDIO_CATEGORIES = ['All', 'History', 'Food', 'Nature', 'Culture'];
@@ -9,17 +9,23 @@ export const getGuideCatalog = (): GuideCatalogItem[] => [
     title: 'Obelisco',
     category: 'History',
     location: 'Buenos Aires',
-    duration: '12 min',
-    imageUrl: buildStaticUrl(
-      '/after_login/Audio_guides/AudioGuides/prof-carlos-mendez-profile.jpeg'
+    duration: '1:08',
+    imageUrl: buildStaticAssetUrl(
+      'after_login',
+      'Audio_guides',
+      'AudioGuides',
+      'prof-carlos-mendez-profile.jpeg'
     ),
     description: 'Explore the rich history of Argentina\'s capital city.',
     guideName: 'Prof. Carlos Mendes',
     rating: 4.7,
     reviews: 189,
     completed: 45,
-    audioUrl: buildStaticUrl(
-      '/after_login/Audio_guides/AudioGuides/Prof. Carlos Mendes_Obelisco.mp3'
+    audioUrl: buildStaticAssetUrl(
+      'after_login',
+      'Audio_guides',
+      'AudioGuides',
+      'Prof. Carlos Mendes_Obelisco.mp3'
     ),
   },
   {
@@ -40,17 +46,23 @@ export const getGuideCatalog = (): GuideCatalogItem[] => [
     title: 'Cerro Catedral',
     category: 'Nature',
     location: 'Patagonia',
-    duration: '22 min',
-    imageUrl: buildStaticUrl(
-      '/after_login/Audio_guides/AudioGuides/biologist-ana-torres-profile.jpeg'
+    duration: '1:14',
+    imageUrl: buildStaticAssetUrl(
+      'after_login',
+      'Audio_guides',
+      'AudioGuides',
+      'biologist-ana-torres-profile.jpeg'
     ),
     description: 'Discover wildlife and ecology on Patagonia\'s slopes.',
     guideName: 'Biologist Ana Torres',
     rating: 4.8,
     reviews: 167,
     completed: 28,
-    audioUrl: buildStaticUrl(
-      '/after_login/Audio_guides/AudioGuides/Bio. Ana Torres_CerroCatedral.mp3'
+    audioUrl: buildStaticAssetUrl(
+      'after_login',
+      'Audio_guides',
+      'AudioGuides',
+      'Bio. Ana Torres_CerroCatedral.mp3'
     ),
   },
   {
@@ -58,17 +70,23 @@ export const getGuideCatalog = (): GuideCatalogItem[] => [
     title: 'Teatro Colon',
     category: 'Culture',
     location: 'Buenos Aires',
-    duration: '15 min',
-    imageUrl: buildStaticUrl(
-      '/after_login/Audio_guides/AudioGuides/dancer-miguel-fernandez-profile.jpeg'
+    duration: '1:01',
+    imageUrl: buildStaticAssetUrl(
+      'after_login',
+      'Audio_guides',
+      'AudioGuides',
+      'dancer-miguel-fernandez-profile.jpeg'
     ),
     description: 'The story behind Argentina\'s most iconic performing arts venue.',
     guideName: 'Dancer Miguel Fernandez',
     rating: 4.6,
     reviews: 198,
     completed: 51,
-    audioUrl: buildStaticUrl(
-      '/after_login/Audio_guides/AudioGuides/Miguel Fernandez_TeatroColon.mp3'
+    audioUrl: buildStaticAssetUrl(
+      'after_login',
+      'Audio_guides',
+      'AudioGuides',
+      'Miguel Fernandez_TeatroColon.mp3'
     ),
   },
   {
@@ -143,9 +161,12 @@ export const getFeaturedGuide = (): GuideCatalogItem => ({
   title: 'Cataratas Iguazu',
   category: 'Nature',
   location: 'Misiones Province',
-  duration: '24 min',
-  imageUrl: buildStaticUrl(
-    '/after_login/Audio_guides/AudioGuides/dr-maria-lopez-profile.jpeg'
+  duration: '1:40',
+  imageUrl: buildStaticAssetUrl(
+    'after_login',
+    'Audio_guides',
+    'AudioGuides',
+    'dr-maria-lopez-profile.jpeg'
   ),
   description: 'A scientific and cultural journey through Iguazu Falls.',
   guideName: 'Dr. Maria Lopez',
@@ -153,7 +174,10 @@ export const getFeaturedGuide = (): GuideCatalogItem => ({
   reviews: 248,
   completed: 56,
   featured: true,
-  audioUrl: buildStaticUrl(
-    '/after_login/Audio_guides/AudioGuides/Dr. Maria Lopez_CataratasIguazu.mp3'
+  audioUrl: buildStaticAssetUrl(
+    'after_login',
+    'Audio_guides',
+    'AudioGuides',
+    'Dr. Maria Lopez_CataratasIguazu.mp3'
   ),
 });

@@ -26,3 +26,14 @@ export const buildApiUrl = (path: string) =>
 
 export const buildStaticUrl = (path: string) =>
   `${STATIC_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
+
+export const buildStaticAssetUrl = (...segments: string[]) =>
+  `${STATIC_BASE_URL}/${segments
+    .map((segment) =>
+      segment
+        .split('/')
+        .filter(Boolean)
+        .map((part) => encodeURIComponent(part))
+        .join('/')
+    )
+    .join('/')}`;
