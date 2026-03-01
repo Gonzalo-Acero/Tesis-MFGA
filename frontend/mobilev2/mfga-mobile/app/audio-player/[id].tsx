@@ -189,7 +189,6 @@ function RealAudioPlayer({
 
     return () => {
       mounted = false;
-      player.pause();
     };
   }, [guide.id, namespace, player]);
 
