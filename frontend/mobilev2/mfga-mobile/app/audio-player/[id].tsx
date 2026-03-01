@@ -193,7 +193,7 @@ function RealAudioPlayer({
   }, [guide.id, namespace, player]);
 
   useEffect(() => {
-    player.playbackRate = speeds[speedIndex];
+    player.setPlaybackRate(speeds[speedIndex]);
   }, [player, speedIndex]);
 
   useEffect(() => {
@@ -227,7 +227,7 @@ function RealAudioPlayer({
   const changeSpeed = () => {
     const nextIndex = (speedIndex + 1) % speeds.length;
     setSpeedIndex(nextIndex);
-    player.playbackRate = speeds[nextIndex];
+    player.setPlaybackRate(speeds[nextIndex]);
   };
 
   const seekBy = (seconds: number) => {
