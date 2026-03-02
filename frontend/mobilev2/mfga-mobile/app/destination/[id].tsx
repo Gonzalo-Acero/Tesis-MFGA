@@ -62,8 +62,14 @@ export default function DestinationDetailsScreen() {
   );
 
   const openMap = async () => {
-    if (!destination?.mapEmbedUrl) return;
-    await Linking.openURL(destination.mapEmbedUrl);
+    if (!destination) return;
+    const searchQuery = [destination.name, destination.city, destination.province, 'Argentina']
+      .filter(Boolean)
+      .join(', ');
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      searchQuery
+    )}`;
+    await Linking.openURL(mapsUrl);
   };
 
   if (loading) {

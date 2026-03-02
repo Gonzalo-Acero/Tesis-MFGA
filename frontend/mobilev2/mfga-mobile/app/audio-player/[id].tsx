@@ -103,6 +103,7 @@ export default function AudioPlayerScreen() {
       pathname: '/guides/[id]',
       params: {
         id: String(guide.guideId ?? guide.id),
+        backendId: guide.guideId ? String(guide.guideId) : '',
         name: guide.guideName,
         catalogId: String(guide.id),
       },

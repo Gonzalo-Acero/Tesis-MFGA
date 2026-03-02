@@ -19,7 +19,7 @@ export const STATIC_AUDIO_GUIDES_BASE_URL =
 export const STATIC_AUDIO_ASSETS_BASE_URL =
   `${STATIC_AUDIO_GUIDES_BASE_URL}/AudioGuides`;
 
-export const REQUEST_TIMEOUT_MS = 15000;
+export const REQUEST_TIMEOUT_MS = 60000;
 
 export const buildApiUrl = (path: string) =>
   `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;

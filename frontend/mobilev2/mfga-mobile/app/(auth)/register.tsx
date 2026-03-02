@@ -29,7 +29,7 @@ export default function RegisterScreen() {
   const [tone, setTone] = useState<'error' | 'success'>('error');
 
   if (ready && isAuthenticated) {
-    return <Redirect href="/(tabs)/(home)" />;
+    return <Redirect href="/(tabs)" />;
   }
 
   const handleRegister = async () => {

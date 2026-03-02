@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Compass, Headphones, Navigation, Users } from 'lucide-react-native';
 
 import Header from '@/components/Header';
+import { AppBottomNav } from '@/components/navigation/AppBottomNav';
 import Colors from '@/constants/colors';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -57,7 +58,7 @@ export default function HomeScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.heroCard}>
           <Image
-            source={require('../../../assets/images/obelisco.webp')}
+            source={require('../../assets/images/obelisco.webp')}
             style={styles.heroImage}
             contentFit="cover"
           />
@@ -97,6 +98,7 @@ export default function HomeScreen() {
           );
         })}
       </ScrollView>
+      <AppBottomNav />
     </View>
   );
 }
@@ -107,7 +109,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray50,
   },
   scrollContent: {
-    paddingBottom: 28,
+    paddingBottom: 24,
   },
   heroCard: {
     marginHorizontal: 20,

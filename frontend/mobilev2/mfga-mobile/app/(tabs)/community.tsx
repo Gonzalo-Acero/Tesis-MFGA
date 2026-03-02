@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Coffee, Compass, Home, Mountain, Search } from 'lucide-react-native';
 
 import Header from '@/components/Header';
+import { AppBottomNav } from '@/components/navigation/AppBottomNav';
 import { EmptyState } from '@/components/common/EmptyState';
 import { FeedbackText } from '@/components/common/FeedbackText';
 import { LoadingState } from '@/components/common/LoadingState';
@@ -337,6 +338,7 @@ export default function CommunityScreen() {
           />
         ))}
       </ScrollView>
+      <AppBottomNav />
       <Toast message={toast} />
     </View>
   );
@@ -423,7 +425,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray50,
   },
   scrollContent: {
-    paddingBottom: 32,
+    paddingBottom: 24,
   },
   heroCard: {
     marginHorizontal: 20,

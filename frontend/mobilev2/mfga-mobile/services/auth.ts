@@ -23,11 +23,31 @@ interface RegisterResponse {
   user: SessionUser;
 }
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const shouldRetryLogin = (error: unknown) =>
+  error instanceof Error &&
+  /backend is waking up|could not reach the backend/i.test(error.message);
+
 export const login = async (payload: LoginPayload): Promise<SessionPayload> => {
-  const response = await requestJson<LoginResponse>('/auth/login', {
-    method: 'POST',
-    body: payload,
-  });
+  let response: LoginResponse;
+
+  try {
+    response = await requestJson<LoginResponse>('/auth/login', {
+      method: 'POST',
+      body: payload,
+    });
+  } catch (error) {
+    if (!shouldRetryLogin(error)) {
+      throw error;
+    }
+
+    await delay(2500);
+    response = await requestJson<LoginResponse>('/auth/login', {
+      method: 'POST',
+      body: payload,
+    });
+  }
 
   return {
     provider: 'custom-api',

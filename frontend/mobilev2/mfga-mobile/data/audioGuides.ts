@@ -17,7 +17,7 @@ export const getGuideCatalog = (): GuideCatalogItem[] => [
       'prof-carlos-mendez-profile.jpeg'
     ),
     description: 'Explore the rich history of Argentina\'s capital city.',
-    guideName: 'Prof. Carlos Mendes',
+    guideName: 'Prof. Carlos Mendez',
     rating: 4.7,
     reviews: 189,
     completed: 45,

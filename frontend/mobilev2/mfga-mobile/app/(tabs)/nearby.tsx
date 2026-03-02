@@ -14,6 +14,7 @@ import { MapPin, Navigation } from 'lucide-react-native';
 
 import Colors from '@/constants/colors';
 import Header from '@/components/Header';
+import { AppBottomNav } from '@/components/navigation/AppBottomNav';
 import { EmptyState } from '@/components/common/EmptyState';
 import { LoadingState } from '@/components/common/LoadingState';
 import { AttractionFiltersCard } from '@/components/nearby/AttractionFilters';
@@ -181,6 +182,7 @@ export default function NearbyScreen() {
 
         {error ? <EmptyState title="Could not load attractions" subtitle={error} /> : null}
       </ScrollView>
+      <AppBottomNav />
     </View>
   );
 }
@@ -191,7 +193,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray50,
   },
   scrollContent: {
-    paddingBottom: 32,
+    paddingBottom: 24,
   },
   hero: {
     paddingHorizontal: 20,

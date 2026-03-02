@@ -34,7 +34,11 @@ import {
 import type { GuideComment, GuideDetail } from '@/types';
 
 export default function GuideProfileScreen() {
-  const { id, name } = useLocalSearchParams<{ id: string; name?: string }>();
+  const { id, backendId, name } = useLocalSearchParams<{
+    id: string;
+    backendId?: string;
+    name?: string;
+  }>();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { token } = useAuth();
@@ -52,16 +56,30 @@ export default function GuideProfileScreen() {
   const [toast, setToast] = useState<string | null>(null);
 
   const targetName = typeof name === 'string' ? name : '';
+  const parsedBackendId =
+    typeof backendId === 'string' && Number.isFinite(Number(backendId)) && Number(backendId) > 0
+      ? Number(backendId)
+      : null;
+  const parsedRouteId =
+    typeof id === 'string' && Number.isFinite(Number(id)) && Number(id) > 0 ? Number(id) : null;
 
   const loadGuide = useCallback(async () => {
     try {
       setFeedback(null);
-      let detail: GuideDetail;
-      if (targetName) {
+      let detail: GuideDetail | null = null;
+
+      if (parsedBackendId) {
+        detail = await fetchGuideDetail(parsedBackendId);
+      } else if (targetName) {
         detail = await resolveGuideByName(targetName);
-      } else {
-        detail = await fetchGuideDetail(Number(id));
+      } else if (parsedRouteId) {
+        detail = await fetchGuideDetail(parsedRouteId);
       }
+
+      if (!detail) {
+        throw new Error('Guide profile unavailable.');
+      }
+
       setGuide(detail);
       const guideComments = await fetchGuideComments(detail.GuideId);
       setComments(guideComments);
@@ -70,7 +88,7 @@ export default function GuideProfileScreen() {
     } finally {
       setLoading(false);
     }
-  }, [id, targetName]);
+  }, [parsedBackendId, parsedRouteId, targetName]);
 
   useEffect(() => {
     loadGuide();

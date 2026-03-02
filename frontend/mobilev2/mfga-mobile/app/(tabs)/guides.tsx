@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Search } from 'lucide-react-native';
 
 import Header from '@/components/Header';
+import { AppBottomNav } from '@/components/navigation/AppBottomNav';
 import { EmptyState } from '@/components/common/EmptyState';
 import { LoadingState } from '@/components/common/LoadingState';
 import { ContinueListeningCard } from '@/components/guides/ContinueListeningCard';
@@ -149,6 +150,7 @@ export default function GuidesScreen() {
       pathname: '/guides/[id]',
       params: {
         id: routeId,
+        backendId: guide.guideId ? String(guide.guideId) : '',
         name: guide.guideName,
         catalogId: String(guide.id),
       },
@@ -275,6 +277,7 @@ export default function GuidesScreen() {
             />
           ))}
       </ScrollView>
+      <AppBottomNav />
     </View>
   );
 }
@@ -285,7 +288,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray50,
   },
   scrollContent: {
-    paddingBottom: 28,
+    paddingBottom: 24,
   },
   searchRow: {
     paddingHorizontal: 20,

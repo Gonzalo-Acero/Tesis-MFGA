@@ -24,7 +24,7 @@ export default function LoginScreen() {
   const [error, setError] = useState<string | null>(null);
 
   if (ready && isAuthenticated) {
-    return <Redirect href="/(tabs)/(home)" />;
+    return <Redirect href="/(tabs)" />;
   }
 
   const handleLogin = async () => {
@@ -42,7 +42,7 @@ export default function LoginScreen() {
       setLoading(true);
       const session = await login({ email: email.trim(), password: password.trim() });
       await setAuthenticatedSession(session);
-      router.replace('/(tabs)/(home)');
+      router.replace('/(tabs)');
     } catch (nextError: any) {
       setError(nextError?.message || 'Could not sign in.');
     } finally {

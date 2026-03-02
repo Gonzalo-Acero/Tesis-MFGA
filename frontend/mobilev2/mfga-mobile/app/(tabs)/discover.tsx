@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MapPin, Search } from 'lucide-react-native';
 
 import Header from '@/components/Header';
+import { AppBottomNav } from '@/components/navigation/AppBottomNav';
 import { EmptyState } from '@/components/common/EmptyState';
 import { LoadingState } from '@/components/common/LoadingState';
 import Colors from '@/constants/colors';
@@ -201,6 +202,7 @@ export default function DiscoverScreen() {
             </Pressable>
           ))}
       </ScrollView>
+      <AppBottomNav />
     </View>
   );
 }
@@ -211,7 +213,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray50,
   },
   scrollContent: {
-    paddingBottom: 30,
+    paddingBottom: 24,
   },
   heroCard: {
     marginHorizontal: 20,
