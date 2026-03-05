@@ -10,7 +10,7 @@ Este documento consolida una especificacion academica y tecnica del sistema MFGA
 El alcance del analisis comprende:
 
 - Frontend web: `frontend/webV2`
-- Frontend mobile: `frontend/mobile/mfga_mobile`
+- Frontend mobile: `frontend/mobilev2/mfga_mobile`
 - Backend API: `backend`
 
 Cuando una funcionalidad aparece incompleta, local-only, visual o dependiente de configuracion no incluida en el repositorio, se marca como `parcial / en progreso`.
